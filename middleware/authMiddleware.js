@@ -40,7 +40,7 @@ const authenticateUser = async (req, res, next) => {
   }
 };
 
-const checkUserRole = (allowedRoles) => {
+const checkUserRole = allowedRoles => {
   return (req, res, next) => {
     try {
       const userRole = req.user.role;
