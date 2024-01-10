@@ -11,12 +11,16 @@ router.post('/signup', async (req, res) => {
   try {
     const { name, rollNo, email, password, role } = req.body;
 
-    if (!name || !email || !password || !rollNo) {
-      return res.status(400).json({ message: 'All fields are required' });
-    }
+    if (!name || !email || !password || !rollNo) return res.status(400).json({ message: 'All fields are required' });
+    if (email.split('@')[1] !== 'student.nitw.ac.in') return res.status(400).json({ message: 'Enter a valid College Mail Id' });
+    if (password.length < 6 || !/[a-z]/.test(password) || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) return res.status(400).json({ message: 'Password must be at least 6 characters long and contain at least one lowercase letter, one uppercase letter, and one digit' });
+    if (!rollNo.match(/^[0-9]{2}MCF1R[0-9]{2,}$/)) return res.status(400).json({ message: 'Enter a valid Roll No. (Ex: 21MCF1R47)' });
 
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({ message: 'User already exists' });
+
+    const existingRollNo = await User.findOne({ rollNo });
+    if (existingRollNo) return res.status(400).json({ message: 'Roll No. already exists' });
 
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
@@ -30,7 +34,7 @@ router.post('/signup', async (req, res) => {
 
     await newUser.save();
     console.log('User created successfully');
-    res.status(201).json({ message: 'User registered successfully' });
+    res.status(201).json({ message: 'User registered successfully. Admin will verify your account soon, after which you will be able to log in.' });
   } catch (error) {
     console.error('Signup error:', error.message);
     res.status(500).json({ message: 'Internal server error' });
