@@ -1,6 +1,3 @@
-// routes/auth.js
-const express = require('express');
-const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
@@ -17,7 +14,7 @@ const validateFields = (name, rollNo, email, password) => {
   return null;
 };
 
-router.post('/signup', async (req, res) => {
+exports.postSignup = async (req, res) => {
   try {
     const { name, rollNo, email, password, role } = req.body;
 
@@ -40,9 +37,9 @@ router.post('/signup', async (req, res) => {
     logger.error(error);
     res.status(500).json({ message: 'Internal server error' });
   }
-});
+};
 
-router.post('/login', async (req, res) => {
+exports.getLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -59,6 +56,4 @@ router.post('/login', async (req, res) => {
     logger.error(error);
     res.status(500).json({ status: false, message: 'Internal server error' });
   }
-});
-
-module.exports = router;
+};
