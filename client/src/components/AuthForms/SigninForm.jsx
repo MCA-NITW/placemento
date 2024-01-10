@@ -39,7 +39,6 @@ const SigninForm = () => {
         console.log(res.data);
       })
       .catch(err => {
-        console.log(err);
         toast.error(<ToastContent res="Login Failed!!" message={err.response.data.message} />, {
           style: style,
         });
