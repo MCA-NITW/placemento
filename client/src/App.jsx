@@ -32,12 +32,7 @@ const App = () => {
         <Route path="/teams" element={<Teams />} />
         <Route
           path="/auth/signin"
-          element={
-            <SignIn
-              isAuthenticated={isAuthenticated}
-              setIsAuthenticated={setIsAuthenticated}
-            />
-          }
+          element={<SignIn isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />}
         />
         <Route path="/auth/signup" element={<SignUp />} />
       </Routes>

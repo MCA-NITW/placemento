@@ -30,26 +30,10 @@ const SignUp = () => {
       <div className="auth-form">
         <h1>Sign Up</h1>
         <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Name"
-            onChange={e => setName(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Roll No"
-            onChange={e => setRollNo(e.target.value)}
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            onChange={e => setEmail(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            onChange={e => setPassword(e.target.value)}
-          />
+          <input type="text" placeholder="Name" onChange={e => setName(e.target.value)} />
+          <input type="text" placeholder="Roll No" onChange={e => setRollNo(e.target.value)} />
+          <input type="email" placeholder="Email" onChange={e => setEmail(e.target.value)} />
+          <input type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} />
           <button type="submit">Sign Up</button>
         </form>
         <div className="auth-form__footer">

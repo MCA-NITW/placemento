@@ -4,10 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/auth.js');
-const {
-  authenticateUser,
-  checkUserRole,
-} = require('./middleware/authMiddleware');
+const { authenticateUser, checkUserRole } = require('./middleware/authMiddleware');
 
 dotenv.config();
 
@@ -38,32 +35,17 @@ app.get('/common', authenticateUser, (req, res) => {
 });
 
 // Protected routes
-app.get(
-  '/students-and-pc',
-  authenticateUser,
-  checkUserRole(['student', 'placementCoordinator']),
-  (req, res) => {
-    res.send('This page is accessible to students and placement coordinators.');
-  },
-);
+app.get('/students-and-pc', authenticateUser, checkUserRole(['student', 'placementCoordinator']), (req, res) => {
+  res.send('This page is accessible to students and placement coordinators.');
+});
 
-app.get(
-  '/pc-only',
-  authenticateUser,
-  checkUserRole(['placementCoordinator', 'admin']),
-  (req, res) => {
-    res.send('This page is accessible only to placement coordinators.');
-  },
-);
+app.get('/pc-only', authenticateUser, checkUserRole(['placementCoordinator', 'admin']), (req, res) => {
+  res.send('This page is accessible only to placement coordinators.');
+});
 
-app.get(
-  '/admin-only',
-  authenticateUser,
-  checkUserRole(['admin']),
-  (req, res) => {
-    res.send('This page is accessible only to admin.');
-  },
-);
+app.get('/admin-only', authenticateUser, checkUserRole(['admin']), (req, res) => {
+  res.send('This page is accessible only to admin.');
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

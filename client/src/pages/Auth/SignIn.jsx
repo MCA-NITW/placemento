@@ -29,16 +29,8 @@ const SignIn = ({ setIsAuthenticated }) => {
       <div className="auth-form">
         <h1>Sign In</h1>
         <form onSubmit={handleSubmit}>
-          <input
-            type="email"
-            placeholder="Email"
-            onChange={e => setEmail(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            onChange={e => setPassword(e.target.value)}
-          />
+          <input type="email" placeholder="Email" onChange={e => setEmail(e.target.value)} />
+          <input type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} />
           <button type="submit">Sign In</button>
         </form>
         <div className="auth-form__footer">
