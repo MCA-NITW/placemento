@@ -1,7 +1,22 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import FormFooter from './FormFooter';
 import './auth.css';
+
+const ToastContent = ({ res, message }) => (
+  <div>
+    <div>{res}</div>
+    {message && <div>{message}</div>}
+  </div>
+);
+
+const style = {
+  backgroundColor: 'var(--color-bg)',
+  color: 'var(--color-white)',
+  borderRadius: '1rem',
+};
 
 const SignupForm = () => {
   const [name, setName] = useState('');
@@ -9,7 +24,9 @@ const SignupForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
+    e.preventDefault();
+
     const user = {
       name,
       rollNo,
@@ -17,13 +34,20 @@ const SignupForm = () => {
       password,
     };
 
-    axios
-      .post('http://localhost:5000/auth/signup', user)
-      .then(res => {
-        console.log(res.data);
-      })
-      .catch(err => console.log(err));
+    try {
+      const res = await axios.post('http://localhost:5000/auth/signup', user);
+      toast.success(<ToastContent res="Signup Successful!!" message={res.data.message} />, {
+        style: style,
+      });
+      console.log(res.data);
+    } catch (err) {
+      toast.error(<ToastContent res="Signup Failed!!" message={err.response.data.message} />, {
+        style: style,
+      });
+      console.log(err);
+    }
   };
+
   return (
     <div className="auth-form">
       <h1>Sign Up</h1>
@@ -35,6 +59,7 @@ const SignupForm = () => {
         <button type="submit">Sign Up</button>
       </form>
       <FormFooter mode="signin" />
+      <ToastContainer />
     </div>
   );
 };

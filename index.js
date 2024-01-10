@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/auth.js');
-const { authenticateUser, checkUserRole } = require('./middleware/authMiddleware');
+const companyRoutes = require('./routes/companies.js');
 
 dotenv.config();
 
@@ -24,27 +24,12 @@ app.use(cors());
 // Use the authRoutes only once
 app.use('/auth', authRoutes);
 
+// Use the companyRoutes only once
+app.use('/companies', companyRoutes);
+
 // Example route for testing
 app.get('/', (req, res) => {
   res.send('Hello, this is your MERN app!');
-});
-
-// Common route for all roles
-app.get('/common', authenticateUser, (req, res) => {
-  res.send('This is a common page for all roles.');
-});
-
-// Protected routes
-app.get('/students-and-pc', authenticateUser, checkUserRole(['student', 'placementCoordinator']), (req, res) => {
-  res.send('This page is accessible to students and placement coordinators.');
-});
-
-app.get('/pc-only', authenticateUser, checkUserRole(['placementCoordinator', 'admin']), (req, res) => {
-  res.send('This page is accessible only to placement coordinators.');
-});
-
-app.get('/admin-only', authenticateUser, checkUserRole(['admin']), (req, res) => {
-  res.send('This page is accessible only to admin.');
 });
 
 app.listen(PORT, () => {

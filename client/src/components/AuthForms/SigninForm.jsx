@@ -1,9 +1,24 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import FormFooter from './FormFooter';
 import './auth.css';
 
-const SigninForm = ({ setIsAuthenticated }) => {
+const ToastContent = ({ res, message }) => (
+  <div>
+    <div>{res}</div>
+    {message && <div>{message}</div>}
+  </div>
+);
+
+const style = {
+  backgroundColor: 'var(--color-bg)',
+  color: 'var(--color-white)',
+  borderRadius: '1rem',
+};
+
+const SigninForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -18,10 +33,17 @@ const SigninForm = ({ setIsAuthenticated }) => {
     axios
       .post('http://localhost:5000/auth/login', user)
       .then(res => {
+        toast.success(<ToastContent res="Login Successful!!" message={res.data.message} />, {
+          style: style,
+        });
         console.log(res.data);
-        setIsAuthenticated(true);
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        toast.error(<ToastContent res="Login Failed!!" message={err.response.data.message} />, {
+          style: style,
+        });
+        console.log(err);
+      });
   };
   return (
     <div className="auth-form">
@@ -32,6 +54,7 @@ const SigninForm = ({ setIsAuthenticated }) => {
         <button type="submit">Sign In</button>
       </form>
       <FormFooter mode="signup" />
+      <ToastContainer />
     </div>
   );
 };

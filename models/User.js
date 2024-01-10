@@ -2,18 +2,18 @@ const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
+    name: { type: String, required: true},
     email: {
       type: String,
       required: true,
       match: /.+\@student.nitw.ac.in+/,
-      unique: true,
+      unique: true
     },
-    password: { type: String, required: true },
+    password: { type: String, required: true},
     rollNo: {
       type: String,
       match: /^[0-9]{2}MCF1R[0-9]{2,}$/,
-      unique: true,
+      unique: true
     },
     role: {
       type: String,
@@ -22,25 +22,25 @@ const userSchema = new mongoose.Schema(
     },
     isVerified: { type: Boolean, default: false },
     pg: {
-      cgpa: { type: Number },
-      percentage: { type: Number },
+      cgpa: { type: Number, default: null },
+      percentage: { type: Number, default: null },
     },
     ug: {
-      cgpa: { type: Number },
-      percentage: { type: Number },
+      cgpa: { type: Number, default: null },
+      percentage: { type: Number, default: null },
     },
     twelth: {
-      cgpa: { type: Number },
-      percentage: { type: Number },
+      cgpa: { type: Number, default: null },
+      percentage: { type: Number, default: null },
     },
     tenth: {
-      cgpa: { type: Number },
-      percentage: { type: Number },
+      cgpa: { type: Number, default: null },
+      percentage: { type: Number, default: null },
     },
     placed: { type: Boolean, default: false },
     placedAt: {
       company: { type: mongoose.Schema.Types.ObjectId, ref: 'Company' },
-      location: { type: String },
+      location: { type: String, default: '' },
     },
   },
   {
