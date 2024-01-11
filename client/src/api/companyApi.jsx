@@ -1,15 +1,14 @@
 import axios from 'axios';
 
-const token = localStorage.getItem('token');
-
 const api = axios.create({
   baseURL: 'http://localhost:5000',
   headers: {
-    Authorization: `Bearer ${token}`,
+    Authorization: `Bearer ${localStorage.getItem('token')}`,
   },
 });
 
 export const getCompanies = () => {
+  console.log(localStorage.getItem('token'));
   return api.get('/companies/view');
 };
 

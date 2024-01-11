@@ -4,10 +4,10 @@ import NavBar from './components/NavBar/NavBar';
 import Home from './pages/Home/Home';
 import Stats from './pages/Stats/Stats';
 import Teams from './pages/Teams/Teams';
-import SignIn from './pages/Auth/SignIn';
-import SignUp from './pages/Auth/SignUp';
 import Users from './pages/Users/Users';
 import Companies from './pages/Companies/Companies';
+import Authentication from './pages/Auth/Authentication';
+import { checkAuthAction, getAuthToken } from './utils/auth';
 
 const App = () => {
   const router = createBrowserRouter([
@@ -15,9 +15,10 @@ const App = () => {
       path: '/',
       element: <NavBar />,
       id: 'root',
+      loader: getAuthToken,
       children: [
         {
-          path: '/',
+          index: true,
           element: <Home />,
         },
         {
@@ -31,23 +32,16 @@ const App = () => {
         {
           path: 'users',
           element: <Users />,
+          loader: checkAuthAction,
         },
         {
           path: 'companies',
           element: <Companies />,
+          loader: checkAuthAction,
         },
         {
           path: 'auth',
-          children: [
-            {
-              path: 'signin',
-              element: <SignIn />,
-            },
-            {
-              path: 'signup',
-              element: <SignUp />,
-            },
-          ],
+          element: <Authentication />,
         },
       ],
     },

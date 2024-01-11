@@ -49,11 +49,10 @@
   border: 1px solid var(--color-primary-variant);
 }
 
-.auth-form form button {
+.auth-form form .btn {
   width: 100%;
   padding: 1rem;
   border-radius: 0.5rem;
-  border: none;
   background: var(--color-primary);
   color: var(--color-bg);
   font-size: 1rem;
@@ -62,7 +61,7 @@
   border: 1px solid transparent;
 }
 
-.auth-form form button:hover {
+.auth-form form .btn:hover {
   background: var(--color-primary-variant);
   border: 1px solid var(--color-primary);
 }

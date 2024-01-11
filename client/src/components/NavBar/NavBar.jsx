@@ -9,7 +9,7 @@ import { GoOrganization } from 'react-icons/go';
 import { PiSignOutBold } from 'react-icons/pi';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import './Navbar.css';
+import classes from './Navbar.module.css';
 
 const NavBar = () => {
   const [navItems, setNavItems] = useState([]);
@@ -75,17 +75,9 @@ const NavBar = () => {
       setNavItems([
         ...fixedItems,
         {
-          to: 'auth/signin',
+          to: 'auth?mode=signin',
           label: 'Auth',
           icon: <FaSignInAlt />,
-          children: [
-            {
-              to: '/signin',
-            },
-            {
-              to: '/signup',
-            },
-          ],
         },
       ]);
     }
@@ -98,18 +90,23 @@ const NavBar = () => {
 
   return (
     <>
-      <nav className="nav">
-        <NavLink to="/" aria-label="Home" className="nav__logo">
+      <nav className={classes.nav}>
+        <NavLink to="/" aria-label="Home" className={classes['nav__logo']}>
           <span>MCA</span>
         </NavLink>
-        <div className="nav__list">
+        <div className={classes['nav__list']}>
           {navItems.map(item => (
-            <NavLink to={item.to} aria-label={item.label} key={item.content}>
+            <NavLink
+              to={item.to}
+              className={({ isActive }) => (isActive ? classes.active : undefined)}
+              aria-label={item.label}
+              key={item.content}
+            >
               {item.icon}
             </NavLink>
           ))}
           {isAuthenticated && (
-            <div className="nav__signout" aria-label="Sign Out" onClick={onSignOut}>
+            <div className={classes['nav__signout']} aria-label="Sign Out" onClick={onSignOut}>
               <PiSignOutBold />
             </div>
           )}
