@@ -5,27 +5,21 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js",
     "format": "prettier --write .",
     "frontend-start": "cd client && npm start",
     "frontent-build": "cd client && npm run build",
     "frontend-install": "cd client && npm install",
-    "dev": "concurrently \"npm run start\" \"npm run frontend-start\""
+    "backend-start": "cd server && npm start",
+    "backend-install": "cd server && npm install",
+    "start": "concurrently \"npm run backend-start\" \"npm run frontend-start\"",
+    "build": "concurrently \"npm run backend-install\" \"npm run frontend-install\" \"npm run frontent-build\""
   },
   "author": "Sagar Gupta",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^3.0.2",
     "prettier": "^3.1.1"
   },
   "dependencies": {
-    "bcrypt": "^5.1.1",
-    "concurrently": "^8.2.2",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.0.3",
-    "winston": "^3.11.0"
+    "concurrently": "^8.2.2"
   }
 }
