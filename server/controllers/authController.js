@@ -48,7 +48,7 @@ exports.getLogin = async (req, res) => {
       return res.status(401).json({ status: false, message: 'Invalid credentials' });
     }
 
-    const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
     logger.info(`User logged in: ${email}`);
     res.json({ status: true, data: { user: { email: user.email }, token } });

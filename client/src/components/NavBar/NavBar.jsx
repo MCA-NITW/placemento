@@ -13,45 +13,53 @@ import './Navbar.css';
 
 const NavBar = () => {
   const [navItems, setNavItems] = useState([]);
-  const token = localStorage.getItem('token');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
-    const headers = {
-      Authorization: `Bearer ${token}`,
-    };
+    if (token) {
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
 
-    axios
-      .get('http://localhost:5000/profile', { headers })
-      .then(response => {
-        console.log(response);
-        setIsAuthenticated(true);
-      })
-      .catch(error => {
-        console.error(error);
-        setIsAuthenticated(false);
-      });
+      axios
+        .get('http://localhost:5000/profile', { headers })
+        .then(response => {
+          console.log(response);
+          setIsAuthenticated(true);
+        })
+        .catch(error => {
+          console.log(error);
+          setIsAuthenticated(false);
+        });
+    } else {
+      setIsAuthenticated(false);
+    }
   }, [token]);
 
   useEffect(() => {
+    const fixedItems = [
+      {
+        to: '/',
+        label: 'Home',
+        icon: <FaHome />,
+      },
+      {
+        to: 'stats',
+        label: 'Stats',
+        icon: <BiStats />,
+      },
+      {
+        to: 'teams',
+        label: 'Teams',
+        icon: <RiTeamFill />,
+      },
+    ];
+
     if (isAuthenticated) {
       setNavItems([
-        {
-          to: '/',
-          label: 'Home',
-          icon: <FaHome />,
-        },
-        {
-          to: 'stats',
-          label: 'Stats',
-          icon: <BiStats />,
-        },
-        {
-          to: 'teams',
-          label: 'Teams',
-          icon: <RiTeamFill />,
-        },
+        ...fixedItems,
         {
           to: 'users',
           label: 'Users',
@@ -65,21 +73,7 @@ const NavBar = () => {
       ]);
     } else {
       setNavItems([
-        {
-          to: '/',
-          label: 'Home',
-          icon: <FaHome />,
-        },
-        {
-          to: 'stats',
-          label: 'Stats',
-          icon: <BiStats />,
-        },
-        {
-          to: 'teams',
-          label: 'Teams',
-          icon: <RiTeamFill />,
-        },
+        ...fixedItems,
         {
           to: 'auth/signin',
           label: 'Auth',
@@ -114,7 +108,7 @@ const NavBar = () => {
               {item.icon}
             </NavLink>
           ))}
-          {token && (
+          {isAuthenticated && (
             <div className="nav__signout" aria-label="Sign Out" onClick={onSignOut}>
               <PiSignOutBold />
             </div>

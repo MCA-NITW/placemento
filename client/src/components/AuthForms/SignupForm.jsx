@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import FormFooter from './FormFooter';
 import './auth.css';
+import { signup } from '../../api/authApi';
 
 const ToastContent = ({ res, message }) => (
   <div>
@@ -35,7 +35,7 @@ const SignupForm = () => {
     };
 
     try {
-      const res = await axios.post('http://localhost:5000/auth/signup', user);
+      const res = await signup(user);
       toast.success(<ToastContent res="Signup Successful!!" message={res.data.message} />, {
         style: style,
       });

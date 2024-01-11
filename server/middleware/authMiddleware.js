@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+
 const authenticateUser = async (req, res, next) => {
   try {
     const authorizationHeader = req.header('Authorization');
@@ -10,20 +11,21 @@ const authenticateUser = async (req, res, next) => {
 
     const token = authorizationHeader.replace('Bearer ', '');
 
+    console.log('Received token:', token);
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Check if the token has expired
+    if (decoded.exp * 1000 < Date.now()) {
+      throw new Error('Token has expired');
+    }
 
     let user;
     try {
-      user = await User.findOne({ _id: decoded.userId }).maxTimeMS(20000);
+      user = await User.findOne({ _id: decoded.userId });
     } catch (error) {
       console.error('User lookup error:', error.message);
-      if (error instanceof mongoose.Error.DocumentNotFoundError) {
-        throw new Error('User not found');
-      } else if (error instanceof mongoose.Error.MaxTimeMSExpired) {
-        throw new Error('User lookup timed out');
-      } else {
-        throw new Error('Error looking up user');
-      }
+      throw new Error('Error looking up user');
     }
 
     if (!user) {
@@ -35,8 +37,13 @@ const authenticateUser = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Authentication error:', error.message);
-    res.status(401).json({ message: 'Unauthorized' });
+    console.error('Error in authenticateUser middleware:', error.message);
+
+    if (error.name === 'TokenExpiredError' || error.name === 'JsonWebTokenError') {
+      res.status(401).json({ message: 'Unauthorized: Invalid or expired token' });
+    } else {
+      res.status(401).json({ message: 'Unauthorized' });
+    }
   }
 };
 
@@ -56,23 +63,4 @@ const checkUserRole = allowedRoles => {
     }
   };
 };
-
-const verifyToken = (req, res, next) => {
-  const token = req.headers.authorization;
-
-  if (!token) {
-    return res.status(401).json({ message: 'Unauthorized: Token missing' });
-  }
-
-  jwt.verify(token.split(' ')[1], process.env.JWT_SECRET, (err, decoded) => {
-    if (err) {
-      return res.status(401).json({ message: 'Unauthorized: Invalid token' });
-    }
-
-    req.userId = decoded.userId;
-    req.userRole = decoded.role;
-    next();
-  });
-};
-
-module.exports = { authenticateUser, checkUserRole, verifyToken };
+module.exports = { authenticateUser, checkUserRole };
