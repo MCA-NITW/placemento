@@ -35,23 +35,27 @@ const NavBar = () => {
   }, [token]);
 
   useEffect(() => {
+    const fixedItems = [
+      {
+        to: '/',
+        label: 'Home',
+        icon: <FaHome />,
+      },
+      {
+        to: 'stats',
+        label: 'Stats',
+        icon: <BiStats />,
+      },
+      {
+        to: 'teams',
+        label: 'Teams',
+        icon: <RiTeamFill />,
+      },
+    ];
+
     if (isAuthenticated) {
       setNavItems([
-        {
-          to: '/',
-          label: 'Home',
-          icon: <FaHome />,
-        },
-        {
-          to: 'stats',
-          label: 'Stats',
-          icon: <BiStats />,
-        },
-        {
-          to: 'teams',
-          label: 'Teams',
-          icon: <RiTeamFill />,
-        },
+        ...fixedItems,
         {
           to: 'users',
           label: 'Users',
@@ -65,21 +69,7 @@ const NavBar = () => {
       ]);
     } else {
       setNavItems([
-        {
-          to: '/',
-          label: 'Home',
-          icon: <FaHome />,
-        },
-        {
-          to: 'stats',
-          label: 'Stats',
-          icon: <BiStats />,
-        },
-        {
-          to: 'teams',
-          label: 'Teams',
-          icon: <RiTeamFill />,
-        },
+        ...fixedItems,
         {
           to: 'auth/signin',
           label: 'Auth',

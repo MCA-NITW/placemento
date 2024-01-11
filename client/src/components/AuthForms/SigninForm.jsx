@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import FormFooter from './FormFooter';
 import './auth.css';
 import { useNavigate } from 'react-router-dom';
+import { signin } from '../../api/authApi';
 
 const ToastContent = ({ res, message }) => (
   <div>
@@ -32,8 +32,7 @@ const SigninForm = () => {
       password,
     };
 
-    axios
-      .post('http://localhost:5000/auth/login', user)
+    signin(user)
       .then(res => {
         toast.success(<ToastContent res="Login Successful!!" message={res.data.message} />, {
           style: style,
