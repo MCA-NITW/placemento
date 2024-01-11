@@ -3,8 +3,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const authRoutes = require('./routes/auth.js');
-const companyRoutes = require('./routes/companies.js');
+const authRoutes = require('./routes/authRoutes.js');
+const companyRoutes = require('./routes/companyRoutes.js');
 const { verifyToken } = require('./middleware/authMiddleware.js');
 
 dotenv.config();
