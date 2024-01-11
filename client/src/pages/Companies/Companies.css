@@ -1,0 +1,127 @@
+/* Page Heading */
+.page-heading {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/* Companies Container */
+.companies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.btn {
+  margin: 0 10px;
+}
+
+/* Add Company Button */
+.btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-bg);
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  backdrop-filter: blur(5px);
+}
+
+.modal.show {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.modal-dialog {
+  max-width: 700px;
+  width: 100%;
+  overflow: scroll;
+  height: calc(100vh - 8rem);
+}
+
+.modal-content {
+  background-color: var(--color-primary);
+  border-radius: 5px;
+  padding: 20px;
+  position: relative;
+}
+
+/* Close Button in Modal */
+.close-button {
+  background-color: transparent;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  position: absolute;
+  top: 5px;
+  right: 0;
+}
+
+/* Form */
+.company-form {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.mb-3 {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.mb-3 div {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  width: 100%;
+}
+
+.mb-3 div input {
+  width: 100%;
+}
+
+.mb-3 input,
+.mb-3 select,
+.mb-3 textarea {
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: var(--color-bg);
+  color: var(--color-white);
+}
+
+.mb-3 input:focus,
+.mb-3 select:focus,
+.mb-3 textarea:focus {
+  outline: none;
+}
+
+.company-button {
+  width: 100%;
+  background-color: var(--color-bg);
+  color: var(--color-primary);
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.company-button:hover {
+  background-color: var(--color-bg-variant);
+}

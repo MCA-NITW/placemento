@@ -5,7 +5,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/authRoutes.js');
 const companyRoutes = require('./routes/companyRoutes.js');
-const { verifyToken } = require('./middleware/authMiddleware.js');
+const { authenticateUser } = require('./middleware/authMiddleware.js');
 
 dotenv.config();
 
@@ -33,8 +33,7 @@ app.get('/', (req, res) => {
   res.send('Hello, this is your MERN app!');
 });
 
-app.get('/profile', verifyToken, (req, res) => {
-  // Access user details using req.userId and perform operations based on the user role
+app.get('/profile', authenticateUser, (req, res) => {
   const userId = req.userId;
   const userRole = req.userRole;
   res.json({ userId, userRole });
