@@ -4,6 +4,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import FormFooter from './FormFooter';
 import './auth.css';
+import { useNavigate } from 'react-router-dom';
 
 const ToastContent = ({ res, message }) => (
   <div>
@@ -21,6 +22,7 @@ const style = {
 const SigninForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -36,6 +38,8 @@ const SigninForm = () => {
         toast.success(<ToastContent res="Login Successful!!" message={res.data.message} />, {
           style: style,
         });
+        localStorage.setItem('token', res.data.data.token);
+        navigate('/');
         console.log(res.data);
       })
       .catch(err => {

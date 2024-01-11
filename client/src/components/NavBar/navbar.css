@@ -35,7 +35,8 @@
   gap: 1rem;
 }
 
-.nav__list a {
+.nav__list a,
+.nav__list div {
   aspect-ratio: 1/1;
   padding: 1rem;
   font-size: 1.2rem;
@@ -48,7 +49,8 @@
   color: var(--color-white);
 }
 
-.nav__list a[aria-label]:hover::after {
+.nav__list a[aria-label]:hover::after,
+.nav__list div[aria-label]:hover::after {
   content: attr(aria-label);
   font-size: 0.8rem;
   position: absolute;
@@ -57,7 +59,8 @@
   margin-top: 5rem;
 }
 
-.nav__list a:hover {
+.nav__list a:hover,
+.nav__list div:hover {
   background: var(--color-bg);
   background-size: 5px 5px;
   color: var(--color-primary);
@@ -87,12 +90,13 @@
     justify-content: space-around;
     gap: 0;
   }
-  .nav__list a {
+  .nav__list a .nav__list div {
     padding: 1rem;
     font-size: 1rem;
   }
 
-  .nav__list a[alt]:hover::after {
+  .nav__list a[alt]:hover::after,
+  .nav__list div[alt]:hover::after {
     display: none;
   }
 }

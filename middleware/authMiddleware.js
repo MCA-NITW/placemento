@@ -57,4 +57,22 @@ const checkUserRole = allowedRoles => {
   };
 };
 
-module.exports = { authenticateUser, checkUserRole };
+const verifyToken = (req, res, next) => {
+  const token = req.headers.authorization;
+
+  if (!token) {
+    return res.status(401).json({ message: 'Unauthorized: Token missing' });
+  }
+
+  jwt.verify(token.split(' ')[1], process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ message: 'Unauthorized: Invalid token' });
+    }
+
+    req.userId = decoded.userId;
+    req.userRole = decoded.role;
+    next();
+  });
+};
+
+module.exports = { authenticateUser, checkUserRole, verifyToken };

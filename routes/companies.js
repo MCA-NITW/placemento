@@ -49,30 +49,40 @@ router.delete('/delete/:id', authenticateUser, checkUserRole(['admin', 'placemen
 });
 
 // View Company by ID
-router.get('/view/:id', authenticateUser, checkUserRole(['admin', 'placementCoordinator', 'student']), async (req, res) => {
-  try {
-    const company = await Company.findById(req.params.id);
-    if (!company) {
-      return res.status(404).json({ message: 'Company not found' });
+router.get(
+  '/view/:id',
+  authenticateUser,
+  checkUserRole(['admin', 'placementCoordinator', 'student']),
+  async (req, res) => {
+    try {
+      const company = await Company.findById(req.params.id);
+      if (!company) {
+        return res.status(404).json({ message: 'Company not found' });
+      }
+      logger.info(`Company viewed: ${company.name}`);
+      res.json(company);
+    } catch (error) {
+      logger.error(error);
+      res.status(500).json({ message: 'Internal server error' });
     }
-    logger.info(`Company viewed: ${company.name}`);
-    res.json(company);
-  } catch (error) {
-    logger.error(error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-});
+  },
+);
 
 // View All Companies
-router.get('/view-all', authenticateUser, checkUserRole(['admin', 'placementCoordinator', 'student']), async (req, res) => {
-  try {
-    const companies = await Company.find();
-    logger.info('All companies viewed');
-    res.json(companies);
-  } catch (error) {
-    logger.error(error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-});
+router.get(
+  '/view-all',
+  authenticateUser,
+  checkUserRole(['admin', 'placementCoordinator', 'student']),
+  async (req, res) => {
+    try {
+      const companies = await Company.find();
+      logger.info('All companies viewed');
+      res.json(companies);
+    } catch (error) {
+      logger.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  },
+);
 
 module.exports = router;
