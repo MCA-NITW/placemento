@@ -1,66 +1,116 @@
 import React, { useState } from 'react';
 
-const CompanyForm = ({ actionFunction }) => {
-  const [name, setName] = useState('');
-  const [status, setStatus] = useState('');
-  const [interviewShortlist, setInterviewShortlist] = useState('');
-  const [selected, setSelected] = useState('');
-  const [locations, setLocations] = useState([]);
-  const [cutoff_pg, setCutoff_pg] = useState('');
-  const [cutoff_ug, setCutoff_ug] = useState('');
-  const [cutoff_12, setCutoff_12] = useState('');
-  const [cutoff_10, setCutoff_10] = useState('');
-  const [typeOfOffer, setTypeOfOffer] = useState('');
-  const [profile, setProfile] = useState('');
-  const [ctc, setCtc] = useState('');
-  const [ctcBase, setCtcBase] = useState('');
-  const [ctcOther, setCtcOther] = useState('');
-  const [bond, setBond] = useState('');
+const CompanyForm = ({ actionFunction, handleFormClose, setCompanies }) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    status: 'upcoming',
+    interviewShortlist: 0,
+    selectedStudents: [],
+    dateOfOffer: new Date(),
+    locations: [],
+    cutoff_pg: 0,
+    cutoff_ug: 0,
+    cutoff_12: 0,
+    cutoff_10: 0,
+    typeOfOffer: 'FTE',
+    profile: '',
+    ctc: 0.0,
+    ctcBase: 0.0,
+    bond: 0,
+  });
 
-  const handleSubmit = e => {
+  const handleChange = (field, value) => {
+    setFormData(prevData => ({ ...prevData, [field]: value }));
+  };
+
+  const handleLocationsChange = value => {
+    handleChange(
+      'locations',
+      value.split(',').map(loc => loc.trim()),
+    );
+  };
+
+  const handleSelectedStudentsChange = value => {
+    handleChange(
+      'selectedStudents',
+      value.split(',').map(rollNo => rollNo.trim()),
+    );
+  };
+
+  const handleSubmit = async e => {
     e.preventDefault();
 
-    const companyData = {
-      name,
-      status,
-      interviewShortlist,
-      selected,
-      locations,
+    const newCompany = {
+      name: formData.name,
+      status: formData.status,
+      interviewShortlist: formData.interviewShortlist,
+      selected: formData.selectedStudents.length,
+      selectedStudentsRollNo: formData.selectedStudents,
+      dateOfOffer: formData.dateOfOffer,
+      locations: formData.locations,
       cutoffs: {
-        pg: cutoff_pg > 10 ? { percentage: cutoff_pg } : { cgpa: cutoff_pg },
-        ug: cutoff_ug > 10 ? { percentage: cutoff_ug } : { cgpa: cutoff_ug },
-        twelth: cutoff_12 > 10 ? { percentage: cutoff_12 } : { cgpa: cutoff_12 },
-        tenth: cutoff_10 > 10 ? { percentage: cutoff_10 } : { cgpa: cutoff_10 },
+        pg: {
+          cgpa: formData.cutoff_pg <= 10 ? formData.cutoff_pg : 0,
+          percentage: formData.cutoff_pg > 10 ? formData.cutoff_pg : 0,
+        },
+        ug: {
+          cgpa: formData.cutoff_ug <= 10 ? formData.cutoff_ug : 0,
+          percentage: formData.cutoff_ug > 10 ? formData.cutoff_ug : 0,
+        },
+        twelth: {
+          cgpa: formData.cutoff_12 <= 10 ? formData.cutoff_12 : 0,
+          percentage: formData.cutoff_12 > 10 ? formData.cutoff_12 : 0,
+        },
+        tenth: {
+          cgpa: formData.cutoff_10 <= 10 ? formData.cutoff_10 : 0,
+          percentage: formData.cutoff_10 > 10 ? formData.cutoff_10 : 0,
+        },
       },
-      typeOfOffer,
-      profile,
-      ctc,
+      typeOfOffer: formData.typeOfOffer,
+      profile: formData.profile,
+      ctc: formData.ctc,
       ctcBreakup: {
-        base: ctcBase,
-        other: ctcOther,
+        base: formData.ctcBase,
+        other: (formData.ctc - formData.ctcBase).toFixed(2),
       },
-      bond,
+      bond: formData.bond,
     };
 
-    actionFunction(companyData);
+    // Assuming you have an async function for the MongoDB operation (e.g., save to database)
+    await actionFunction(newCompany);
+
+    // Update the state with the new company data
+    setCompanies(prevCompanies => [...prevCompanies, newCompany]);
+
+    // Close the form
+    handleFormClose();
   };
 
   return (
     <form className="company-form" onSubmit={handleSubmit}>
-      <div className="mb-3">
+      <div className="form-group">
+        <label htmlFor="companyName">Company Name</label>
         <input
           type="text"
+          id="companyName"
           className="form-control"
           placeholder="Company Name"
-          value={name}
-          onChange={e => setName(e.target.value)}
+          value={formData.name}
+          onChange={e => handleChange('name', e.target.value)}
+          required
         />
       </div>
 
-      <div className="mb-3">
-        <select className="form-select" value={status} onChange={e => setStatus(e.target.value)}>
-          <option value={null} default disabled>
-            Status
+      <div className="form-group">
+        <label htmlFor="status">Status</label>
+        <select
+          id="status"
+          className="form-select"
+          value={formData.status}
+          onChange={e => handleChange('status', e.target.value)}
+        >
+          <option value="" disabled>
+            Select Status
           </option>
           <option value="ongoing">Ongoing</option>
           <option value="upcoming">Upcoming</option>
@@ -69,69 +119,117 @@ const CompanyForm = ({ actionFunction }) => {
         </select>
       </div>
 
-      <div className="mb-3">
-        <div>
+      <div className="input-group">
+        <div className="form-group">
+          <label htmlFor="interviewShortlist">Interview/Intern Shortlists</label>
           <input
             type="number"
+            id="interviewShortlist"
             className="form-control"
-            placeholder="Interview Shortlist"
-            value={interviewShortlist}
-            onChange={e => setInterviewShortlist(e.target.value)}
-          />
-          <input
-            type="number"
-            className="form-control"
-            placeholder="Selected"
-            value={selected}
-            onChange={e => setSelected(e.target.value)}
+            placeholder="Interview/Intern Shortlist"
+            value={formData.interviewShortlist}
+            onChange={e => handleChange('interviewShortlist', e.target.value)}
           />
         </div>
       </div>
 
-      <div className="mb-3">
+      <div className="form-group">
+        <label htmlFor="selectedStudents">Selected Students</label>
         <textarea
+          id="selectedStudents"
           className="form-control"
-          placeholder="Locations (Separate multiple locations with commas)"
-          value={locations.join(', ')}
-          onChange={e => setLocations(e.target.value.split(',').map(loc => loc.trim()))}
+          placeholder="(Comma separated roll numbers of selected students)"
+          value={formData.selectedStudents.join(', ')}
+          onChange={e => handleSelectedStudentsChange(e.target.value)}
         />
       </div>
 
-      <div className="mb-3">
-        <div>
-          <input
-            type="number"
-            className="form-control"
-            placeholder="Cutoff PG"
-            value={cutoff_pg}
-            onChange={e => setCutoff_pg(e.target.value)}
-          />
-          <input
-            type="number"
-            className="form-control"
-            placeholder="Cutoff UG"
-            value={cutoff_ug}
-            onChange={e => setCutoff_ug(e.target.value)}
-          />
-          <input
-            type="number"
-            className="form-control"
-            placeholder="Cutoff 12th"
-            value={cutoff_12}
-            onChange={e => setCutoff_12(e.target.value)}
-          />
-          <input
-            type="number"
-            className="form-control"
-            placeholder="Cutoff 10th"
-            value={cutoff_10}
-            onChange={e => setCutoff_10(e.target.value)}
-          />
+      <div className="form-group">
+        <label htmlFor="dateOfOffer">Date of Offer</label>
+        <input
+          type="date"
+          id="dateOfOffer"
+          className="form-control"
+          placeholder="Date of Offer"
+          value={formData.dateOfOffer}
+          onChange={e => handleChange('dateOfOffer', e.target.value)}
+        />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="locations">Locations</label>
+        <textarea
+          id="locations"
+          className="form-control"
+          placeholder="Locations  (Separate multiple locations with commas)"
+          value={formData.locations.join(', ')}
+          onChange={e => handleLocationsChange(e.target.value)}
+        />
+      </div>
+
+      <div className="input-group-out">
+        <div className="input-group">
+          <div className="form-group">
+            <label htmlFor="cutoffPG">Cutoff PG</label>
+            <input
+              type="number"
+              id="cutoffPG"
+              className="form-control"
+              placeholder="Cutoff PG"
+              value={formData.cutoff_pg}
+              onChange={e => handleChange('cutoff_pg', e.target.value)}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="cutoffUG">Cutoff UG</label>
+            <input
+              type="number"
+              id="cutoffUG"
+              className="form-control"
+              placeholder="Cutoff UG"
+              value={formData.cutoff_ug}
+              onChange={e => handleChange('cutoff_ug', e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="input-group">
+          <div className="form-group">
+            <label htmlFor="cutoff12">Cutoff 12</label>
+            <input
+              type="number"
+              id="cutoff12"
+              className="form-control"
+              placeholder="Cutoff 12"
+              value={formData.cutoff_12}
+              onChange={e => handleChange('cutoff_12', e.target.value)}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="cutoff10">Cutoff 10</label>
+            <input
+              type="number"
+              id="cutoff10"
+              className="form-control"
+              placeholder="Cutoff 10"
+              value={formData.cutoff_10}
+              onChange={e => handleChange('cutoff_10', e.target.value)}
+            />
+          </div>
         </div>
       </div>
 
-      <div className="mb-3">
-        <select className="form-select" value={typeOfOffer} onChange={e => setTypeOfOffer(e.target.value)}>
+      <div className="form-group">
+        <label htmlFor="typeOfOffer">Offer</label>
+        <select
+          id="typeOfOffer"
+          className="form-select"
+          value={formData.typeOfOffer}
+          onChange={e => handleChange('typeOfOffer', e.target.value)}
+        >
+          <option value="" disabled>
+            Select Type of Offer
+          </option>
           <option value="PPO">PPO</option>
           <option value="FTE">FTE</option>
           <option value="6M+FTE">6M+FTE</option>
@@ -139,54 +237,57 @@ const CompanyForm = ({ actionFunction }) => {
         </select>
       </div>
 
-      <div className="mb-3">
+      <div className="form-group">
+        <label htmlFor="profile">Profile</label>
         <input
           type="text"
+          id="profile"
           className="form-control"
           placeholder="Profile"
-          value={profile}
-          onChange={e => setProfile(e.target.value)}
+          value={formData.profile}
+          onChange={e => handleChange('profile', e.target.value)}
         />
       </div>
 
-      <div className="mb-3">
-        <div>
+      <div className="input-group">
+        <div className="form-group">
+          <label htmlFor="ctc">CTC</label>
           <input
             type="number"
+            id="ctc"
             className="form-control"
             placeholder="CTC"
-            value={ctc}
-            onChange={e => setCtc(e.target.value)}
+            value={formData.ctc}
+            onChange={e => handleChange('ctc', e.target.value)}
           />
+        </div>
+        <div className="form-group">
+          <label htmlFor="ctcBase">CTC Base</label>
           <input
             type="number"
+            id="ctcBase"
             className="form-control"
             placeholder="CTC Base"
-            value={ctcBase}
-            onChange={e => setCtcBase(e.target.value)}
-          />
-          <input
-            type="number"
-            className="form-control"
-            placeholder="CTC Other"
-            value={ctcOther}
-            onChange={e => setCtcOther(e.target.value)}
+            value={formData.ctcBase}
+            onChange={e => handleChange('ctcBase', e.target.value)}
           />
         </div>
       </div>
 
-      <div className="mb-3">
+      <div className="form-group">
+        <label htmlFor="bond">Bond</label>
         <input
           type="number"
+          id="bond"
           className="form-control"
-          placeholder="Bond"
-          value={bond}
-          onChange={e => setBond(e.target.value)}
+          placeholder="Bond in Months"
+          value={formData.bond}
+          onChange={e => handleChange('bond', e.target.value)}
         />
       </div>
 
       <button type="submit" className="company-button">
-        Submit
+        Add Company
       </button>
     </form>
   );

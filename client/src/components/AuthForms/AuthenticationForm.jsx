@@ -70,15 +70,17 @@ const AuthenticationForm = () => {
   };
 
   return (
-    <div className={classes["auth-form"]}>
+    <div className={classes['auth-form']}>
       <h1>{isSignIn ? 'Sign In' : 'Sign Up'}</h1>
       <form onSubmit={handleSubmit}>
         {!isSignIn && <input type="text" placeholder="Name" onChange={e => setName(e.target.value)} />}
         {!isSignIn && <input type="text" placeholder="Roll No" onChange={e => setRollNo(e.target.value)} />}
         <input type="email" placeholder="Email" onChange={e => setEmail(e.target.value)} />
         <input type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} />
-        <button type="submit" className={classes.btn}>{isSignIn ? 'Sign In' : 'Sign Up'}</button>
-        <FormFooter mode={isSignIn? 'signup': 'signin'} />
+        <button type="submit" className={classes.btn}>
+          {isSignIn ? 'Sign In' : 'Sign Up'}
+        </button>
+        <FormFooter mode={isSignIn ? 'signup' : 'signin'} />
         <ToastContainer />
       </form>
     </div>

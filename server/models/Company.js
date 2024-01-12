@@ -11,6 +11,8 @@ const companySchema = new mongoose.Schema(
     },
     interviewShortlist: { type: Number, default: 0 },
     selected: { type: Number, default: 0 },
+    selectedStudentsRollNo: { type: [String], default: [] },
+    dateOfOffer: { type: Date, default: Date.now },
     locations: { type: [String], default: [] },
     cutoffs: {
       pg: {

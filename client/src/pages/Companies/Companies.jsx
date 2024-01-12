@@ -11,7 +11,7 @@ const Companies = () => {
   useEffect(() => {
     getCompanies()
       .then(res => {
-        setCompanies(res.data.data);
+        setCompanies(res.data);
       })
       .catch(err => {
         console.log(err);
@@ -20,18 +20,25 @@ const Companies = () => {
 
   const handleAddCompanyClick = () => {
     setFormOpen(true);
+    document.body.classList.add('unscrollable');
   };
 
   const handleFormClose = () => {
     setFormOpen(false);
+    document.body.classList.remove('unscrollable');
+  };
+
+  const renderCompanies = () => {
+    if (companies.length === 0) {
+      return <h1>No Companies</h1>;
+    } else {
+      return companies.map(company => <CompanyCard key={company._id} company={company} />);
+    }
   };
 
   return (
     <div className="container">
       <h1 className="page-heading">Companies</h1>
-      <div className="companies">
-        {companies && companies.map(company => <CompanyCard key={company._id} company={company} />)}
-      </div>
       <button className="btn btn-primary" onClick={handleAddCompanyClick}>
         Add Company
       </button>
@@ -44,13 +51,14 @@ const Companies = () => {
       >
         <div className="modal-dialog">
           <div className="modal-content">
-            <CompanyForm actionFunction={addCompany} />
+            <CompanyForm actionFunction={addCompany} handleFormClose={handleFormClose} setCompanies={setCompanies} />
             <button type="button" className="close-button" data-bs-dismiss="modal" onClick={handleFormClose}>
               ❌
             </button>
           </div>
         </div>
       </div>
+      <div className="companies">{renderCompanies()}</div>
     </div>
   );
 };
