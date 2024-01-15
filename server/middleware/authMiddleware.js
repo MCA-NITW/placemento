@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const logger = require('../utils/logger');
 
 const authenticateUser = async (req, res, next) => {
   try {
@@ -9,8 +10,6 @@ const authenticateUser = async (req, res, next) => {
     if (!token) {
       throw new Error('Invalid or missing Authorization header');
     }
-
-    console.log('Received token:', token);
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
@@ -36,7 +35,7 @@ const authenticateUser = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Error in authenticateUser middleware:', error.message);
+    logger.error(error.message);
 
     if (error.name === 'TokenExpiredError' || error.name === 'JsonWebTokenError') {
       res.status(401).json({ message: 'Unauthorized: Invalid or expired token' });
@@ -57,7 +56,7 @@ const checkUserRole = allowedRoles => {
         res.status(403).json({ message: 'Forbidden' });
       }
     } catch (error) {
-      console.error('Error in checkUserRole middleware:', error.message);
+      logger.error(error.message);
       res.status(500).json({ message: 'Internal server error' });
     }
   };

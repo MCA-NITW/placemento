@@ -1,7 +1,7 @@
 import React from 'react';
 import './CompanyCard.css';
 
-const CompanyCard = ({ company }) => {
+const CompanyCard = ({ company, onEditClick }) => {
   function renderCutoffItem(label, cgpa, percentage) {
     return (
       <div className="company-card__cutoff__item">
@@ -16,7 +16,9 @@ const CompanyCard = ({ company }) => {
       <div className="company-card__header">
         <h3 className="company-card__header__text">{company.name}</h3>
         <div className="company-card__header__buttons">
-          <button className="btn-edit">Edit</button>
+          <button className="btn-edit" onClick={() => onEditClick(company)}>
+            Edit
+          </button>
           <button className="btn-danger">Delete</button>
         </div>
       </div>

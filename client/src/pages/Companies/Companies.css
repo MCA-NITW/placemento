@@ -4,6 +4,14 @@
   font-weight: 600;
   margin-bottom: 20px;
 }
+.companies__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 20px;
+  justify-content: center;
+}
 
 /* Companies Container */
 .companies {
@@ -12,12 +20,9 @@
   gap: 20px;
 }
 
-.btn {
-  margin: 0 10px;
-}
-
 /* Add Company Button */
 .btn-primary {
+  margin: 0 10px;
   background-color: var(--color-primary);
   color: var(--color-bg);
   padding: 10px 15px;
@@ -27,52 +32,34 @@
 }
 
 .unscrollable {
-  overflow: hidden;
+  overflow: scroll;
 }
 
 /* Modal */
 .modal {
-  display: none;
   position: fixed;
+  display: none;
   z-index: 1000;
   width: 100%;
   height: 100%;
   backdrop-filter: blur(5px);
-}
-
-.modal.show {
-  display: flex;
   align-items: flex-start;
   justify-content: center;
 }
 
-.modal-dialog {
-  max-width: 700px;
-  width: 100%;
-  height: calc(100vh - 8rem);
-
-  overflow-x: scroll;
+.modal.show {
+  display: flex;
 }
 
 .modal-content {
-  background-color: var(--color-primary);
-  border-radius: 5px;
-  padding: 20px;
-  position: relative;
+  /* position: fixed; */
   text-align: center;
-}
-
-/* Close Button in Modal */
-.close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: var(--color-bg);
-  color: var(--color-primary);
-  border: none;
-  border-radius: 5px;
-  padding: 5px 10px;
-  cursor: pointer;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  align-items: center;
 }
 
 /* Form */
@@ -82,7 +69,12 @@
   flex-direction: column;
   gap: 10px;
   text-align: center;
-  width: 100%;
+  width: 700px;
+  background-color: var(--color-primary);
+  padding: 20px;
+  border-radius: 5px;
+  margin: 20px 0;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
 }
 
 .input-group-out {
@@ -147,6 +139,14 @@
   flex: 0 0 100px;
   text-align: right;
   font-weight: 600;
+}
+
+.company-form__buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: center;
+  width: 100%;
 }
 
 .company-button {

@@ -1,23 +1,41 @@
 import React, { useState } from 'react';
 
-const CompanyForm = ({ actionFunction, handleFormClose, setCompanies }) => {
-  const [formData, setFormData] = useState({
-    name: '',
-    status: 'upcoming',
-    interviewShortlist: 0,
-    selectedStudents: [],
-    dateOfOffer: new Date(),
-    locations: [],
-    cutoff_pg: 0,
-    cutoff_ug: 0,
-    cutoff_12: 0,
-    cutoff_10: 0,
-    typeOfOffer: 'FTE',
-    profile: '',
-    ctc: 0.0,
-    ctcBase: 0.0,
-    bond: 0,
-  });
+const CompanyForm = ({ actionFunction, handleFormClose, setCompanies, initialData }) => {
+  const [formData, setFormData] = useState(
+    (initialData && {
+      name: initialData.name,
+      status: initialData.status,
+      interviewShortlist: initialData.interviewShortlist,
+      selectedStudents: initialData.selectedStudentsRollNo,
+      dateOfOffer: new Date(initialData.dateOfOffer),
+      locations: initialData.locations,
+      cutoff_pg: initialData.cutoffs.pg.cgpa || initialData.cutoffs.pg.percentage,
+      cutoff_ug: initialData.cutoffs.ug.cgpa || initialData.cutoffs.ug.percentage,
+      cutoff_12: initialData.cutoffs.twelth.cgpa || initialData.cutoffs.twelth.percentage,
+      cutoff_10: initialData.cutoffs.tenth.cgpa || initialData.cutoffs.tenth.percentage,
+      typeOfOffer: initialData.typeOfOffer,
+      profile: initialData.profile,
+      ctc: initialData.ctc,
+      ctcBase: initialData.ctcBreakup.base,
+      bond: initialData.bond,
+    }) || {
+      name: '',
+      status: 'upcoming',
+      interviewShortlist: 0,
+      selectedStudents: [],
+      dateOfOffer: new Date(),
+      locations: [],
+      cutoff_pg: 0,
+      cutoff_ug: 0,
+      cutoff_12: 0,
+      cutoff_10: 0,
+      typeOfOffer: 'FTE',
+      profile: '',
+      ctc: 0.0,
+      ctcBase: 0.0,
+      bond: 0,
+    },
+  );
 
   const handleChange = (field, value) => {
     setFormData(prevData => ({ ...prevData, [field]: value }));
@@ -75,14 +93,8 @@ const CompanyForm = ({ actionFunction, handleFormClose, setCompanies }) => {
       },
       bond: formData.bond,
     };
-
-    // Assuming you have an async function for the MongoDB operation (e.g., save to database)
     await actionFunction(newCompany);
-
-    // Update the state with the new company data
     setCompanies(prevCompanies => [...prevCompanies, newCompany]);
-
-    // Close the form
     handleFormClose();
   };
 
@@ -285,10 +297,14 @@ const CompanyForm = ({ actionFunction, handleFormClose, setCompanies }) => {
           onChange={e => handleChange('bond', e.target.value)}
         />
       </div>
-
-      <button type="submit" className="company-button">
-        Add Company
-      </button>
+      <div className="company-form__buttons">
+        <button type="submit" className="company-button">
+          Add Company
+        </button>
+        <button type="button" className="btn-danger" onClick={handleFormClose}>
+          Cancel
+        </button>
+      </div>
     </form>
   );
 };
