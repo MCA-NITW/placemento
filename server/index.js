@@ -15,9 +15,9 @@ const PORT = process.env.PORT || 5000;
 const uri = process.env.DB_CONNECTION_STRING;
 
 mongoose
-  .connect(uri)
-  .then(() => console.log('Database connected!'))
-  .catch(err => console.log(err));
+	.connect(uri)
+	.then(() => console.log('Database connected!'))
+	.catch(err => console.log(err));
 
 app.use(express.json());
 app.use(cors());
@@ -30,15 +30,15 @@ app.use('/companies', companyRoutes);
 
 // Example route for testing
 app.get('/', (req, res) => {
-  res.send('Hello, this is your MERN app!');
+	res.send('Hello, this is your MERN app!');
 });
 
 app.get('/profile', authenticateUser, (req, res) => {
-  const userId = req.userId;
-  const userRole = req.userRole;
-  res.json({ userId, userRole });
+	const userId = req.userId;
+	const userRole = req.userRole;
+	res.json({ userId, userRole });
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+	console.log(`Server is running on port ${PORT}`);
 });
