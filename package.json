@@ -11,7 +11,7 @@
 		"backend-start": "cd server && npm start",
 		"backend-install": "cd server && npm install",
 		"start": "concurrently \"npm run backend-start\" \"npm run frontend-start\"",
-		"fb-install": "concurrently \"npm run backend-install\" \"npm run frontend-install\"",
+		"fb-install": "concurrently \"npm install\" \"npm run backend-install\" \"npm run frontend-install\"",
 		"frontend-build": "cd client && npm run build"
 	},
 	"author": "Sagar Gupta",
