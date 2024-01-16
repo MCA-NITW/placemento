@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import classes from './auth.module.css';
 
 export const FormFooter = ({ mode }) => {
-	const footer_note = mode === 'signin' ? 'Already have an account?' : "Don't have an account?";
+	const footer_note =
+		mode === 'signin' ? 'Already have an account?' : "Don't have an account?";
 	const mode_text = mode === 'signin' ? 'Sign In' : 'Sign Up';
 
 	return (

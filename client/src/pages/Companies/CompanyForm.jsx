@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 
-const CompanyForm = ({ actionFunction, handleFormClose, setCompanies, initialData }) => {
+const CompanyForm = ({
+	actionFunction,
+	handleFormClose,
+	setCompanies,
+	initialData,
+}) => {
 	const [formData, setFormData] = useState(
 		(initialData && {
 			name: initialData.name,
@@ -9,10 +14,15 @@ const CompanyForm = ({ actionFunction, handleFormClose, setCompanies, initialDat
 			selectedStudents: initialData.selectedStudentsRollNo,
 			dateOfOffer: new Date(initialData.dateOfOffer),
 			locations: initialData.locations,
-			cutoff_pg: initialData.cutoffs.pg.cgpa || initialData.cutoffs.pg.percentage,
-			cutoff_ug: initialData.cutoffs.ug.cgpa || initialData.cutoffs.ug.percentage,
-			cutoff_12: initialData.cutoffs.twelth.cgpa || initialData.cutoffs.twelth.percentage,
-			cutoff_10: initialData.cutoffs.tenth.cgpa || initialData.cutoffs.tenth.percentage,
+			cutoff_pg:
+				initialData.cutoffs.pg.cgpa || initialData.cutoffs.pg.percentage,
+			cutoff_ug:
+				initialData.cutoffs.ug.cgpa || initialData.cutoffs.ug.percentage,
+			cutoff_12:
+				initialData.cutoffs.twelth.cgpa ||
+				initialData.cutoffs.twelth.percentage,
+			cutoff_10:
+				initialData.cutoffs.tenth.cgpa || initialData.cutoffs.tenth.percentage,
 			typeOfOffer: initialData.typeOfOffer,
 			profile: initialData.profile,
 			ctc: initialData.ctc,
@@ -133,7 +143,9 @@ const CompanyForm = ({ actionFunction, handleFormClose, setCompanies, initialDat
 
 			<div className="input-group">
 				<div className="form-group">
-					<label htmlFor="interviewShortlist">Interview/Intern Shortlists</label>
+					<label htmlFor="interviewShortlist">
+						Interview/Intern Shortlists
+					</label>
 					<input
 						type="number"
 						id="interviewShortlist"
@@ -298,10 +310,10 @@ const CompanyForm = ({ actionFunction, handleFormClose, setCompanies, initialDat
 				/>
 			</div>
 			<div className="company-form__buttons">
-				<button type="submit" className="company-button">
+				<button type="submit" className="btn-add">
 					Add Company
 				</button>
-				<button type="button" className="btn-danger" onClick={handleFormClose}>
+				<button type="button" className="btn-close" onClick={handleFormClose}>
 					Cancel
 				</button>
 			</div>
