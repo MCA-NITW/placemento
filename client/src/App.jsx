@@ -10,44 +10,44 @@ import Authentication from './pages/Auth/Authentication';
 import { checkAuthAction, getAuthToken } from './utils/auth';
 
 const App = () => {
-  const router = createBrowserRouter([
-    {
-      path: '/',
-      element: <NavBar />,
-      id: 'root',
-      loader: getAuthToken,
-      children: [
-        {
-          index: true,
-          element: <Home />,
-        },
-        {
-          path: 'stats',
-          element: <Stats />,
-        },
-        {
-          path: 'teams',
-          element: <Teams />,
-        },
-        {
-          path: 'users',
-          element: <Users />,
-          loader: checkAuthAction,
-        },
-        {
-          path: 'companies',
-          element: <Companies />,
-          loader: checkAuthAction,
-        },
-        {
-          path: 'auth',
-          element: <Authentication />,
-        },
-      ],
-    },
-  ]);
+	const router = createBrowserRouter([
+		{
+			path: '/',
+			element: <NavBar />,
+			id: 'root',
+			loader: getAuthToken,
+			children: [
+				{
+					index: true,
+					element: <Home />,
+				},
+				{
+					path: 'stats',
+					element: <Stats />,
+				},
+				{
+					path: 'teams',
+					element: <Teams />,
+				},
+				{
+					path: 'users',
+					element: <Users />,
+					loader: checkAuthAction,
+				},
+				{
+					path: 'companies',
+					element: <Companies />,
+					loader: checkAuthAction,
+				},
+				{
+					path: 'auth',
+					element: <Authentication />,
+				},
+			],
+		},
+	]);
 
-  return <RouterProvider router={router} className="App" />;
+	return <RouterProvider router={router} className="App" />;
 };
 
 export default App;

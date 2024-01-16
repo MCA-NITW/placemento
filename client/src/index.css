@@ -1,67 +1,67 @@
 @import url('https://fonts.googleapis.com/css2?family=Clicker+Script&family=Poppins:wght@200;300;400;500;600&family=Roboto&display=swap');
 
 * {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  outline: 0;
-  box-sizing: border-box;
-  text-decoration: none;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	box-sizing: border-box;
+	text-decoration: none;
 }
 :root {
-  --color-white: #fff;
-  --color-light: rgba(255, 255, 255, 0.6);
-  --transition: all 0.4s ease-in-out;
-  --container-width-lg: 75%;
-  --container-width-md: 86%;
-  --container-width-sm: 90%;
+	--color-white: #fff;
+	--color-light: rgba(255, 255, 255, 0.6);
+	--transition: all 0.4s ease-in-out;
+	--container-width-lg: 75%;
+	--container-width-md: 86%;
+	--container-width-sm: 90%;
 
-  --color-bg: #1e1e26;
-  --color-bg-variant: #2c2c33;
-  --color-primary: #ffcc66;
-  --color-primary-variant: rgba(255, 204, 102, 0.5);
+	--color-bg: #1e1e26;
+	--color-bg-variant: #2c2c33;
+	--color-primary: #ffcc66;
+	--color-primary-variant: rgba(255, 204, 102, 0.5);
 }
 
 html {
-  scroll-behavior: smooth;
-  font-size: 90%;
-  @media screen and (max-width: 600px) {
-    font-size: 85%;
-  }
-  @media screen and (max-width: 400px) {
-    font-size: 80%;
-  }
+	scroll-behavior: smooth;
+	font-size: 90%;
+	@media screen and (max-width: 600px) {
+		font-size: 85%;
+	}
+	@media screen and (max-width: 400px) {
+		font-size: 80%;
+	}
 }
 
 ::-webkit-scrollbar {
-  display: none;
+	display: none;
 }
 body {
-  font-family: 'Poppins', sans-serif;
-  color: var(--color-white);
-  line-height: 1.7;
-  background: var(--color-bg);
-  user-select: none;
+	font-family: 'Poppins', sans-serif;
+	color: var(--color-white);
+	line-height: 1.7;
+	background: var(--color-bg);
+	user-select: none;
 }
 .root {
-  min-height: 100vh;
+	min-height: 100vh;
 }
 
 .container {
-  width: calc(100% - 2rem);
-  margin: 6rem 1rem 0 1rem;
-  border-radius: 1rem;
-  padding: 1rem;
-  min-height: calc(100vh - 7rem);
-  background: var(--color-bg-variant);
-  opacity: 0.7;
-  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.4));
-  transition: var(--transition);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+	width: calc(100% - 2rem);
+	margin: 6rem 1rem 0 1rem;
+	border-radius: 1rem;
+	padding: 1rem;
+	min-height: calc(100vh - 7rem);
+	background: var(--color-bg-variant);
+	opacity: 0.7;
+	filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.4));
+	transition: var(--transition);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 
 .App {
-  position: relative;
+	position: relative;
 }
