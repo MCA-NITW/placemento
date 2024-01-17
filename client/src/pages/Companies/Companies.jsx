@@ -1,22 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { getCompanies, addCompany, updateCompany, deleteCompany } from '../../api/companyApi';
+import React, { useState } from 'react';
 import CompanyForm from './CompanyForm';
 import CompanyTable from './CompanyTable';
 import './Companies.css';
 
 const Companies = () => {
-	const [companies, setCompanies] = useState([]);
 	const [isFormOpen, setFormOpen] = useState(false);
-
-	useEffect(() => {
-		getCompanies()
-			.then(res => {
-				setCompanies(res.data);
-			})
-			.catch(err => {
-				console.log(err);
-			});
-	}, []);
 
 	const handleAddCompanyClick = () => {
 		setFormOpen(true);
@@ -32,24 +20,14 @@ const Companies = () => {
 			<button className="btn-primary" onClick={handleAddCompanyClick}>
 				Add Company
 			</button>
-			<div
-				className={`modal ${isFormOpen ? 'show' : ''}`}
-				id="companyFormModal"
-				tabIndex="-1"
-				aria-labelledby="companyFormModalLabel"
-				aria-hidden={!isFormOpen}
-			>
+			<div className={`modal ${isFormOpen ? 'show' : ''}`} id="companyFormModal" aria-hidden={!isFormOpen}>
 				<div className="modal-dialog">
 					<div className="modal-content">
-						<CompanyForm actionFunction={addCompany} handleFormClose={handleFormClose} setCompanies={setCompanies} />
+						<CompanyForm handleFormClose={handleFormClose} />
 					</div>
 				</div>
 			</div>
-			{companies.length !== 0 && (
-				<div className="ag-theme-quartz">
-					<CompanyTable companies={companies} />
-				</div>
-			)}
+			<CompanyTable key={isFormOpen} />
 		</div>
 	);
 };

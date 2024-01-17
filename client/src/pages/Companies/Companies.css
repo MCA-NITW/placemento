@@ -181,6 +181,25 @@
 	font-size: 16px;
 }
 
+.btn--icon--del {
+	background-color: transparent;
+	color: red;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	aspect-ratio: 1/1;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	margin-top: 4px;
+}
+
+.btn--icon--del:hover {
+	background-color: red;
+	color: var(--color-bg);
+}
+
 @media screen and (max-width: 600px) {
 	.input-group {
 		flex-direction: column;

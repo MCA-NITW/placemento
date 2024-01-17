@@ -9,6 +9,7 @@
 		"ag-grid-community": "^31.0.1",
 		"ag-grid-react": "^31.0.1",
 		"axios": "^1.6.5",
+		"jwt-decode": "^4.0.0",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"react-icons": "^5.0.0",

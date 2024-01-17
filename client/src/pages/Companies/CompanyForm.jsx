@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { addCompany } from '../../api/companyApi';
 
-const CompanyForm = ({ actionFunction, handleFormClose, setCompanies, initialData }) => {
+const CompanyForm = ({ handleFormClose, initialData }) => {
 	const [formData, setFormData] = useState({
 		name: initialData?.name || '',
 		status: initialData?.status || 'upcoming',
@@ -68,8 +69,7 @@ const CompanyForm = ({ actionFunction, handleFormClose, setCompanies, initialDat
 			},
 			bond: formData.bond,
 		};
-		await actionFunction(newCompany);
-		setCompanies(prevCompanies => [...prevCompanies, newCompany]);
+		await addCompany(newCompany);
 		handleFormClose();
 	};
 

@@ -1,25 +1,51 @@
-import React, { useState, useCallback, useMemo, memo } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
-import { getCompanies } from '../../api/companyApi';
-import { MdEdit } from 'react-icons/md';
+import { getCompanies, deleteCompany } from '../../api/companyApi';
+import { MdDelete } from 'react-icons/md';
+import userRole from '../../utils/role';
 
 const CompanyTable = () => {
 	const [companies, setCompanies] = useState([]);
 
 	const onGridReady = useCallback(async () => {
-		const res = await getCompanies();
-		setCompanies(res.data);
+		try {
+			const res = await getCompanies();
+			setCompanies(res.data);
+		} catch (error) {
+			console.error('Error fetching companies:', error);
+		}
 	}, []);
 
-	const generateColumn = (field, headerName, width, sortable = true, resizable = true, pinned = null) => ({
+	const delButtonHandler = async id => {
+		await deleteCompany(id);
+	};
+
+	const delButtonRenderer = params => {
+		return (
+			<div className="btn--icon--del" onClick={() => delButtonHandler(params.data.id)}>
+				<MdDelete />
+			</div>
+		);
+	};
+
+	const generateColumn = (
+		field,
+		headerName,
+		width,
+		sortable = true,
+		resizable = true,
+		pinned = null,
+		editable = () => userRole === 'admin' || userRole === 'placementCoordinator',
+	) => ({
 		field,
 		headerName,
 		width,
 		sortable,
 		resizable,
 		pinned,
+		editable,
 	});
 
 	const generateNestedColumn = (headerName, children) => ({
@@ -37,26 +63,24 @@ const CompanyTable = () => {
 
 	const formatCutoff = cutoff => (cutoff.cgpa ? `${cutoff.cgpa} CGPA` : `${cutoff.percentage}%`);
 
-	const editButtonRenderer = () => {
-		return {
-			component: <MdEdit />,
-		};
-	};
-
-	const handleEditClick = () => {
-		console.log('Edit button clicked');
+	const delRow = () => {
+		if (userRole === 'admin' || userRole === 'placementCoordinator') {
+			return {
+				headerName: '',
+				pinned: 'left',
+				width: 50,
+				resizable: false,
+				sortable: false,
+				cellRenderer: delButtonRenderer,
+			};
+		} else
+			return {
+				initialHide: true,
+			};
 	};
 
 	const colDefs = [
-		{
-			headerName: 'Edit',
-			pinned: 'left',
-			width: 70,
-			cellRenderer: '<MdEdit/>', // Corrected property name
-			cellRendererParams: {
-				onClick: handleEditClick,
-			},
-		},
+		delRow(),
 		generateColumn('name', 'Name', 150, true, true, true, 'left'),
 		generateColumn('status', 'Status', 115, false, true),
 		generateColumn('typeOfOffer', 'Offer', 90, true, true),
@@ -89,12 +113,8 @@ const CompanyTable = () => {
 		};
 	}, []);
 
-	const frameworkComponents = {
-		editButtonRenderer: memo(editButtonRenderer),
-	};
-
 	const mapCompanyData = company => ({
-		edit: !!false,
+		del: '',
 		id: company._id,
 		name: company.name,
 		status: company.status,
@@ -119,16 +139,17 @@ const CompanyTable = () => {
 	const rowData = companies.map(mapCompanyData);
 
 	return (
-		<AgGridReact
-			rowData={rowData}
-			columnDefs={colDefs}
-			rowHeight={40}
-			headerHeight={40}
-			rowSelection="multiple"
-			dataTypeDefinitions={dataTypeDefinitions}
-			onGridReady={onGridReady}
-			frameworkComponents={frameworkComponents}
-		/>
+		<div className="ag-theme-quartz">
+			<AgGridReact
+				rowData={rowData}
+				columnDefs={colDefs}
+				rowHeight={40}
+				headerHeight={40}
+				rowSelection="multiple"
+				dataTypeDefinitions={dataTypeDefinitions}
+				onGridReady={onGridReady}
+			/>
+		</div>
 	);
 };
 
