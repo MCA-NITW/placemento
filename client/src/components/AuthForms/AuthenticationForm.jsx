@@ -48,10 +48,7 @@ const AuthenticationForm = () => {
 		try {
 			const res = await (isSignIn ? signin(user) : signup(user));
 			toast.success(
-				<ToastContent
-					res={isSignIn ? 'Sign In successful' : 'Sign Up successful'}
-					message={res.data.message}
-				/>,
+				<ToastContent res={isSignIn ? 'Sign In successful' : 'Sign Up successful'} message={res.data.message} />,
 				{
 					style: style,
 				},
@@ -63,10 +60,7 @@ const AuthenticationForm = () => {
 			console.log(res.data);
 		} catch (err) {
 			toast.error(
-				<ToastContent
-					res={!isSignIn ? 'Sign In Failed!!' : 'Sign Up Failed '}
-					message={err.response.data.message}
-				/>,
+				<ToastContent res={!isSignIn ? 'Sign In Failed!!' : 'Sign Up Failed '} message={err.response.data.message} />,
 				{
 					style: style,
 				},
@@ -79,30 +73,10 @@ const AuthenticationForm = () => {
 		<div className={classes['auth-form']}>
 			<h1>{isSignIn ? 'Sign In' : 'Sign Up'}</h1>
 			<form onSubmit={handleSubmit}>
-				{!isSignIn && (
-					<input
-						type="text"
-						placeholder="Name"
-						onChange={e => setName(e.target.value)}
-					/>
-				)}
-				{!isSignIn && (
-					<input
-						type="text"
-						placeholder="Roll No"
-						onChange={e => setRollNo(e.target.value)}
-					/>
-				)}
-				<input
-					type="email"
-					placeholder="Email"
-					onChange={e => setEmail(e.target.value)}
-				/>
-				<input
-					type="password"
-					placeholder="Password"
-					onChange={e => setPassword(e.target.value)}
-				/>
+				{!isSignIn && <input type="text" placeholder="Name" onChange={e => setName(e.target.value)} />}
+				{!isSignIn && <input type="text" placeholder="Roll No" onChange={e => setRollNo(e.target.value)} />}
+				<input type="email" placeholder="Email" onChange={e => setEmail(e.target.value)} />
+				<input type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} />
 				<button type="submit" className={classes.btn}>
 					{isSignIn ? 'Sign In' : 'Sign Up'}
 				</button>

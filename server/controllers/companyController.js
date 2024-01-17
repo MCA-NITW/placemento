@@ -17,11 +17,7 @@ exports.postAddCompany = async (req, res) => {
 // Update Company
 exports.putUpdateCompany = async (req, res) => {
 	try {
-		const updatedCompany = await Company.findByIdAndUpdate(
-			req.params.id,
-			req.body,
-			{ new: true },
-		);
+		const updatedCompany = await Company.findByIdAndUpdate(req.params.id, req.body, { new: true });
 		if (!updatedCompany) {
 			return res.status(404).json({ message: 'Company not found' });
 		}

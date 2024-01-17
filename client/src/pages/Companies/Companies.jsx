@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getCompanies, addCompany, updateCompany } from '../../api/companyApi';
+import { getCompanies, addCompany, updateCompany, deleteCompany } from '../../api/companyApi';
 import CompanyForm from './CompanyForm';
 import CompanyTable from './CompanyTable';
 import './Companies.css';
@@ -7,8 +7,6 @@ import './Companies.css';
 const Companies = () => {
 	const [companies, setCompanies] = useState([]);
 	const [isFormOpen, setFormOpen] = useState(false);
-	const [selectedCompany, setSelectedCompany] = useState(null);
-	const [isEdit, setIsEdit] = useState(false);
 
 	useEffect(() => {
 		getCompanies()
@@ -26,10 +24,6 @@ const Companies = () => {
 
 	const handleFormClose = () => {
 		setFormOpen(false);
-		if (isEdit) {
-			setIsEdit(false);
-		}
-		setSelectedCompany(null);
 	};
 
 	return (
@@ -47,19 +41,11 @@ const Companies = () => {
 			>
 				<div className="modal-dialog">
 					<div className="modal-content">
-						<CompanyForm
-							actionFunction={isEdit ? updateCompany : addCompany}
-							handleFormClose={handleFormClose}
-							setCompanies={setCompanies}
-							selectedCompany={selectedCompany}
-						/>
+						<CompanyForm actionFunction={addCompany} handleFormClose={handleFormClose} setCompanies={setCompanies} />
 					</div>
 				</div>
 			</div>
-			{/* Render the updated table */}
-			{companies.length === 0 ? (
-				<h1>No Companies</h1>
-			) : (
+			{companies.length !== 0 && (
 				<div className="ag-theme-quartz">
 					<CompanyTable companies={companies} />
 				</div>

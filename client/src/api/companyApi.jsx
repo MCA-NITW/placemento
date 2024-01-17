@@ -8,7 +8,7 @@ const api = axios.create({
 });
 
 export const getCompanies = () => {
-	console.log(localStorage.getItem('token'));
+	// console.log(localStorage.getItem('token'));
 	return api.get('/companies/view');
 };
 

@@ -1,51 +1,23 @@
 import React, { useState } from 'react';
 
-const CompanyForm = ({
-	actionFunction,
-	handleFormClose,
-	setCompanies,
-	initialData,
-}) => {
-	const [formData, setFormData] = useState(
-		(initialData && {
-			name: initialData.name,
-			status: initialData.status,
-			interviewShortlist: initialData.interviewShortlist,
-			selectedStudents: initialData.selectedStudentsRollNo,
-			dateOfOffer: new Date(initialData.dateOfOffer),
-			locations: initialData.locations,
-			cutoff_pg:
-				initialData.cutoffs.pg.cgpa || initialData.cutoffs.pg.percentage,
-			cutoff_ug:
-				initialData.cutoffs.ug.cgpa || initialData.cutoffs.ug.percentage,
-			cutoff_12:
-				initialData.cutoffs.twelth.cgpa ||
-				initialData.cutoffs.twelth.percentage,
-			cutoff_10:
-				initialData.cutoffs.tenth.cgpa || initialData.cutoffs.tenth.percentage,
-			typeOfOffer: initialData.typeOfOffer,
-			profile: initialData.profile,
-			ctc: initialData.ctc,
-			ctcBase: initialData.ctcBreakup.base,
-			bond: initialData.bond,
-		}) || {
-			name: '',
-			status: 'upcoming',
-			interviewShortlist: 0,
-			selectedStudents: [],
-			dateOfOffer: new Date(),
-			locations: [],
-			cutoff_pg: 0,
-			cutoff_ug: 0,
-			cutoff_12: 0,
-			cutoff_10: 0,
-			typeOfOffer: 'FTE',
-			profile: '',
-			ctc: 0.0,
-			ctcBase: 0.0,
-			bond: 0,
-		},
-	);
+const CompanyForm = ({ actionFunction, handleFormClose, setCompanies, initialData }) => {
+	const [formData, setFormData] = useState({
+		name: initialData?.name || '',
+		status: initialData?.status || 'upcoming',
+		interviewShortlist: initialData?.interviewShortlist || 0,
+		selectedStudents: initialData?.selectedStudentsRollNo || [],
+		dateOfOffer: new Date(initialData?.dateOfOffer) || new Date(),
+		locations: initialData?.locations || [],
+		cutoff_pg: initialData?.cutoffs?.pg?.cgpa || initialData?.cutoffs?.pg?.percentage || 0,
+		cutoff_ug: initialData?.cutoffs?.ug?.cgpa || initialData?.cutoffs?.ug?.percentage || 0,
+		cutoff_12: initialData?.cutoffs?.twelth?.cgpa || initialData?.cutoffs?.twelth?.percentage || 0,
+		cutoff_10: initialData?.cutoffs?.tenth?.cgpa || initialData?.cutoffs?.tenth?.percentage || 0,
+		typeOfOffer: initialData?.typeOfOffer || 'FTE',
+		profile: initialData?.profile || '',
+		ctc: initialData?.ctc || 0.0,
+		ctcBase: initialData?.ctcBreakup?.base || 0.0,
+		bond: initialData?.bond || 0,
+	});
 
 	const handleChange = (field, value) => {
 		setFormData(prevData => ({ ...prevData, [field]: value }));
@@ -65,6 +37,11 @@ const CompanyForm = ({
 		);
 	};
 
+	const processCutoff = value => ({
+		cgpa: value <= 10 ? value : 0,
+		percentage: value > 10 ? value : 0,
+	});
+
 	const handleSubmit = async e => {
 		e.preventDefault();
 
@@ -77,22 +54,10 @@ const CompanyForm = ({
 			dateOfOffer: formData.dateOfOffer,
 			locations: formData.locations,
 			cutoffs: {
-				pg: {
-					cgpa: formData.cutoff_pg <= 10 ? formData.cutoff_pg : 0,
-					percentage: formData.cutoff_pg > 10 ? formData.cutoff_pg : 0,
-				},
-				ug: {
-					cgpa: formData.cutoff_ug <= 10 ? formData.cutoff_ug : 0,
-					percentage: formData.cutoff_ug > 10 ? formData.cutoff_ug : 0,
-				},
-				twelth: {
-					cgpa: formData.cutoff_12 <= 10 ? formData.cutoff_12 : 0,
-					percentage: formData.cutoff_12 > 10 ? formData.cutoff_12 : 0,
-				},
-				tenth: {
-					cgpa: formData.cutoff_10 <= 10 ? formData.cutoff_10 : 0,
-					percentage: formData.cutoff_10 > 10 ? formData.cutoff_10 : 0,
-				},
+				pg: processCutoff(formData.cutoff_pg),
+				ug: processCutoff(formData.cutoff_ug),
+				twelth: processCutoff(formData.cutoff_12),
+				tenth: processCutoff(formData.cutoff_10),
 			},
 			typeOfOffer: formData.typeOfOffer,
 			profile: formData.profile,
@@ -134,8 +99,8 @@ const CompanyForm = ({
 					<option value="" disabled>
 						Select Status
 					</option>
-					<option value="ongoing">Ongoing</option>
 					<option value="upcoming">Upcoming</option>
+					<option value="ongoing">Ongoing</option>
 					<option value="completed">Completed</option>
 					<option value="cancelled">Cancelled</option>
 				</select>
@@ -143,9 +108,7 @@ const CompanyForm = ({
 
 			<div className="input-group">
 				<div className="form-group">
-					<label htmlFor="interviewShortlist">
-						Interview/Intern Shortlists
-					</label>
+					<label htmlFor="interviewShortlist">Interview/Intern Shortlists</label>
 					<input
 						type="number"
 						id="interviewShortlist"

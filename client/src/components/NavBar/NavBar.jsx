@@ -98,9 +98,7 @@ const NavBar = () => {
 					{navItems.map(item => (
 						<NavLink
 							to={item.to}
-							className={({ isActive }) =>
-								isActive ? classes.active : undefined
-							}
+							className={({ isActive }) => (isActive ? classes.active : undefined)}
 							aria-label={item.label}
 							key={item.content}
 						>
@@ -108,11 +106,7 @@ const NavBar = () => {
 						</NavLink>
 					))}
 					{isAuthenticated && (
-						<div
-							className={classes['nav__signout']}
-							aria-label="Sign Out"
-							onClick={onSignOut}
-						>
+						<div className={classes['nav__signout']} aria-label="Sign Out" onClick={onSignOut}>
 							<PiSignOutBold />
 						</div>
 					)}

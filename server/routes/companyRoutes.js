@@ -1,9 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {
-	authenticateUser,
-	checkUserRole,
-} = require('../middleware/authMiddleware');
+const { authenticateUser, checkUserRole } = require('../middleware/authMiddleware');
 const companyController = require('../controllers/companyController');
 
 // Add Company
