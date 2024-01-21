@@ -22,21 +22,22 @@ const userSchema = new mongoose.Schema(
 		},
 		isVerified: { type: Boolean, default: false },
 		pg: {
-			cgpa: { type: Number, default: null },
-			percentage: { type: Number, default: null },
+			cgpa: { type: Number, default: 0 },
+			percentage: { type: Number, default: 0 },
 		},
 		ug: {
-			cgpa: { type: Number, default: null },
-			percentage: { type: Number, default: null },
+			cgpa: { type: Number, default: 0 },
+			percentage: { type: Number, default: 0 },
 		},
-		twelth: {
-			cgpa: { type: Number, default: null },
-			percentage: { type: Number, default: null },
+		hsc: {
+			cgpa: { type: Number, default: 0 },
+			percentage: { type: Number, default: 0 },
 		},
-		tenth: {
-			cgpa: { type: Number, default: null },
-			percentage: { type: Number, default: null },
+		ssc: {
+			cgpa: { type: Number, default: 0 },
+			percentage: { type: Number, default: 0 },
 		},
+		totalGapInAcademics: { type: Number, default: 0 },
 		placed: { type: Boolean, default: false },
 		placedAt: {
 			company: { type: mongoose.Schema.Types.ObjectId, ref: 'Company' },

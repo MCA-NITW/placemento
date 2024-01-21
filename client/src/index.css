@@ -64,9 +64,10 @@ body {
 
 .container {
 	width: calc(100% - 2rem);
-	margin: 6rem 1rem 0 1rem;
+	margin: 6rem 1rem 1rem 1rem;
 	border-radius: 1rem;
 	padding: 1rem;
+	height: 100%;
 	min-height: calc(100vh - 7rem);
 	background: var(--color-bg-variant);
 	opacity: 0.7;

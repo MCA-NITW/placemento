@@ -22,7 +22,6 @@ const NavBar = () => {
 			const headers = {
 				Authorization: `Bearer ${token}`,
 			};
-
 			axios
 				.get('http://localhost:5000/profile', { headers })
 				.then(response => {
@@ -100,7 +99,7 @@ const NavBar = () => {
 							to={item.to}
 							className={({ isActive }) => (isActive ? classes.active : undefined)}
 							aria-label={item.label}
-							key={item.content}
+							key={item.to}
 						>
 							{item.icon}
 						</NavLink>

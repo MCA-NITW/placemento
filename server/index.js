@@ -34,9 +34,14 @@ app.get('/', (req, res) => {
 });
 
 app.get('/profile', authenticateUser, (req, res) => {
-	const userId = req.userId;
-	const userRole = req.userRole;
-	res.json({ userId, userRole });
+	res.json({
+		name: req.user.name,
+		email: req.user.email,
+		rollNo: req.user.rollNo,
+		role: req.user.role,
+		isVerified: req.user.isVerified,
+		_id: req.user._id,
+	});
 });
 
 app.listen(PORT, () => {

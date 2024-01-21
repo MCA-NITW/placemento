@@ -2,16 +2,35 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
-import { getCompanies, deleteCompany } from '../../api/companyApi';
+import { getCompanies, deleteCompany, updateCompany } from '../../api/companyApi';
 import { MdDelete } from 'react-icons/md';
 import userRole from '../../utils/role';
+import { MdEdit } from 'react-icons/md';
+function cellRenderer(props) {
+	const handleClick = () => {
+		props.api.startEditingCell({
+			rowIndex: props.node.rowIndex,
+			colKey: props.column.getId(),
+		});
+	};
+	return (
+		<span style={{ display: 'flex', alignItems: 'center' }}>
+			<button onClick={handleClick} className="btn--icon--edit">
+				<MdEdit />
+			</button>
+			<span style={{ paddingLeft: '4px' }}>{props.value}</span>
+		</span>
+	);
+}
 
 const CompanyTable = () => {
 	const [companies, setCompanies] = useState([]);
+	const [changes, setChanges] = useState([]);
 
 	const onGridReady = useCallback(async () => {
 		try {
 			const res = await getCompanies();
+			console.log(res.data);
 			setCompanies(res.data);
 		} catch (error) {
 			console.error('Error fetching companies:', error);
@@ -30,6 +49,13 @@ const CompanyTable = () => {
 		);
 	};
 
+	const updateChanges = async () => {
+		for (const change of changes) {
+			await updateCompany(change.companyId, change.fieldName, change.newValue);
+		}
+		setChanges([]);
+	};
+
 	const generateColumn = (
 		field,
 		headerName,
@@ -38,6 +64,7 @@ const CompanyTable = () => {
 		resizable = true,
 		pinned = null,
 		editable = () => userRole === 'admin' || userRole === 'placementCoordinator',
+		// cellRenderer = null
 	) => ({
 		field,
 		headerName,
@@ -46,6 +73,47 @@ const CompanyTable = () => {
 		resizable,
 		pinned,
 		editable,
+		cellRenderer,
+		valueParser: params => {
+			console.log(params);
+
+			if (params.oldValue === params.newValue) return params.oldValue;
+
+			// Check if same change already Exist in changes
+			const changeIndex = changes.findIndex(
+				change =>
+					change.companyId === params.data.id && change.fieldName === field && change.newValue === params.newValue,
+			);
+
+			if (changeIndex !== -1) {
+				setChanges(prevChanges => {
+					const newChanges = [...prevChanges];
+					newChanges.splice(changeIndex, 1);
+					return newChanges;
+				});
+				return params.oldValue;
+			}
+
+			setChanges(prevChanges => [
+				...prevChanges,
+				{
+					companyName: params.data.name,
+					companyId: params.data.id,
+					fieldName: field,
+					oldValue: params.oldValue,
+					newValue: params.newValue,
+				},
+			]);
+
+			setCompanies(prevCompanies => {
+				const newCompanies = [...prevCompanies];
+				const companyIndex = newCompanies.findIndex(company => company._id === params.data.id);
+				newCompanies[companyIndex][field] = params.newValue;
+				return newCompanies;
+			});
+
+			return params.newValue;
+		},
 	});
 
 	const generateNestedColumn = (headerName, children) => ({
@@ -63,7 +131,7 @@ const CompanyTable = () => {
 
 	const formatCutoff = cutoff => (cutoff.cgpa ? `${cutoff.cgpa} CGPA` : `${cutoff.percentage}%`);
 
-	const delRow = () => {
+	const delColumn = () => {
 		if (userRole === 'admin' || userRole === 'placementCoordinator') {
 			return {
 				headerName: '',
@@ -80,13 +148,13 @@ const CompanyTable = () => {
 	};
 
 	const colDefs = [
-		delRow(),
-		generateColumn('name', 'Name', 150, true, true, true, 'left'),
+		delColumn(),
+		generateColumn('name', 'Name', 150, true, true, 'left', true),
 		generateColumn('status', 'Status', 115, false, true),
 		generateColumn('typeOfOffer', 'Offer', 90, true, true),
 		generateColumn('profile', 'Profile', 170),
 		generateColumn('interviewShortlist', 'Shortlists', 130, true, true),
-		generateColumn('selectedStudents', 'Selects', 110, true, true),
+		generateColumn('selectedStudents', 'Selects', 110, true, true, null, false, null),
 		generateDateColumn('dateOfOffer', 'Offer Date', 140, true, true),
 		generateColumn('locations', 'Locations', 140, true, true),
 		generateNestedColumn('Cutoffs', [
@@ -139,17 +207,93 @@ const CompanyTable = () => {
 	const rowData = companies.map(mapCompanyData);
 
 	return (
-		<div className="ag-theme-quartz">
-			<AgGridReact
-				rowData={rowData}
-				columnDefs={colDefs}
-				rowHeight={40}
-				headerHeight={40}
-				rowSelection="multiple"
-				dataTypeDefinitions={dataTypeDefinitions}
-				onGridReady={onGridReady}
-			/>
-		</div>
+		<>
+			<div className="ag-theme-quartz">
+				<AgGridReact
+					rowData={rowData}
+					columnDefs={colDefs}
+					rowHeight={40}
+					headerHeight={40}
+					rowSelection="multiple"
+					dataTypeDefinitions={dataTypeDefinitions}
+					onGridReady={onGridReady}
+					suppressClickEdit={true}
+				/>
+			</div>
+			{changes.length > 0 && (
+				<div className="ag-theme-quartz" style={{ 'min-height': '300px', 'margin-bottom': '100px' }}>
+					<h1>Changes</h1>
+
+					<AgGridReact
+						rowData={changes}
+						columnDefs={[
+							{
+								field: 'companyName',
+								headerName: 'Company Name',
+								width: 'fit-content',
+								sortable: true,
+								resizable: true,
+								pinned: 'left',
+							},
+							{
+								field: 'companyId',
+								headerName: 'Company Id',
+								width: 'fit-content',
+								sortable: true,
+								resizable: true,
+								pinned: 'left',
+							},
+							{
+								field: 'fieldName',
+								headerName: 'Field Name',
+								width: 'fit-content',
+								sortable: true,
+								resizable: true,
+							},
+							{
+								field: 'oldValue',
+								headerName: 'Old Value',
+								width: 'fit-content',
+								sortable: true,
+								resizable: true,
+							},
+							{
+								field: 'newValue',
+								headerName: 'New Value',
+								width: 'fit-content',
+								sortable: true,
+								resizable: true,
+							},
+						]}
+						rowHeight={40}
+						headerHeight={40}
+						suppressCellSelection={true}
+						suppressRowClickSelection={true}
+					></AgGridReact>
+					<div className="changes__buttons">
+						<button onClick={updateChanges} className="btn--update">
+							Update All Changes
+						</button>
+						<button
+							onClick={() => {
+								setCompanies(prevCompanies => {
+									const newCompanies = [...prevCompanies];
+									for (const change of changes) {
+										const companyIndex = newCompanies.findIndex(company => company._id === change.companyId);
+										newCompanies[companyIndex][change.fieldName] = change.oldValue;
+									}
+									return newCompanies;
+								});
+								setChanges([]);
+							}}
+							className="btn--update"
+						>
+							Clear All Changes
+						</button>
+					</div>
+				</div>
+			)}
+		</>
 	);
 };
 
