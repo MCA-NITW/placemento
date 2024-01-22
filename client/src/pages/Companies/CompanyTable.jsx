@@ -2,118 +2,45 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
-import { getCompanies, deleteCompany, updateCompany } from '../../api/companyApi';
-import { MdDelete } from 'react-icons/md';
+import { getCompanies, deleteCompany, updateCompany, addCompany, getCompany } from '../../api/companyApi';
+import { MdDelete, MdEdit } from 'react-icons/md';
 import userRole from '../../utils/role';
-import { MdEdit } from 'react-icons/md';
-function cellRenderer(props) {
-	const handleClick = () => {
-		props.api.startEditingCell({
-			rowIndex: props.node.rowIndex,
-			colKey: props.column.getId(),
-		});
-	};
-	return (
-		<span style={{ display: 'flex', alignItems: 'center' }}>
-			<button onClick={handleClick} className="btn--icon--edit">
-				<MdEdit />
-			</button>
-			<span style={{ paddingLeft: '4px' }}>{props.value}</span>
-		</span>
-	);
-}
+import CompanyForm from './CompanyForm';
 
 const CompanyTable = () => {
 	const [companies, setCompanies] = useState([]);
-	const [changes, setChanges] = useState([]);
+	const [companyData, setCompanyData] = useState(null);
+	const [isFormOpen, setFormOpen] = useState(false);
+	const [isAdd, setAdd] = useState(false);
+	const [tableKey, setTableKey] = useState(0);
 
-	const onGridReady = useCallback(async () => {
+	const fetchData = useCallback(async () => {
 		try {
-			const res = await getCompanies();
-			console.log(res.data);
-			setCompanies(res.data);
+			const response = await getCompanies();
+			setCompanies(response.data);
 		} catch (error) {
 			console.error('Error fetching companies:', error);
 		}
 	}, []);
 
-	const delButtonHandler = async id => {
+	const handleDeleteButtonClick = async id => {
 		await deleteCompany(id);
 	};
 
-	const delButtonRenderer = params => {
-		return (
-			<div className="btn--icon--del" onClick={() => delButtonHandler(params.data.id)}>
-				<MdDelete />
-			</div>
-		);
+	const handleEditButtonClick = async id => {
+		setAdd(false);
+		const response = await getCompany(id);
+		setCompanyData(response.data);
+		setFormOpen(true);
 	};
 
-	const updateChanges = async () => {
-		for (const change of changes) {
-			await updateCompany(change.companyId, change.fieldName, change.newValue);
-		}
-		setChanges([]);
-	};
-
-	const generateColumn = (
-		field,
-		headerName,
-		width,
-		sortable = true,
-		resizable = true,
-		pinned = null,
-		editable = () => userRole === 'admin' || userRole === 'placementCoordinator',
-		// cellRenderer = null
-	) => ({
+	const generateColumn = (field, headerName, width, sortable = true, resizable = true, pinned = null) => ({
 		field,
 		headerName,
 		width,
 		sortable,
 		resizable,
 		pinned,
-		editable,
-		cellRenderer,
-		valueParser: params => {
-			console.log(params);
-
-			if (params.oldValue === params.newValue) return params.oldValue;
-
-			// Check if same change already Exist in changes
-			const changeIndex = changes.findIndex(
-				change =>
-					change.companyId === params.data.id && change.fieldName === field && change.newValue === params.newValue,
-			);
-
-			if (changeIndex !== -1) {
-				setChanges(prevChanges => {
-					const newChanges = [...prevChanges];
-					newChanges.splice(changeIndex, 1);
-					return newChanges;
-				});
-				return params.oldValue;
-			}
-
-			setChanges(prevChanges => [
-				...prevChanges,
-				{
-					companyName: params.data.name,
-					companyId: params.data.id,
-					fieldName: field,
-					oldValue: params.oldValue,
-					newValue: params.newValue,
-				},
-			]);
-
-			setCompanies(prevCompanies => {
-				const newCompanies = [...prevCompanies];
-				const companyIndex = newCompanies.findIndex(company => company._id === params.data.id);
-				newCompanies[companyIndex][field] = params.newValue;
-				return newCompanies;
-			});
-
-			return params.newValue;
-		},
 	});
 
 	const generateNestedColumn = (headerName, children) => ({
@@ -131,30 +58,54 @@ const CompanyTable = () => {
 
 	const formatCutoff = cutoff => (cutoff.cgpa ? `${cutoff.cgpa} CGPA` : `${cutoff.percentage}%`);
 
-	const delColumn = () => {
-		if (userRole === 'admin' || userRole === 'placementCoordinator') {
-			return {
-				headerName: '',
-				pinned: 'left',
-				width: 50,
-				resizable: false,
-				sortable: false,
-				cellRenderer: delButtonRenderer,
-			};
-		} else
-			return {
-				initialHide: true,
-			};
+	const deleteButtonRenderer = params => {
+		return (
+			<div className="btn--icon--del" onClick={() => handleDeleteButtonClick(params.data.id)}>
+				<MdDelete />
+			</div>
+		);
 	};
 
-	const colDefs = [
-		delColumn(),
-		generateColumn('name', 'Name', 150, true, true, 'left', true),
+	const editButtonRenderer = params => {
+		return (
+			<div className="btn--icon--edit" onClick={() => handleEditButtonClick(params.data.id)}>
+				<MdEdit />
+			</div>
+		);
+	};
+
+	const deleteColumn = () => {
+		return {
+			headerName: '🗑️',
+			pinned: 'left',
+			width: 50,
+			resizable: false,
+			sortable: false,
+			cellRenderer: deleteButtonRenderer,
+			...(userRole !== 'admin' && userRole !== 'placementCoordinator' && { initialHide: true }),
+		};
+	};
+
+	const editColumn = () => {
+		return {
+			headerName: '✏️',
+			pinned: 'left',
+			width: 50,
+			resizable: false,
+			sortable: false,
+			cellRenderer: editButtonRenderer,
+			...(userRole !== 'admin' && userRole !== 'placementCoordinator' && { initialHide: true }),
+		};
+	};
+
+	const columnDefinitions = [
+		generateNestedColumn('Actions', [deleteColumn(), editColumn()]),
+		generateColumn('name', 'Name', 150, true, true, 'left'),
 		generateColumn('status', 'Status', 115, false, true),
 		generateColumn('typeOfOffer', 'Offer', 90, true, true),
 		generateColumn('profile', 'Profile', 170),
 		generateColumn('interviewShortlist', 'Shortlists', 130, true, true),
-		generateColumn('selectedStudents', 'Selects', 110, true, true, null, false, null),
+		generateColumn('selectedStudents', 'Selects', 110, true, true),
 		generateDateColumn('dateOfOffer', 'Offer Date', 140, true, true),
 		generateColumn('locations', 'Locations', 140, true, true),
 		generateNestedColumn('Cutoffs', [
@@ -182,7 +133,6 @@ const CompanyTable = () => {
 	}, []);
 
 	const mapCompanyData = company => ({
-		del: '',
 		id: company._id,
 		name: company.name,
 		status: company.status,
@@ -206,93 +156,43 @@ const CompanyTable = () => {
 
 	const rowData = companies.map(mapCompanyData);
 
+	const handleAddCompanyClick = () => {
+		setAdd(true);
+		setCompanyData(null);
+		setFormOpen(true);
+	};
+
+	const handleCloseForm = () => {
+		setFormOpen(false);
+		setTableKey(prevKey => prevKey + 1);
+	};
+
 	return (
 		<>
-			<div className="ag-theme-quartz">
+			<h1 className="page-heading">Companies</h1>
+			<button className="btn-primary" onClick={handleAddCompanyClick}>
+				Add Company
+			</button>
+			{isFormOpen && (
+				<CompanyForm
+					actionFunc={isAdd ? addCompany : updateCompany}
+					initialData={isAdd ? null : companyData}
+					handleFormClose={handleCloseForm}
+					isAdd={isAdd}
+				/>
+			)}
+			<div className="ag-theme-quartz" key={tableKey}>
 				<AgGridReact
 					rowData={rowData}
-					columnDefs={colDefs}
+					columnDefs={columnDefinitions}
 					rowHeight={40}
 					headerHeight={40}
 					rowSelection="multiple"
 					dataTypeDefinitions={dataTypeDefinitions}
-					onGridReady={onGridReady}
+					onGridReady={fetchData}
 					suppressClickEdit={true}
 				/>
 			</div>
-			{changes.length > 0 && (
-				<div className="ag-theme-quartz" style={{ 'min-height': '300px', 'margin-bottom': '100px' }}>
-					<h1>Changes</h1>
-
-					<AgGridReact
-						rowData={changes}
-						columnDefs={[
-							{
-								field: 'companyName',
-								headerName: 'Company Name',
-								width: 'fit-content',
-								sortable: true,
-								resizable: true,
-								pinned: 'left',
-							},
-							{
-								field: 'companyId',
-								headerName: 'Company Id',
-								width: 'fit-content',
-								sortable: true,
-								resizable: true,
-								pinned: 'left',
-							},
-							{
-								field: 'fieldName',
-								headerName: 'Field Name',
-								width: 'fit-content',
-								sortable: true,
-								resizable: true,
-							},
-							{
-								field: 'oldValue',
-								headerName: 'Old Value',
-								width: 'fit-content',
-								sortable: true,
-								resizable: true,
-							},
-							{
-								field: 'newValue',
-								headerName: 'New Value',
-								width: 'fit-content',
-								sortable: true,
-								resizable: true,
-							},
-						]}
-						rowHeight={40}
-						headerHeight={40}
-						suppressCellSelection={true}
-						suppressRowClickSelection={true}
-					></AgGridReact>
-					<div className="changes__buttons">
-						<button onClick={updateChanges} className="btn--update">
-							Update All Changes
-						</button>
-						<button
-							onClick={() => {
-								setCompanies(prevCompanies => {
-									const newCompanies = [...prevCompanies];
-									for (const change of changes) {
-										const companyIndex = newCompanies.findIndex(company => company._id === change.companyId);
-										newCompanies[companyIndex][change.fieldName] = change.oldValue;
-									}
-									return newCompanies;
-								});
-								setChanges([]);
-							}}
-							className="btn--update"
-						>
-							Clear All Changes
-						</button>
-					</div>
-				</div>
-			)}
 		</>
 	);
 };
