@@ -3,8 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { FormFooter } from './FormFooter';
 import { useNavigate } from 'react-router-dom';
 import { signin, signup } from '../../api/authApi';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 import classes from './auth.module.css';
 import { FaEye } from 'react-icons/fa';
 import { FaEyeSlash } from 'react-icons/fa';
@@ -308,7 +307,6 @@ const AuthenticationForm = () => {
 					</>
 				)}
 				<FormFooter mode={isSignIn ? 'signup' : 'signin'} />
-				<ToastContainer />
 			</form>
 		</div>
 	);

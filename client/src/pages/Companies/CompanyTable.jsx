@@ -101,24 +101,24 @@ const CompanyTable = () => {
 	const columnDefinitions = [
 		generateNestedColumn('Actions', [deleteColumn(), editColumn()]),
 		generateColumn('name', 'Name', 150, true, true, 'left'),
-		generateColumn('status', 'Status', 115, false, true),
+		generateColumn('status', 'Status', 100, false, true),
 		generateColumn('typeOfOffer', 'Offer', 90, true, true),
-		generateColumn('profile', 'Profile', 170),
-		generateColumn('interviewShortlist', 'Shortlists', 130, true, true),
-		generateColumn('selectedStudents', 'Selects', 110, true, true),
-		generateDateColumn('dateOfOffer', 'Offer Date', 140, true, true),
-		generateColumn('locations', 'Locations', 140, true, true),
-		generateNestedColumn('Cutoffs', [
-			generateColumn('cutoff_pg', 'PG', 80, false, true),
-			generateColumn('cutoff_ug', 'UG', 80, false, true),
-			generateColumn('cutoff_12', '12', 80, false, true),
-			generateColumn('cutoff_10', '10', 80, false, true),
-		]),
+		generateColumn('profile', 'Profile', 150),
+		generateColumn('interviewShortlist', 'Shortlists', 120, true, true),
+		generateColumn('selectedStudents', 'Selects', 100, true, true),
+		generateDateColumn('dateOfOffer', 'Offer Date', 125, true, true),
+		generateColumn('locations', 'Locations', 130, true, true),
 		generateNestedColumn('CTC (LPA)', [
-			generateColumn('ctc', 'CTC', 90, true, true),
-			generateColumn('ctcBase', 'Base', 95, true, true),
+			generateColumn('ctc', 'CTC', 80, true, false),
+			generateColumn('ctcBase', 'Base', 85, true, false),
 		]),
-		generateColumn('bond', 'Bond', 70, false, true),
+		generateNestedColumn('Cutoffs', [
+			generateColumn('cutoff_pg', 'PG', 80, false, false),
+			generateColumn('cutoff_ug', 'UG', 80, false, false),
+			generateColumn('cutoff_12', '12', 80, false, false),
+			generateColumn('cutoff_10', '10', 80, false, false),
+		]),
+		generateColumn('bond', 'Bond', 60, false, true),
 	];
 
 	const dataTypeDefinitions = useMemo(() => {
@@ -137,12 +137,9 @@ const CompanyTable = () => {
 		name: company.name,
 		status: company.status,
 		interviewShortlist: company.interviewShortlist,
-		selectedStudents:
-			company.selectedStudentsRollNo.toString() === ''
-				? 0
-				: company.selectedStudentsRollNo.toString().split(',').length,
+		selectedStudents: company.selectedStudentsRollNo.length,
 		dateOfOffer: company.dateOfOffer,
-		locations: company.locations.toString() === '' ? [] : company.locations.toString().split(','),
+		locations: company.locations,
 		cutoff_pg: formatCutoff(company.cutoffs.pg),
 		cutoff_ug: formatCutoff(company.cutoffs.ug),
 		cutoff_12: formatCutoff(company.cutoffs.twelth),

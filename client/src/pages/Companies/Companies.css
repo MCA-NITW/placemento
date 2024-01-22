@@ -149,34 +149,34 @@
 	height: 60vh;
 	filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.4));
 	display: block;
-	text-align: center;
+	/* text-align: center; */
 
 	--ag-foreground-color: var(--color-white);
-	--ag-background-color: var(--color-bg);
+	--ag-background-color: transparent;
 	--ag-header-foreground-color: var(--color-primary);
-	--ag-header-background-color: var(--color-bg-variant);
+	--ag-header-background-color: var(--color-bg);
 	--ag-odd-row-background-color: var(--color-bg);
-	--ag-header-cell-hover-background-color: var(--color-bg);
+	--ag-header-cell-hover-background-color: var(--color-bg-variant);
 	--ag-header-cell-moving-background-color: var(--color-primary-variant);
 	--ag-font-family: cursive;
 	--ag-selected-row-background-color: var(--color-primary-variant);
 	--ag-range-selection-border-color: var(--color-primary);
 	--ag-range-selection-border-style: dashed;
-	--ag-row-border-style: dashed;
+	--ag-row-border-style: dotted;
 	--ag-row-border-width: 1px;
-	--ag-row-border-color: var(--color-primary-variant);
+	--ag-row-border-color: var(--color-primary);
 	--ag-font-size: 14px;
 	--ag-row-hover-color: var(--color-primary-variant);
-	--ag-cell-horizontal-border: 1px solid var(--color-primary-variant);
-	--ag-header-column-resize-handle-color: var(--color-bg);
+	--ag-cell-horizontal-border: 1px dotted var(--color-primary);
+	--ag-header-column-resize-handle-color: var(--color-primary);
 	--ag-cell-horizontal-padding: 10px;
 }
 
 .ag-theme-quartz .ag-header-group-cell {
-	font-size: 17px;
+	font-size: 16px;
 }
 .ag-theme-quartz .ag-header-cell {
-	font-size: 16px;
+	font-size: 15px;
 }
 
 .btn--icon--del {
@@ -222,4 +222,8 @@
 		flex-direction: column;
 		gap: 5px;
 	}
+}
+
+.cell-span {
+	background-color: #2244cc44;
 }

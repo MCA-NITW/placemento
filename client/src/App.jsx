@@ -8,12 +8,19 @@ import Users from './pages/Users/Users';
 import Companies from './pages/Companies/Companies';
 import Authentication from './pages/Auth/Authentication';
 import { checkAuthAction, getAuthToken } from './utils/auth';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
 	const router = createBrowserRouter([
 		{
 			path: '/',
-			element: <NavBar />,
+			element: (
+				<div>
+					<NavBar />
+					<ToastContainer />
+				</div>
+			),
 			id: 'root',
 			loader: getAuthToken,
 			children: [

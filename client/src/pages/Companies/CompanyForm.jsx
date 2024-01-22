@@ -1,4 +1,18 @@
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
+
+const ToastContent = ({ res, message }) => (
+	<div>
+		<h3>{res}</h3>
+		<div>{message}</div>
+	</div>
+);
+
+const style = {
+	backgroundColor: 'var(--color-bg)',
+	color: 'var(--color-white)',
+	borderRadius: '1rem',
+};
 
 const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 	const formatDate = date => {
@@ -76,9 +90,29 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 			bond: formData.bond,
 		};
 		if (isAdd) {
-			await actionFunc(newCompany);
+			await actionFunc(newCompany).then(res => {
+				if (res.status === 200) {
+					toast.success(<ToastContent res="Success" message="Company added successfully" />, {
+						style,
+					});
+				} else {
+					toast.error(<ToastContent res="Error" message="Error adding company" />, {
+						style,
+					});
+				}
+			});
 		} else {
-			await actionFunc(initialData._id, newCompany);
+			await actionFunc(initialData._id, newCompany).then(res => {
+				if (res.status === 200) {
+					toast.success(<ToastContent res="Success" message="Company updated successfully" />, {
+						style,
+					});
+				} else {
+					toast.error(<ToastContent res="Error" message="Error updating company" />, {
+						style,
+					});
+				}
+			});
 		}
 		handleFormClose();
 	};
