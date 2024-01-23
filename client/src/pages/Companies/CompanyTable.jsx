@@ -4,8 +4,8 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import { getCompanies, deleteCompany, updateCompany, addCompany, getCompany } from '../../api/companyApi';
 import { MdDelete, MdEdit } from 'react-icons/md';
-import userRole from '../../utils/role';
 import CompanyForm from './CompanyForm';
+import getUserRole from '../../utils/role.js';
 
 const CompanyTable = () => {
 	const [companies, setCompanies] = useState([]);
@@ -13,6 +13,7 @@ const CompanyTable = () => {
 	const [isFormOpen, setFormOpen] = useState(false);
 	const [isAdd, setAdd] = useState(false);
 	const [tableKey, setTableKey] = useState(0);
+	const userRole = getUserRole();
 
 	const fetchData = useCallback(async () => {
 		try {
@@ -60,17 +61,17 @@ const CompanyTable = () => {
 
 	const deleteButtonRenderer = params => {
 		return (
-			<div className="btn--icon--del" onClick={() => handleDeleteButtonClick(params.data.id)}>
+			<button className="btn--icon--del" onClick={() => handleDeleteButtonClick(params.data.id)}>
 				<MdDelete />
-			</div>
+			</button>
 		);
 	};
 
 	const editButtonRenderer = params => {
 		return (
-			<div className="btn--icon--edit" onClick={() => handleEditButtonClick(params.data.id)}>
+			<button className="btn--icon--edit" onClick={() => handleEditButtonClick(params.data.id)}>
 				<MdEdit />
-			</div>
+			</button>
 		);
 	};
 

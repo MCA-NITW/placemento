@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
+import PropTypes from 'prop-types';
 
 const ToastContent = ({ res, message }) => (
 	<div>
@@ -7,6 +8,11 @@ const ToastContent = ({ res, message }) => (
 		<div>{message}</div>
 	</div>
 );
+
+ToastContent.propTypes = {
+	res: PropTypes.string.isRequired,
+	message: PropTypes.string.isRequired,
+};
 
 const style = {
 	backgroundColor: 'var(--color-bg)',

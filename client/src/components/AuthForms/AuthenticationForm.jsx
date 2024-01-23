@@ -5,19 +5,26 @@ import { useNavigate } from 'react-router-dom';
 import { signin, signup } from '../../api/authApi';
 import { toast } from 'react-toastify';
 import classes from './auth.module.css';
-import { FaEye } from 'react-icons/fa';
-import { FaEyeSlash } from 'react-icons/fa';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import PropTypes from 'prop-types';
 
 const ToastContent = ({ res, messages }) => (
 	<div>
 		<h3>{res}</h3>
-		<ul>
-			{messages.map((message, index) => (
-				<li key={index}>{message}</li>
+		<div>
+			{messages.map(message => (
+				<div key={message} style={{ margin: '0.5rem 0' }}>
+					{message}
+				</div>
 			))}
-		</ul>
+		</div>
 	</div>
 );
+
+ToastContent.propTypes = {
+	res: PropTypes.string.isRequired,
+	messages: PropTypes.array.isRequired,
+};
 
 const style = {
 	backgroundColor: 'var(--color-bg)',
@@ -134,7 +141,7 @@ const AuthenticationForm = () => {
 				{isSignIn ? (
 					<>
 						<div className={classes['auth-form__item']}>
-							<label>Email</label>
+							<label htmlFor="email">Email</label>
 							<div className={classes['email-input-container']}>
 								<input
 									type="text"
@@ -146,7 +153,7 @@ const AuthenticationForm = () => {
 							</div>
 						</div>
 						<div className={classes['auth-form__item']}>
-							<label>Password</label>
+							<label htmlFor="password">Password</label>
 							<div className={classes['password-input-container']}>
 								<input
 									type={showPassword ? 'text' : 'password'}
@@ -175,15 +182,15 @@ const AuthenticationForm = () => {
 									<h2>Enter your personal details</h2>
 								</div>
 								<div className={classes['auth-form__item']}>
-									<label>Name</label>
+									<label htmlFor="name">Name</label>
 									<input type="text" placeholder="Name" onChange={e => setName(e.target.value)} value={name} />
 								</div>
 								<div className={classes['auth-form__item']}>
-									<label>Roll No.</label>
+									<label htmlFor="rollNo">Roll No</label>
 									<input type="text" placeholder="Roll No" onChange={e => setRollNo(e.target.value)} value={rollNo} />
 								</div>
 								<div className={classes['auth-form__item']}>
-									<label>Email</label>
+									<label htmlFor="email">Email</label>
 									<div className={classes['email-input-container']}>
 										<input
 											type="text"
@@ -195,7 +202,7 @@ const AuthenticationForm = () => {
 									</div>
 								</div>
 								<div className={classes['auth-form__item']}>
-									<label>Password</label>
+									<label htmlFor="password">Password</label>
 									<div className={classes['password-input-container']}>
 										<input
 											type={showPassword ? 'text' : 'password'}
@@ -225,7 +232,7 @@ const AuthenticationForm = () => {
 									<p>(Please Do Conversion According to your Institute)</p>
 								</div>
 								<div className={classes['auth-form__item']}>
-									<label>PG</label>
+									<label htmlFor="pg">PG</label>
 									<input
 										type="number"
 										placeholder="PG CGPA"
@@ -245,7 +252,7 @@ const AuthenticationForm = () => {
 									/>
 								</div>
 								<div className={classes['auth-form__item']}>
-									<label>UG</label>
+									<label htmlFor="ug">UG</label>
 									<input type="number" placeholder="UG CGPA" onChange={e => setUgCgpa(e.target.value)} value={ugCgpa} />
 									<input
 										type="number"
@@ -255,7 +262,7 @@ const AuthenticationForm = () => {
 									/>
 								</div>
 								<div className={classes['auth-form__item']}>
-									<label>12th</label>
+									<label htmlFor="hsc">12th</label>
 									<input
 										type="number"
 										placeholder="HSC CGPA"
@@ -270,7 +277,7 @@ const AuthenticationForm = () => {
 									/>
 								</div>
 								<div className={classes['auth-form__item']}>
-									<label>10th</label>
+									<label htmlFor="ssc">10th</label>
 									<input
 										type="number"
 										placeholder="SSC CGPA"
@@ -285,7 +292,7 @@ const AuthenticationForm = () => {
 									/>
 								</div>
 								<div className={classes['auth-form__item']}>
-									<label>Gap</label>
+									<label htmlFor="totalGapInAcademics">Gap</label>
 									<input
 										type="number"
 										placeholder="Total Gap in Academics"

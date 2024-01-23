@@ -1,28 +1,30 @@
 import axios from 'axios';
 
-const api = axios.create({
+// Create an Axios instance with a default configuration
+const axiosInstance = axios.create({
 	baseURL: 'http://localhost:5000',
-	headers: {
-		Authorization: `Bearer ${localStorage.getItem('token')}`,
-	},
 });
 
-export const getCompanies = () => {
-	return api.get('/companies/view');
-};
+// Add a request interceptor to update the Authorization header with the latest token
+axiosInstance.interceptors.request.use(
+	config => {
+		const token = localStorage.getItem('token');
+		if (token) {
+			config.headers.Authorization = `Bearer ${token}`;
+		}
+		return config;
+	},
+	error => {
+		return Promise.reject(error);
+	},
+);
 
-export const getCompany = id => {
-	return api.get(`/companies/view/${id}`);
-};
+export const getCompanies = () => axiosInstance.get('/companies/view');
 
-export const addCompany = company => {
-	return api.post('/companies/add', company);
-};
+export const getCompany = id => axiosInstance.get(`/companies/view/${id}`);
 
-export const updateCompany = (id, company) => {
-	return api.put(`/companies/update/${id}`, company);
-};
+export const addCompany = company => axiosInstance.post('/companies/add', company);
 
-export const deleteCompany = id => {
-	return api.delete(`/companies/delete/${id}`);
-};
+export const updateCompany = (id, company) => axiosInstance.put(`/companies/update/${id}`, company);
+
+export const deleteCompany = id => axiosInstance.delete(`/companies/delete/${id}`);
