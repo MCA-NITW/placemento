@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { FormFooter } from './FormFooter';
-import { useNavigate } from 'react-router-dom';
 import { signin, signup } from '../../api/authApi';
 import { toast } from 'react-toastify';
 import classes from './auth.module.css';
@@ -45,7 +44,6 @@ const AuthenticationForm = () => {
 	const [hscPercentage, setHscPercentage] = useState();
 	const [sscCgpa, setSscCgpa] = useState();
 	const [sscPercentage, setSscPercentage] = useState();
-
 	const [totalGapInAcademics, setTotalGapInAcademics] = useState(0);
 	const [currentStep, setCurrentStep] = useState(1);
 	const [params] = useSearchParams();
@@ -56,131 +54,131 @@ const AuthenticationForm = () => {
 	const handleSubmit = async e => {
 		e.preventDefault();
 
-		setName(
-			name
-				.split(' ')
-				.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-				.join(' '),
-		);
+		setName(formatName(name));
 
 		const user = isSignIn
-			? {
-					email,
-					password,
-				}
+			? { email, password }
 			: {
 					name,
 					rollNo,
 					email,
 					password,
-					pg: {
-						cgpa: pgCgpa,
-						percentage: pgPercentage,
-					},
-					ug: {
-						cgpa: ugCgpa,
-						percentage: ugPercentage,
-					},
-					hsc: {
-						cgpa: hscCgpa,
-						percentage: hscPercentage,
-					},
-					ssc: {
-						cgpa: sscCgpa,
-						percentage: sscPercentage,
-					},
+					pg: { cgpa: pgCgpa, percentage: pgPercentage },
+					ug: { cgpa: ugCgpa, percentage: ugPercentage },
+					hsc: { cgpa: hscCgpa, percentage: hscPercentage },
+					ssc: { cgpa: sscCgpa, percentage: sscPercentage },
 					totalGapInAcademics,
 				};
+
 		try {
 			const res = await (isSignIn ? signin(user) : signup(user));
-			toast.success(
-				<ToastContent res={isSignIn ? 'Sign In successful' : 'Sign Up successful'} messages={res.data.messages} />,
-				{
-					style: style,
-					autoClose: 4000,
-					closeOnClick: true,
-					pauseOnHover: true,
-				},
-			);
-			if (isSignIn) {
-				localStorage.setItem('token', res.data.data.token);
-				navigate('/');
-			}
-			console.log(res.data);
+			handleSuccess(isSignIn, res);
 		} catch (err) {
-			e.preventDefault();
-			toast.error(
-				<ToastContent res={isSignIn ? 'Sign In failed' : 'Sign Up failed'} messages={err.response.data.errors} />,
-				{
-					style: style,
-					autoClose: 4000,
-					closeOnClick: true,
-					pauseOnHover: true,
-				},
-			);
-			console.log(err);
+			handleError(isSignIn, err);
 		}
 	};
+
+	const handleSuccess = (isSignIn, res) => {
+		toast.success(
+			<ToastContent res={isSignIn ? 'Sign In successful' : 'Sign Up successful'} messages={res.data.messages} />,
+			{
+				style: style,
+				autoClose: 4000,
+				closeOnClick: true,
+				pauseOnHover: true,
+			},
+		);
+		if (isSignIn) {
+			localStorage.setItem('token', res.data.data.token);
+			navigate('/');
+		}
+		console.log(res.data);
+	};
+
+	const handleError = (isSignIn, err) => {
+		toast.error(
+			<ToastContent res={isSignIn ? 'Sign In failed' : 'Sign Up failed'} messages={err.response.data.errors} />,
+			{
+				style: style,
+				autoClose: 4000,
+				closeOnClick: true,
+				pauseOnHover: true,
+			},
+		);
+		console.log(err);
+	};
+
 	const handleEmailChange = e => {
 		const enteredEmail = e.target.value.trim().toLowerCase();
 		const domain = '@student.nitw.ac.in';
 
-		if (!enteredEmail.startsWith(domain)) {
-			setEmail(domain ? `${enteredEmail}${domain}` : enteredEmail);
-		} else {
-			setEmail(enteredEmail);
-		}
+		setEmail(enteredEmail.startsWith(domain) ? enteredEmail : domain ? `${enteredEmail}${domain}` : enteredEmail);
+	};
+
+	const toggleShowPassword = () => {
+		setShowPassword(!showPassword);
+	};
+
+	const formatName = name => {
+		return name
+			.split(' ')
+			.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+			.join(' ');
 	};
 
 	const [showPassword, setShowPassword] = useState(false);
+
+	const getEmailPassInput = () => {
+		return (
+			<>
+				<div className={classes['auth-form__item']}>
+					<label htmlFor="email">Email</label>
+					<div className={classes['email-input-container']}>
+						<input
+							type="text"
+							placeholder="Enter your email"
+							onChange={handleEmailChange}
+							value={email.trim().replace('@student.nitw.ac.in', '')}
+						/>
+						<span className={classes['email-domain']}>@student.nitw.ac.in</span>
+					</div>
+				</div>
+				<div className={classes['auth-form__item']}>
+					<label htmlFor="password">Password</label>
+					<div className={classes['password-input-container']}>
+						<input
+							type={showPassword ? 'text' : 'password'}
+							placeholder="Password"
+							onChange={e => setPassword(e.target.value)}
+							value={password}
+						/>
+						<button type="button" className={classes['password-toggle']} onClick={toggleShowPassword}>
+							{showPassword ? <FaEyeSlash /> : <FaEye />}
+						</button>
+					</div>
+				</div>
+			</>
+		);
+	};
 
 	return (
 		<div className={classes['auth-form']}>
 			<h1>{isSignIn ? 'Sign In' : 'Sign Up'}</h1>
 			<form onSubmit={handleSubmit}>
+				{!isSignIn && currentStep === 1 && (
+					<div className={classes['auth-form__head2']}>
+						<h2>Enter your personal details</h2>
+					</div>
+				)}
+				{isSignIn || currentStep === 1 ? getEmailPassInput() : null}
 				{isSignIn ? (
-					<>
-						<div className={classes['auth-form__item']}>
-							<label htmlFor="email">Email</label>
-							<div className={classes['email-input-container']}>
-								<input
-									type="text"
-									placeholder="Enter your email"
-									onChange={handleEmailChange}
-									value={email.trim().replace('@student.nitw.ac.in', '')}
-								/>
-								<span className={classes['email-domain']}>@student.nitw.ac.in</span>
-							</div>
-						</div>
-						<div className={classes['auth-form__item']}>
-							<label htmlFor="password">Password</label>
-							<div className={classes['password-input-container']}>
-								<input
-									type={showPassword ? 'text' : 'password'}
-									placeholder="Password"
-									onChange={e => setPassword(e.target.value)}
-									value={password}
-								/>
-								<button
-									type="button"
-									className={classes['password-toggle']}
-									onClick={() => setShowPassword(!showPassword)}
-								>
-									{showPassword ? <FaEyeSlash /> : <FaEye />}
-								</button>
-							</div>
-						</div>
-						<button type="submit" className={classes.btn}>
-							Sign In
-						</button>
-					</>
+					<button type="submit" className={classes.btn}>
+						Sign In
+					</button>
 				) : (
 					<>
 						{currentStep === 1 && (
 							<>
-								<div className={classes['auth-form__head2']}>
-									<h2>Enter your personal details</h2>
-								</div>
 								<div className={classes['auth-form__item']}>
 									<label htmlFor="name">Name</label>
 									<input type="text" placeholder="Name" onChange={e => setName(e.target.value)} value={name} />
@@ -189,37 +187,6 @@ const AuthenticationForm = () => {
 									<label htmlFor="rollNo">Roll No</label>
 									<input type="text" placeholder="Roll No" onChange={e => setRollNo(e.target.value)} value={rollNo} />
 								</div>
-								<div className={classes['auth-form__item']}>
-									<label htmlFor="email">Email</label>
-									<div className={classes['email-input-container']}>
-										<input
-											type="text"
-											placeholder="Enter your email"
-											onChange={handleEmailChange}
-											value={email.trim().replace('@student.nitw.ac.in', '')}
-										/>
-										<span className={classes['email-domain']}>@student.nitw.ac.in</span>
-									</div>
-								</div>
-								<div className={classes['auth-form__item']}>
-									<label htmlFor="password">Password</label>
-									<div className={classes['password-input-container']}>
-										<input
-											type={showPassword ? 'text' : 'password'}
-											placeholder="Password"
-											onChange={e => setPassword(e.target.value)}
-											value={password}
-										/>
-										<button
-											type="button"
-											className={classes['password-toggle']}
-											onClick={() => setShowPassword(!showPassword)}
-										>
-											{showPassword ? <FaEyeSlash /> : <FaEye />}
-										</button>
-									</div>
-								</div>
-
 								<button className={classes.btn} onClick={() => setCurrentStep(2)}>
 									Next
 								</button>
