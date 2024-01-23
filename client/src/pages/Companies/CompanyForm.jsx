@@ -2,6 +2,31 @@ import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 
+const formatDate = date => {
+	const year = date.getFullYear();
+	const month = (date.getMonth() + 1).toString().padStart(2, '0');
+	const day = date.getDate().toString().padStart(2, '0');
+	return `${year}-${month}-${day}`;
+};
+
+const getDefaultFormData = initialData => ({
+	name: initialData?.name || '',
+	status: initialData?.status || 'upcoming',
+	interviewShortlist: initialData?.interviewShortlist || 0,
+	selectedStudents: initialData?.selectedStudentsRollNo || [],
+	dateOfOffer: formatDate(initialData?.dateOfOffer ? new Date(initialData?.dateOfOffer) : new Date()),
+	locations: initialData?.locations || [],
+	cutoff_pg: initialData?.cutoffs?.pg?.cgpa || initialData?.cutoffs?.pg?.percentage || 0,
+	cutoff_ug: initialData?.cutoffs?.ug?.cgpa || initialData?.cutoffs?.ug?.percentage || 0,
+	cutoff_12: initialData?.cutoffs?.twelth?.cgpa || initialData?.cutoffs?.twelth?.percentage || 0,
+	cutoff_10: initialData?.cutoffs?.tenth?.cgpa || initialData?.cutoffs?.tenth?.percentage || 0,
+	typeOfOffer: initialData?.typeOfOffer || 'FTE',
+	profile: initialData?.profile || '',
+	ctc: initialData?.ctc || 0.0,
+	ctcBase: initialData?.ctcBreakup?.base || 0.0,
+	bond: initialData?.bond || 0,
+});
+
 const ToastContent = ({ res, message }) => (
 	<div>
 		<h3>{res}</h3>
@@ -21,30 +46,7 @@ const style = {
 };
 
 const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
-	const formatDate = date => {
-		const year = date.getFullYear();
-		const month = (date.getMonth() + 1).toString().padStart(2, '0');
-		const day = date.getDate().toString().padStart(2, '0');
-		return `${year}-${month}-${day}`;
-	};
-
-	const [formData, setFormData] = useState({
-		name: initialData?.name || '',
-		status: initialData?.status || 'upcoming',
-		interviewShortlist: initialData?.interviewShortlist || 0,
-		selectedStudents: initialData?.selectedStudentsRollNo || [],
-		dateOfOffer: formatDate(initialData?.dateOfOffer ? new Date(initialData?.dateOfOffer) : new Date()),
-		locations: initialData?.locations || [],
-		cutoff_pg: initialData?.cutoffs?.pg?.cgpa || initialData?.cutoffs?.pg?.percentage || 0,
-		cutoff_ug: initialData?.cutoffs?.ug?.cgpa || initialData?.cutoffs?.ug?.percentage || 0,
-		cutoff_12: initialData?.cutoffs?.twelth?.cgpa || initialData?.cutoffs?.twelth?.percentage || 0,
-		cutoff_10: initialData?.cutoffs?.tenth?.cgpa || initialData?.cutoffs?.tenth?.percentage || 0,
-		typeOfOffer: initialData?.typeOfOffer || 'FTE',
-		profile: initialData?.profile || '',
-		ctc: initialData?.ctc || 0.0,
-		ctcBase: initialData?.ctcBreakup?.base || 0.0,
-		bond: initialData?.bond || 0,
-	});
+	const [formData, setFormData] = useState(getDefaultFormData(initialData));
 
 	const handleChange = (field, value) => {
 		setFormData(prevData => ({ ...prevData, [field]: value }));
@@ -98,11 +100,12 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 		const res = await (isAdd ? actionFunc(newCompany) : actionFunc(initialData._id, newCompany));
 		const successMessage = isAdd ? 'Company added successfully' : 'Company updated successfully';
 		const errorMessage = isAdd ? 'Error adding company' : 'Error updating company';
-		const toastContent = res.status === 200 ? (
-			<ToastContent res="Success" message={successMessage} />
-		) : (
-			<ToastContent res="Error" message={errorMessage} />
-		);
+		const toastContent =
+			res.status === 200 ? (
+				<ToastContent res="Success" message={successMessage} />
+			) : (
+				<ToastContent res="Error" message={errorMessage} />
+			);
 		toast(res.status === 200 ? toast.success : toast.error)(toastContent, { style });
 		handleFormClose();
 	};
