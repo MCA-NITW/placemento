@@ -6,19 +6,19 @@ const logger = require('../utils/logger');
 const saltRounds = 10;
 
 const validateFields = user => {
-	errorMessages = [];
+	const errorMessages = [];
 	if (!user.name) errorMessages.push('Name is required.');
 	if (!user.email.endsWith('@student.nitw.ac.in')) errorMessages.push('Enter a valid NITW email.');
 	if (
 		user.password.length < 6 ||
 		!/[a-z]/.test(user.password) ||
 		!/[A-Z]/.test(user.password) ||
-		!/[0-9]/.test(user.password)
+		!/\d/.test(user.password)
 	)
 		errorMessages.push(
 			'Password must be atleast 6 characters long and contain atleast one uppercase, one lowercase and one numeric character.',
 		);
-	if (!user.rollNo.match(/^[0-9]{2}MCF1R[0-9]{2,}$/)) errorMessages.push('Enter a valid roll number. (Eg: 21MCF1R01)');
+	if (!user.rollNo.match(/^\d{2}MCF1R\d{2,}$/)) errorMessages.push('Enter a valid roll number. (Eg: 21MCF1R01)');
 	if (
 		user.pg.cgpa < 0 ||
 		user.pg.cgpa > 10 ||

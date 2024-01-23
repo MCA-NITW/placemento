@@ -79,7 +79,7 @@
 }
 
 .auth-form__item input:focus {
-	border: 1px solid var(--color-primary-variant);
+	border-color: var(--color-primary-variant);
 }
 
 .auth-form form .btn {

@@ -95,31 +95,15 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 			},
 			bond: formData.bond,
 		};
-		if (isAdd) {
-			await actionFunc(newCompany).then(res => {
-				if (res.status === 200) {
-					toast.success(<ToastContent res="Success" message="Company added successfully" />, {
-						style,
-					});
-				} else {
-					toast.error(<ToastContent res="Error" message="Error adding company" />, {
-						style,
-					});
-				}
-			});
-		} else {
-			await actionFunc(initialData._id, newCompany).then(res => {
-				if (res.status === 200) {
-					toast.success(<ToastContent res="Success" message="Company updated successfully" />, {
-						style,
-					});
-				} else {
-					toast.error(<ToastContent res="Error" message="Error updating company" />, {
-						style,
-					});
-				}
-			});
-		}
+		const res = await (isAdd ? actionFunc(newCompany) : actionFunc(initialData._id, newCompany));
+		const successMessage = isAdd ? 'Company added successfully' : 'Company updated successfully';
+		const errorMessage = isAdd ? 'Error adding company' : 'Error updating company';
+		const toastContent = res.status === 200 ? (
+			<ToastContent res="Success" message={successMessage} />
+		) : (
+			<ToastContent res="Error" message={errorMessage} />
+		);
+		toast(res.status === 200 ? toast.success : toast.error)(toastContent, { style });
 		handleFormClose();
 	};
 
@@ -338,6 +322,13 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 			</div>
 		</div>
 	);
+};
+
+CompanyForm.propTypes = {
+	actionFunc: PropTypes.func.isRequired,
+	handleFormClose: PropTypes.func.isRequired,
+	initialData: PropTypes.object,
+	isAdd: PropTypes.bool.isRequired,
 };
 
 export default CompanyForm;

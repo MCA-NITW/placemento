@@ -149,7 +149,6 @@
 	height: 60vh;
 	filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.4));
 	display: block;
-	/* text-align: center; */
 
 	--ag-foreground-color: var(--color-white);
 	--ag-background-color: transparent;

@@ -5,7 +5,7 @@ const logger = require('../utils/logger');
 const authenticateUser = async (req, res, next) => {
 	try {
 		// console.log(req.headers);
-		const token = req.headers['authorization'] && req.headers['authorization'].split(' ')[1];
+		const token = req.headers['authorization']?.split(' ')[1];
 
 		if (!token) {
 			throw new Error('Invalid or missing Authorization header');

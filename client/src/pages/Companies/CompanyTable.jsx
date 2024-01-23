@@ -10,8 +10,8 @@ import getUserRole from '../../utils/role.js';
 const CompanyTable = () => {
 	const [companies, setCompanies] = useState([]);
 	const [companyData, setCompanyData] = useState(null);
-	const [isFormOpen, setFormOpen] = useState(false);
-	const [isAdd, setAdd] = useState(false);
+	const [isFormOpen, setIsFormOpen] = useState(false);
+	const [isAdd, setIsAdd] = useState(false);
 	const [tableKey, setTableKey] = useState(0);
 	const userRole = getUserRole();
 
@@ -29,10 +29,10 @@ const CompanyTable = () => {
 	};
 
 	const handleEditButtonClick = async id => {
-		setAdd(false);
+		setIsAdd(false);
 		const response = await getCompany(id);
 		setCompanyData(response.data);
-		setFormOpen(true);
+		setIsFormOpen(true);
 	};
 
 	const generateColumn = (field, headerName, width, sortable = true, resizable = true, pinned = null) => ({
@@ -155,13 +155,13 @@ const CompanyTable = () => {
 	const rowData = companies.map(mapCompanyData);
 
 	const handleAddCompanyClick = () => {
-		setAdd(true);
+		setIsAdd(true);
 		setCompanyData(null);
-		setFormOpen(true);
+		setIsFormOpen(true);
 	};
 
 	const handleCloseForm = () => {
-		setFormOpen(false);
+		setIsFormOpen(false);
 		setTableKey(prevKey => prevKey + 1);
 	};
 
