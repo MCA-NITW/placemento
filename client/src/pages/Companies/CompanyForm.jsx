@@ -104,7 +104,7 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 					style,
 				});
 			else toast.error(<ToastContent res="Error" message="An unexpected error occurred" />, { style });
-			handleFormClose();
+			handleFormClose(true);
 		} catch (error) {
 			console.error('Error:', error);
 			toast.error(<ToastContent res="Error" message="An unexpected error occurred" />, { style });
@@ -317,7 +317,7 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 							<button type="submit" className="btn-add">
 								{isAdd ? 'Add' : 'Update'}
 							</button>
-							<button type="button" className="btn-close" onClick={handleFormClose}>
+							<button type="button" className="btn-close" onClick={() => handleFormClose(false)}>
 								Cancel
 							</button>
 						</div>

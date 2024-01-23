@@ -175,9 +175,9 @@ const CompanyTable = () => {
 		setIsFormOpen(true);
 	};
 
-	const handleCloseForm = () => {
+	const handleCloseForm = fetch => {
 		setIsFormOpen(false);
-		fetchData();
+		if (fetch) fetchData();
 	};
 
 	return (
