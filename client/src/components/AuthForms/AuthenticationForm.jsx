@@ -112,7 +112,11 @@ const AuthenticationForm = () => {
 		const enteredEmail = e.target.value.trim().toLowerCase();
 		const domain = '@student.nitw.ac.in';
 
-		setEmail(enteredEmail.startsWith(domain) ? enteredEmail : domain ? `${enteredEmail}${domain}` : enteredEmail);
+		let formattedEmail = enteredEmail;
+		if (!enteredEmail.startsWith(domain)) {
+			formattedEmail = domain ? `${enteredEmail}${domain}` : enteredEmail;
+		}
+		setEmail(formattedEmail);
 	};
 
 	const toggleShowPassword = () => {
