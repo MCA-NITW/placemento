@@ -7,7 +7,7 @@ exports.postAddCompany = async (req, res) => {
 		const newCompany = new Company(req.body);
 		const savedCompany = await newCompany.save();
 		logger.info(`New company added: ${savedCompany.name}`);
-		res.status(201).json(savedCompany);
+		res.status(200).json(savedCompany);
 	} catch (error) {
 		logger.error(error);
 		res.status(500).json({ message: 'Internal server error' });
@@ -22,7 +22,7 @@ exports.putUpdateCompany = async (req, res) => {
 			return res.status(404).json({ message: 'Company not found' });
 		}
 		logger.info(`Company updated: ${updatedCompany.name}`);
-		res.json(updatedCompany);
+		res.status(200).json(updatedCompany);
 	} catch (error) {
 		logger.error(error);
 		res.status(500).json({ message: 'Internal server error' });

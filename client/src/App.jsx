@@ -16,10 +16,20 @@ const App = () => {
 		{
 			path: '/',
 			element: (
-				<div>
+				<>
 					<NavBar />
-					<ToastContainer />
-				</div>
+					<ToastContainer
+						position="bottom-right"
+						autoClose={2500}
+						hideProgressBar={false}
+						newestOnTop={false}
+						closeOnClick
+						rtl={false}
+						pauseOnFocusLoss
+						draggable
+						pauseOnHover
+					/>
+				</>
 			),
 			id: 'root',
 			loader: getAuthToken,

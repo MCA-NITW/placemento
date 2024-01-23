@@ -19,35 +19,45 @@
 /* Modal */
 .modal {
 	position: fixed;
-	z-index: 1000;
+	z-index: 15;
 	width: 100%;
 	height: 100%;
-	backdrop-filter: blur(5px);
+	backdrop-filter: blur(2px);
 	display: flex;
-	align-items: flex-start;
+	align-items: center;
 	justify-content: center;
 }
 
 .modal-dialog {
 	max-width: 700px;
 	width: 100%;
+	height: 100%;
 	height: calc(100vh - 8rem);
 	overflow-x: scroll;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+}
+
+.modal-dialog::-webkit-scrollbar {
+	display: none;
 }
 
 .modal-content {
 	background-color: var(--color-primary);
 	border-radius: 5px;
-	padding: 20px;
+	padding: 12.5px;
 	position: relative;
 	text-align: center;
+	width: 100%;
+	max-width: 700px;
 }
 
 /* Form */
 .company-form {
 	display: flex;
 	flex-direction: column;
-	gap: 10px;
+	gap: 7.5px;
 	text-align: center;
 	width: 100%;
 }
@@ -70,11 +80,11 @@
 .form-group {
 	display: flex;
 	flex-direction: row;
-	gap: 15px;
+	gap: 10px;
 	align-items: center;
 	justify-content: center;
 	background-color: var(--color-bg-variant);
-	padding: 10px;
+	padding: 8px;
 	border-radius: 5px;
 	width: 100%;
 	text-wrap: nowrap;
@@ -82,6 +92,7 @@
 
 .form-group label {
 	flex: 0 0 100px;
+	font-size: 13px;
 	text-align: right;
 	font-weight: 600;
 	max-width: fit-content;
@@ -96,19 +107,13 @@
 	border-radius: 5px;
 	background-color: var(--color-bg);
 	color: var(--color-primary);
-	font-size: 16px;
 	font-weight: 600;
 	width: 100%;
 }
 
 .form-group textarea {
 	resize: none;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-	outline: none;
+	height: 30px;
 }
 
 .form-group label {
@@ -120,19 +125,19 @@
 .company-form__buttons {
 	display: flex;
 	flex-direction: row;
-	gap: 10px;
+	gap: 5px;
 	justify-content: center;
 	width: 100%;
 }
 
 .company-form__buttons button {
 	flex: 1 1 auto;
-	padding: 10px 15px;
+	padding: 8px 15px;
 	border: none;
 	border-radius: 5px;
 	background-color: var(--color-bg);
 	color: var(--color-primary);
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 600;
 	cursor: pointer;
 }

@@ -6,14 +6,18 @@ import { getCompanies, deleteCompany, updateCompany, addCompany, getCompany } fr
 import { MdDelete, MdEdit } from 'react-icons/md';
 import CompanyForm from './CompanyForm';
 import getUserRole from '../../utils/role.js';
+import Modal from '../../components/Modal/Modal.jsx';
 
 const CompanyTable = () => {
 	const [companies, setCompanies] = useState([]);
 	const [companyData, setCompanyData] = useState(null);
 	const [isFormOpen, setIsFormOpen] = useState(false);
 	const [isAdd, setIsAdd] = useState(false);
-	const [tableKey, setTableKey] = useState(0);
 	const userRole = getUserRole();
+
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [idToDelete, setIdToDelete] = useState(null);
+	const closeModal = () => setIsModalOpen(false);
 
 	const fetchData = useCallback(async () => {
 		try {
@@ -24,8 +28,19 @@ const CompanyTable = () => {
 		}
 	}, []);
 
-	const handleDeleteButtonClick = async id => {
-		await deleteCompany(id);
+	const handleDeleteButtonClick = id => {
+		setIsModalOpen(true);
+		setIdToDelete(id);
+	};
+
+	const onConfirmDelete = async () => {
+		try {
+			await deleteCompany(idToDelete);
+			setIsModalOpen(false);
+			fetchData();
+		} catch (error) {
+			console.error('Error deleting company:', error);
+		}
 	};
 
 	const handleEditButtonClick = async id => {
@@ -77,7 +92,7 @@ const CompanyTable = () => {
 
 	const deleteColumn = () => {
 		return {
-			headerName: '🗑️',
+			headerName: 'Del',
 			pinned: 'left',
 			width: 50,
 			resizable: false,
@@ -89,7 +104,7 @@ const CompanyTable = () => {
 
 	const editColumn = () => {
 		return {
-			headerName: '✏️',
+			headerName: 'Edit',
 			pinned: 'left',
 			width: 50,
 			resizable: false,
@@ -162,7 +177,7 @@ const CompanyTable = () => {
 
 	const handleCloseForm = () => {
 		setIsFormOpen(false);
-		setTableKey(prevKey => prevKey + 1);
+		fetchData();
 	};
 
 	return (
@@ -179,7 +194,7 @@ const CompanyTable = () => {
 					isAdd={isAdd}
 				/>
 			)}
-			<div className="ag-theme-quartz" key={tableKey}>
+			<div className="ag-theme-quartz">
 				<AgGridReact
 					rowData={rowData}
 					columnDefs={columnDefinitions}
@@ -191,6 +206,13 @@ const CompanyTable = () => {
 					suppressClickEdit={true}
 				/>
 			</div>
+			<Modal
+				isOpen={isModalOpen}
+				onClose={closeModal}
+				onConfirm={onConfirmDelete}
+				message="Are you sure you want to delete this company?"
+				buttonTitle="Delete"
+			/>
 		</>
 	);
 };

@@ -97,17 +97,18 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 			},
 			bond: formData.bond,
 		};
-		const res = await (isAdd ? actionFunc(newCompany) : actionFunc(initialData._id, newCompany));
-		const successMessage = isAdd ? 'Company added successfully' : 'Company updated successfully';
-		const errorMessage = isAdd ? 'Error adding company' : 'Error updating company';
-		const toastContent =
-			res.status === 200 ? (
-				<ToastContent res="Success" message={successMessage} />
-			) : (
-				<ToastContent res="Error" message={errorMessage} />
-			);
-		toast(res.status === 200 ? toast.success : toast.error)(toastContent, { style });
-		handleFormClose();
+		try {
+			const res = isAdd ? await actionFunc(newCompany) : await actionFunc(initialData._id, newCompany);
+			if (res.status === 200)
+				toast.success(<ToastContent res="Success" message={`Company ${isAdd ? 'added' : 'updated'} successfully`} />, {
+					style,
+				});
+			else toast.error(<ToastContent res="Error" message="An unexpected error occurred" />, { style });
+			handleFormClose();
+		} catch (error) {
+			console.error('Error:', error);
+			toast.error(<ToastContent res="Error" message="An unexpected error occurred" />, { style });
+		}
 	};
 
 	return (
@@ -158,6 +159,17 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 									onChange={e => handleChange('interviewShortlist', e.target.value)}
 								/>
 							</div>
+							<div className="form-group">
+								<label htmlFor="dateOfOffer">Date of Offer</label>
+								<input
+									type="date"
+									id="dateOfOffer"
+									className="form-control"
+									placeholder="Date of Offer"
+									value={formData.dateOfOffer}
+									onChange={e => handleChange('dateOfOffer', e.target.value)}
+								/>
+							</div>
 						</div>
 
 						<div className="form-group">
@@ -168,18 +180,6 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 								placeholder="(Comma separated roll numbers of selected students)"
 								value={formData.selectedStudents.join(', ')}
 								onChange={e => handleSelectedStudentsChange(e.target.value)}
-							/>
-						</div>
-
-						<div className="form-group">
-							<label htmlFor="dateOfOffer">Date of Offer</label>
-							<input
-								type="date"
-								id="dateOfOffer"
-								className="form-control"
-								placeholder="Date of Offer"
-								value={formData.dateOfOffer}
-								onChange={e => handleChange('dateOfOffer', e.target.value)}
 							/>
 						</div>
 
@@ -299,19 +299,20 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 									onChange={e => handleChange('ctcBase', e.target.value)}
 								/>
 							</div>
+
+							<div className="form-group">
+								<label htmlFor="bond">Bond</label>
+								<input
+									type="number"
+									id="bond"
+									className="form-control"
+									placeholder="Bond in Months"
+									value={formData.bond}
+									onChange={e => handleChange('bond', e.target.value)}
+								/>
+							</div>
 						</div>
 
-						<div className="form-group">
-							<label htmlFor="bond">Bond</label>
-							<input
-								type="number"
-								id="bond"
-								className="form-control"
-								placeholder="Bond in Months"
-								value={formData.bond}
-								onChange={e => handleChange('bond', e.target.value)}
-							/>
-						</div>
 						<div className="company-form__buttons">
 							<button type="submit" className="btn-add">
 								{isAdd ? 'Add' : 'Update'}

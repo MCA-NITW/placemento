@@ -10,6 +10,7 @@ import { PiSignOutBold } from 'react-icons/pi';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import classes from './Navbar.module.css';
+import Modal from '../Modal/Modal';
 
 const NavBar = () => {
 	const [navItems, setNavItems] = useState([]);
@@ -82,9 +83,20 @@ const NavBar = () => {
 		}
 	}, [isAuthenticated]);
 
-	const onSignOut = () => {
+	const [isModalOpen, setIsModalOpen] = useState(false);
+
+	const onSignOutClick = () => {
+		setIsModalOpen(true);
+	};
+
+	const closeModal = () => {
+		setIsModalOpen(false);
+	};
+
+	const onConfirmSignOut = () => {
 		localStorage.removeItem('token');
 		navigate('/');
+		closeModal();
 	};
 
 	return (
@@ -105,10 +117,17 @@ const NavBar = () => {
 						</NavLink>
 					))}
 					{isAuthenticated && (
-						<div className={classes['nav__signout']} aria-label="Sign Out" onClick={onSignOut}>
+						<div className={classes['nav__signout']} aria-label="Sign Out" onClick={onSignOutClick}>
 							<PiSignOutBold />
 						</div>
 					)}
+					<Modal
+						isOpen={isModalOpen}
+						onClose={closeModal}
+						onConfirm={onConfirmSignOut}
+						message="Are you sure you want to sign out?"
+						buttonTitle="Sign Out"
+					/>
 				</div>
 			</nav>
 			<Outlet />
