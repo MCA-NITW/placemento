@@ -2,11 +2,13 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import { AgGridReact } from 'ag-grid-react';
 import { useCallback, useMemo, useState } from 'react';
+import ReactDOM from 'react-dom';
 import { MdDelete, MdEdit } from 'react-icons/md';
 import { addCompany, deleteCompany, getCompanies, getCompany, updateCompany } from '../../api/companyApi';
 import Modal from '../../components/Modal/Modal.jsx';
 import getUserRole from '../../utils/role.js';
 import CompanyForm from './CompanyForm';
+import './CompanyTable.css';
 
 const CompanyTable = () => {
 	const [companies, setCompanies] = useState([]);
@@ -180,20 +182,33 @@ const CompanyTable = () => {
 		if (fetch) fetchData();
 	};
 
+	const renderCompanyForm = () => {
+		if (!isFormOpen) return null;
+		const modalRoot = document.getElementById('form-root');
+		return ReactDOM.createPortal(
+			<div className="modal" id="companyFormModal">
+				<div className="modal-dialog">
+					<div className="modal-content">
+						<CompanyForm
+							actionFunc={isAdd ? addCompany : updateCompany}
+							initialData={isAdd ? null : companyData}
+							handleFormClose={handleCloseForm}
+							isAdd={isAdd}
+						/>
+					</div>
+				</div>
+			</div>,
+			modalRoot,
+		);
+	};
+
 	return (
 		<>
 			<h1 className="page-heading">Companies</h1>
 			<button className="btn-primary" onClick={handleAddCompanyClick}>
 				Add Company
 			</button>
-			{isFormOpen && (
-				<CompanyForm
-					actionFunc={isAdd ? addCompany : updateCompany}
-					initialData={isAdd ? null : companyData}
-					handleFormClose={handleCloseForm}
-					isAdd={isAdd}
-				/>
-			)}
+			{renderCompanyForm()}
 			<div className="ag-theme-quartz">
 				<AgGridReact
 					rowData={rowData}

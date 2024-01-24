@@ -1,0 +1,99 @@
+/* Form */
+.company-form {
+	display: flex;
+	flex-direction: column;
+	gap: 7.5px;
+	text-align: center;
+	width: 100%;
+}
+
+.input-group-out {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	text-align: center;
+	width: 100%;
+}
+
+.input-group {
+	display: flex;
+	flex-direction: row;
+	gap: 5px;
+	width: 100%;
+}
+
+.form-group {
+	display: flex;
+	flex-direction: row;
+	gap: 10px;
+	align-items: center;
+	justify-content: center;
+	background-color: var(--color-bg-variant);
+	padding: 8px;
+	border-radius: 5px;
+	width: 100%;
+	text-wrap: nowrap;
+}
+
+.form-group label {
+	flex: 0 0 100px;
+	font-size: 13px;
+	text-align: right;
+	font-weight: 600;
+	max-width: fit-content;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+	flex: 1 1 auto;
+	padding: 5px 10px;
+	border: none;
+	border-radius: 5px;
+	background-color: var(--color-bg);
+	color: var(--color-primary);
+	font-weight: 600;
+	width: 100%;
+}
+
+.form-group textarea {
+	resize: none;
+	height: 30px;
+}
+
+.form-group label {
+	flex: 0 0 100px;
+	text-align: right;
+	font-weight: 600;
+}
+
+.company-form__buttons {
+	display: flex;
+	flex-direction: row;
+	gap: 5px;
+	justify-content: center;
+	width: 100%;
+}
+
+.company-form__buttons button {
+	flex: 1 1 auto;
+	padding: 8px 15px;
+	border: none;
+	border-radius: 5px;
+	background-color: var(--color-bg);
+	color: var(--color-primary);
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.company-form__buttons button:hover {
+	background-color: var(--color-bg-variant);
+}
+
+@media screen and (max-width: 600px) {
+	.input-group {
+		flex-direction: column;
+		gap: 5px;
+	}
+}

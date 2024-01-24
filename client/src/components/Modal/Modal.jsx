@@ -14,7 +14,7 @@ const Modal = ({ isOpen, onClose, onConfirm, message, buttonTitle }) => {
 				</div>
 			</div>
 		</div>,
-		document.getElementById('root'),
+		document.getElementById('modal-root'),
 	);
 };
 

@@ -1,4 +1,3 @@
-import './Companies.css';
 import CompanyTable from './CompanyTable';
 
 const Companies = () => {
