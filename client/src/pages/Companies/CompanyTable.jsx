@@ -28,7 +28,7 @@ const CompanyTable = () => {
 		}
 	}, []);
 
-	const handleDeleteButtonClick = id => {
+	const handleDeleteButtonClick = (id) => {
 		setIsModalOpen(true);
 		setIdToDelete(id);
 	};
@@ -43,7 +43,7 @@ const CompanyTable = () => {
 		}
 	};
 
-	const handleEditButtonClick = async id => {
+	const handleEditButtonClick = async (id) => {
 		setIsAdd(false);
 		const response = await getCompany(id);
 		setCompanyData(response.data);
@@ -66,15 +66,15 @@ const CompanyTable = () => {
 
 	const generateDateColumn = (field, headerName, width, sortable = true, resizable = true) => ({
 		...generateColumn(field, headerName, width, sortable, resizable),
-		valueFormatter: params =>
+		valueFormatter: (params) =>
 			params.value
 				? new Date(params.value).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
 				: '',
 	});
 
-	const formatCutoff = cutoff => (cutoff.cgpa ? `${cutoff.cgpa} CGPA` : `${cutoff.percentage}%`);
+	const formatCutoff = (cutoff) => (cutoff.cgpa ? `${cutoff.cgpa} CGPA` : `${cutoff.percentage}%`);
 
-	const deleteButtonRenderer = params => {
+	const deleteButtonRenderer = (params) => {
 		return (
 			<button className="btn--icon--del" onClick={() => handleDeleteButtonClick(params.data.id)}>
 				<MdDelete />
@@ -82,7 +82,7 @@ const CompanyTable = () => {
 		);
 	};
 
-	const editButtonRenderer = params => {
+	const editButtonRenderer = (params) => {
 		return (
 			<button className="btn--icon--edit" onClick={() => handleEditButtonClick(params.data.id)}>
 				<MdEdit />
@@ -142,13 +142,13 @@ const CompanyTable = () => {
 			object: {
 				baseDataType: 'object',
 				extendsDataType: 'object',
-				valueParser: params => ({ name: params.newValue }),
-				valueFormatter: params => (params.value == null ? '' : params.value.name),
+				valueParser: (params) => ({ name: params.newValue }),
+				valueFormatter: (params) => (params.value == null ? '' : params.value.name),
 			},
 		};
 	}, []);
 
-	const mapCompanyData = company => ({
+	const mapCompanyData = (company) => ({
 		id: company._id,
 		name: company.name,
 		status: company.status,
@@ -175,7 +175,7 @@ const CompanyTable = () => {
 		setIsFormOpen(true);
 	};
 
-	const handleCloseForm = fetch => {
+	const handleCloseForm = (fetch) => {
 		setIsFormOpen(false);
 		if (fetch) fetchData();
 	};

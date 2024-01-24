@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 
-const formatDate = date => {
+const formatDate = (date) => {
 	const year = date.getFullYear();
 	const month = (date.getMonth() + 1).toString().padStart(2, '0');
 	const day = date.getDate().toString().padStart(2, '0');
 	return `${year}-${month}-${day}`;
 };
 
-const getDefaultFormData = initialData => ({
+const getDefaultFormData = (initialData) => ({
 	name: initialData?.name || '',
 	status: initialData?.status || 'upcoming',
 	interviewShortlist: initialData?.interviewShortlist || 0,
@@ -49,29 +49,29 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 	const [formData, setFormData] = useState(getDefaultFormData(initialData));
 
 	const handleChange = (field, value) => {
-		setFormData(prevData => ({ ...prevData, [field]: value }));
+		setFormData((prevData) => ({ ...prevData, [field]: value }));
 	};
 
-	const handleLocationsChange = value => {
+	const handleLocationsChange = (value) => {
 		handleChange(
 			'locations',
-			value.split(',').map(loc => loc.trim()),
+			value.split(',').map((loc) => loc.trim()),
 		);
 	};
 
-	const handleSelectedStudentsChange = value => {
+	const handleSelectedStudentsChange = (value) => {
 		handleChange(
 			'selectedStudents',
-			value.split(',').map(rollNo => rollNo.trim()),
+			value.split(',').map((rollNo) => rollNo.trim()),
 		);
 	};
 
-	const processCutoff = value => ({
+	const processCutoff = (value) => ({
 		cgpa: value <= 10 ? value : 0,
 		percentage: value > 10 ? value : 0,
 	});
 
-	const handleSubmit = async e => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 
 		const newCompany = {
@@ -124,7 +124,7 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 								className="form-control"
 								placeholder="Company Name"
 								value={formData.name}
-								onChange={e => handleChange('name', e.target.value)}
+								onChange={(e) => handleChange('name', e.target.value)}
 								required
 							/>
 						</div>
@@ -135,7 +135,7 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 								id="status"
 								className="form-select"
 								value={formData.status}
-								onChange={e => handleChange('status', e.target.value)}
+								onChange={(e) => handleChange('status', e.target.value)}
 							>
 								<option value="" disabled>
 									Select Status
@@ -156,7 +156,7 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 									className="form-control"
 									placeholder="Interview/Intern Shortlist"
 									value={formData.interviewShortlist}
-									onChange={e => handleChange('interviewShortlist', e.target.value)}
+									onChange={(e) => handleChange('interviewShortlist', e.target.value)}
 								/>
 							</div>
 							<div className="form-group">
@@ -167,7 +167,7 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 									className="form-control"
 									placeholder="Date of Offer"
 									value={formData.dateOfOffer}
-									onChange={e => handleChange('dateOfOffer', e.target.value)}
+									onChange={(e) => handleChange('dateOfOffer', e.target.value)}
 								/>
 							</div>
 						</div>
@@ -179,7 +179,7 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 								className="form-control"
 								placeholder="(Comma separated roll numbers of selected students)"
 								value={formData.selectedStudents.join(', ')}
-								onChange={e => handleSelectedStudentsChange(e.target.value)}
+								onChange={(e) => handleSelectedStudentsChange(e.target.value)}
 							/>
 						</div>
 
@@ -190,7 +190,7 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 								className="form-control"
 								placeholder="Locations  (Separate multiple locations with commas)"
 								value={formData.locations.join(', ')}
-								onChange={e => handleLocationsChange(e.target.value)}
+								onChange={(e) => handleLocationsChange(e.target.value)}
 							/>
 						</div>
 
@@ -204,7 +204,7 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 										className="form-control"
 										placeholder="Cutoff PG"
 										value={formData.cutoff_pg}
-										onChange={e => handleChange('cutoff_pg', e.target.value)}
+										onChange={(e) => handleChange('cutoff_pg', e.target.value)}
 									/>
 								</div>
 								<div className="form-group">
@@ -215,7 +215,7 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 										className="form-control"
 										placeholder="Cutoff UG"
 										value={formData.cutoff_ug}
-										onChange={e => handleChange('cutoff_ug', e.target.value)}
+										onChange={(e) => handleChange('cutoff_ug', e.target.value)}
 									/>
 								</div>
 							</div>
@@ -228,7 +228,7 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 										className="form-control"
 										placeholder="Cutoff 12"
 										value={formData.cutoff_12}
-										onChange={e => handleChange('cutoff_12', e.target.value)}
+										onChange={(e) => handleChange('cutoff_12', e.target.value)}
 									/>
 								</div>
 
@@ -240,7 +240,7 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 										className="form-control"
 										placeholder="Cutoff 10"
 										value={formData.cutoff_10}
-										onChange={e => handleChange('cutoff_10', e.target.value)}
+										onChange={(e) => handleChange('cutoff_10', e.target.value)}
 									/>
 								</div>
 							</div>
@@ -252,7 +252,7 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 								id="typeOfOffer"
 								className="form-select"
 								value={formData.typeOfOffer}
-								onChange={e => handleChange('typeOfOffer', e.target.value)}
+								onChange={(e) => handleChange('typeOfOffer', e.target.value)}
 							>
 								<option value="" disabled>
 									Select Type of Offer
@@ -272,7 +272,7 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 								className="form-control"
 								placeholder="Profile"
 								value={formData.profile}
-								onChange={e => handleChange('profile', e.target.value)}
+								onChange={(e) => handleChange('profile', e.target.value)}
 							/>
 						</div>
 
@@ -285,7 +285,7 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 									className="form-control"
 									placeholder="CTC"
 									value={formData.ctc}
-									onChange={e => handleChange('ctc', e.target.value)}
+									onChange={(e) => handleChange('ctc', e.target.value)}
 								/>
 							</div>
 							<div className="form-group">
@@ -296,7 +296,7 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 									className="form-control"
 									placeholder="CTC Base"
 									value={formData.ctcBase}
-									onChange={e => handleChange('ctcBase', e.target.value)}
+									onChange={(e) => handleChange('ctcBase', e.target.value)}
 								/>
 							</div>
 
@@ -308,7 +308,7 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 									className="form-control"
 									placeholder="Bond in Months"
 									value={formData.bond}
-									onChange={e => handleChange('bond', e.target.value)}
+									onChange={(e) => handleChange('bond', e.target.value)}
 								/>
 							</div>
 						</div>

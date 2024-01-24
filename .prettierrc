@@ -6,6 +6,13 @@
 	"printWidth": 120,
 	"trailingComma": "all",
 	"bracketSpacing": true,
-	"arrowParens": "avoid",
-	"endOfLine": "auto"
+	"arrowParens": "always",
+	"endOfLine": "auto",
+	"jsxSingleQuote": false,
+	"jsxBracketSameLine": false,
+	"quoteProps": "as-needed",
+	"proseWrap": "always",
+	"htmlWhitespaceSensitivity": "css",
+	"vueIndentScriptAndStyle": true,
+	"embeddedLanguageFormatting": "auto"
 }

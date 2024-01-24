@@ -5,7 +5,7 @@ const logger = require('../utils/logger');
 
 const saltRounds = 10;
 
-const validateFields = user => {
+const validateFields = (user) => {
 	const errorMessages = [];
 	if (!user.name) errorMessages.push('Name is required.');
 	if (!user.email.endsWith('@student.nitw.ac.in')) errorMessages.push('Enter a valid NITW email.');

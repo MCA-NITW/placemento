@@ -7,24 +7,24 @@ const axiosInstance = axios.create({
 
 // Add a request interceptor to update the Authorization header with the latest token
 axiosInstance.interceptors.request.use(
-	config => {
+	(config) => {
 		const token = localStorage.getItem('token');
 		if (token) {
 			config.headers.Authorization = `Bearer ${token}`;
 		}
 		return config;
 	},
-	error => {
+	(error) => {
 		return Promise.reject(error);
 	},
 );
 
 export const getCompanies = () => axiosInstance.get('/companies/view');
 
-export const getCompany = id => axiosInstance.get(`/companies/view/${id}`);
+export const getCompany = (id) => axiosInstance.get(`/companies/view/${id}`);
 
-export const addCompany = company => axiosInstance.post('/companies/add', company);
+export const addCompany = (company) => axiosInstance.post('/companies/add', company);
 
 export const updateCompany = (id, company) => axiosInstance.put(`/companies/update/${id}`, company);
 
-export const deleteCompany = id => axiosInstance.delete(`/companies/delete/${id}`);
+export const deleteCompany = (id) => axiosInstance.delete(`/companies/delete/${id}`);

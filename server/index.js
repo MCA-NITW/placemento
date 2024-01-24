@@ -17,7 +17,7 @@ const uri = process.env.DB_CONNECTION_STRING;
 mongoose
 	.connect(uri)
 	.then(() => console.log('Database connected!'))
-	.catch(err => console.log(err));
+	.catch((err) => console.log(err));
 
 app.use(express.json());
 app.use(cors());

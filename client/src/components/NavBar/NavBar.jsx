@@ -25,11 +25,11 @@ const NavBar = () => {
 			};
 			axios
 				.get('http://localhost:5000/profile', { headers })
-				.then(response => {
+				.then((response) => {
 					console.log(response);
 					setIsAuthenticated(true);
 				})
-				.catch(error => {
+				.catch((error) => {
 					console.log(error);
 					setIsAuthenticated(false);
 				});
@@ -106,7 +106,7 @@ const NavBar = () => {
 					<span>MCA</span>
 				</NavLink>
 				<div className={classes['nav__list']}>
-					{navItems.map(item => (
+					{navItems.map((item) => (
 						<NavLink
 							to={item.to}
 							className={({ isActive }) => (isActive ? classes.active : undefined)}
