@@ -4,9 +4,9 @@ import { AgGridReact } from 'ag-grid-react';
 import { useCallback, useMemo, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { MdDelete, MdEdit } from 'react-icons/md';
-import { addCompany, deleteCompany, getCompanies, getCompany, updateCompany } from '../../api/companyApi';
-import Modal from '../../components/Modal/Modal.jsx';
+import { addCompany, deleteCompany, getCompanies, getCompany, updateCompany } from '../../api/companyApi.jsx';
 import getUserRole from '../../utils/role.js';
+import Modal from '../Modal/Modal.jsx';
 import CompanyForm from './CompanyForm';
 import './CompanyTable.css';
 

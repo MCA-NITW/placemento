@@ -1,4 +1,4 @@
-import CompanyTable from './CompanyTable';
+import CompanyTable from '../../components/Company/CompanyTable';
 
 const Companies = () => {
 	return (
