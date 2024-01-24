@@ -117,9 +117,9 @@ const NavBar = () => {
 						</NavLink>
 					))}
 					{isAuthenticated && (
-						<div className={classes['nav__signout']} aria-label="Sign Out" onClick={onSignOutClick}>
+						<button className={classes['nav__signout']} aria-label="Sign Out" onClick={onSignOutClick}>
 							<PiSignOutBold />
-						</div>
+						</button>
 					)}
 					<Modal
 						isOpen={isModalOpen}
