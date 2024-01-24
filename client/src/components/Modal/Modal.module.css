@@ -38,26 +38,3 @@
 	align-items: center;
 	gap: 20px;
 }
-
-.modal button {
-	width: 100%;
-	padding: 10px 20px;
-	border-radius: 0.5rem;
-	border: none;
-	cursor: pointer;
-	font-size: 16px;
-	font-weight: 500;
-	transition: all 0.3s ease;
-}
-
-.modal button:hover {
-	transform: scale(1.05);
-}
-
-.modal button:first-child {
-	background-color: var(--color-primary);
-}
-
-.modal button:last-child {
-	background-color: #e74c3c;
-}

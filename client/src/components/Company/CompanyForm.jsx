@@ -312,10 +312,10 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 			</div>
 
 			<div className="company-form__buttons">
-				<button type="submit" className="btn-add">
+				<button type="submit" className="btn btn-primary">
 					{isAdd ? 'Add' : 'Update'}
 				</button>
-				<button type="button" className="btn-close" onClick={() => handleFormClose(false)}>
+				<button type="button" className="btn btn-primary" onClick={() => handleFormClose(false)}>
 					Cancel
 				</button>
 			</div>

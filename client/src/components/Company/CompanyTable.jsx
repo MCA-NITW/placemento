@@ -52,13 +52,12 @@ const CompanyTable = () => {
 		setIsFormOpen(true);
 	};
 
-	const generateColumn = (field, headerName, width, sortable = true, resizable = true, pinned = null) => ({
+	const generateColumn = (field, headerName, width, sortable = true, resizable = true) => ({
 		field,
 		headerName,
 		width,
 		sortable,
 		resizable,
-		pinned,
 	});
 
 	const generateNestedColumn = (headerName, children) => ({
@@ -92,43 +91,45 @@ const CompanyTable = () => {
 		);
 	};
 
-	const deleteColumn = () => {
+	const actionColumn = (actionName, actionButtonRenderer) => {
 		return {
-			headerName: 'Del',
+			...generateColumn(null, actionName, 55, false, false),
 			pinned: 'left',
-			width: 50,
-			resizable: false,
-			sortable: false,
-			cellRenderer: deleteButtonRenderer,
+			cellRenderer: actionButtonRenderer,
 			...(userRole !== 'admin' && userRole !== 'placementCoordinator' && { initialHide: true }),
 		};
 	};
 
+	const deleteColumn = () => {
+		return actionColumn('Del', deleteButtonRenderer);
+	};
+
 	const editColumn = () => {
-		return {
-			headerName: 'Edit',
-			pinned: 'left',
-			width: 50,
-			resizable: false,
-			sortable: false,
-			cellRenderer: editButtonRenderer,
-			...(userRole !== 'admin' && userRole !== 'placementCoordinator' && { initialHide: true }),
-		};
+		return actionColumn('Edit', editButtonRenderer);
 	};
 
 	const columnDefinitions = [
 		generateNestedColumn('Actions', [deleteColumn(), editColumn()]),
-		generateColumn('name', 'Name', 150, true, true, 'left'),
-		generateColumn('status', 'Status', 100, false, true),
-		generateColumn('typeOfOffer', 'Offer', 90, true, true),
+		{
+			...generateColumn('name', 'Name', 150),
+			pinned: 'left',
+		},
+		generateColumn('status', 'Status', 100, false),
+		generateColumn('typeOfOffer', 'Offer', 90),
 		generateColumn('profile', 'Profile', 150),
-		generateColumn('interviewShortlist', 'Shortlists', 120, true, true),
-		generateColumn('selectedStudents', 'Selects', 100, true, true),
-		generateDateColumn('dateOfOffer', 'Offer Date', 125, true, true),
-		generateColumn('locations', 'Locations', 130, true, true),
+		generateColumn('interviewShortlist', 'Shortlists', 120),
+		generateColumn('selectedStudents', 'Selects', 100),
+		generateDateColumn('dateOfOffer', 'Offer Date', 125),
+		generateColumn('locations', 'Locations', 130),
 		generateNestedColumn('CTC (LPA)', [
-			generateColumn('ctc', 'CTC', 80, true, false),
-			generateColumn('ctcBase', 'Base', 85, true, false),
+			{
+				...generateColumn('ctc', 'CTC', 80, true, false),
+				valueFormatter: (params) => params.value.toFixed(2),
+			},
+			{
+				...generateColumn('ctcBase', 'Base', 80, true, false),
+				valueFormatter: (params) => params.value.toFixed(2),
+			},
 		]),
 		generateNestedColumn('Cutoffs', [
 			generateColumn('cutoff_pg', 'PG', 80, false, false),
@@ -136,7 +137,7 @@ const CompanyTable = () => {
 			generateColumn('cutoff_12', '12', 80, false, false),
 			generateColumn('cutoff_10', '10', 80, false, false),
 		]),
-		generateColumn('bond', 'Bond', 60, false, true),
+		generateColumn('bond', 'Bond', 60, false, false),
 	];
 
 	const dataTypeDefinitions = useMemo(() => {
@@ -188,14 +189,12 @@ const CompanyTable = () => {
 		return ReactDOM.createPortal(
 			<div className="modal" id="companyFormModal">
 				<div className="modal-dialog">
-					<div className="modal-content">
-						<CompanyForm
-							actionFunc={isAdd ? addCompany : updateCompany}
-							initialData={isAdd ? null : companyData}
-							handleFormClose={handleCloseForm}
-							isAdd={isAdd}
-						/>
-					</div>
+					<CompanyForm
+						actionFunc={isAdd ? addCompany : updateCompany}
+						initialData={isAdd ? null : companyData}
+						handleFormClose={handleCloseForm}
+						isAdd={isAdd}
+					/>
 				</div>
 			</div>,
 			modalRoot,
@@ -204,8 +203,7 @@ const CompanyTable = () => {
 
 	return (
 		<>
-			<h1 className="page-heading">Companies</h1>
-			<button className="btn-primary" onClick={handleAddCompanyClick}>
+			<button className="btn btn-primary" onClick={handleAddCompanyClick} style={{ width: '150px' }}>
 				Add Company
 			</button>
 			{renderCompanyForm()}

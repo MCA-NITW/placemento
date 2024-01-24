@@ -5,6 +5,12 @@
 	gap: 7.5px;
 	text-align: center;
 	width: 100%;
+	max-width: 700px;
+	background: var(--color-bg);
+	padding: 20px;
+	border-radius: 1rem;
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+	border: 1px solid var(--color-primary);
 }
 
 .input-group-out {
@@ -73,22 +79,7 @@
 	gap: 5px;
 	justify-content: center;
 	width: 100%;
-}
-
-.company-form__buttons button {
-	flex: 1 1 auto;
-	padding: 8px 15px;
-	border: none;
-	border-radius: 5px;
-	background-color: var(--color-bg);
-	color: var(--color-primary);
-	font-size: 14px;
-	font-weight: 600;
-	cursor: pointer;
-}
-
-.company-form__buttons button:hover {
-	background-color: var(--color-bg-variant);
+	margin-top: 10px;
 }
 
 @media screen and (max-width: 600px) {

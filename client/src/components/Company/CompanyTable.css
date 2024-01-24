@@ -1,23 +1,5 @@
 /* Table CSS */
 
-/* Page Heading */
-.page-heading {
-	font-size: 24px;
-	font-weight: 600;
-	margin-bottom: 20px;
-}
-
-/* Add Company Button */
-.btn-primary {
-	margin: 0 10px;
-	background-color: var(--color-primary);
-	color: var(--color-bg);
-	padding: 10px 15px;
-	border: none;
-	border-radius: 5px;
-	cursor: pointer;
-}
-
 /* Modal */
 .modal {
 	position: fixed;
@@ -34,19 +16,11 @@
 }
 
 .modal-dialog {
-	max-width: 700px;
 	width: 100%;
-	max-height: calc(100vh - 8rem);
-	overflow-y: auto; /* enable vertical scrolling if content exceeds the height */
+	overflow-y: auto;
 	display: flex;
 	flex-direction: column;
-	background-color: var(--color-primary);
-	border-radius: 5px;
-	padding: 12.5px;
-}
-
-.modal-content {
-	width: 100%;
+	align-items: center;
 }
 
 /* Add styling for the close button if needed */
@@ -71,6 +45,9 @@
 	--ag-header-foreground-color: var(--color-primary);
 	--ag-header-background-color: var(--color-bg);
 	--ag-odd-row-background-color: var(--color-bg);
+	--ag-borders: 3px solid;
+	--ag-border-color: var(--color-primary);
+	--ag-wrapper-border-radius: 1rem;
 	--ag-header-cell-hover-background-color: var(--color-bg-variant);
 	--ag-header-cell-moving-background-color: var(--color-primary-variant);
 	--ag-font-family: cursive;
@@ -83,12 +60,18 @@
 	--ag-font-size: 14px;
 	--ag-row-hover-color: var(--color-primary-variant);
 	--ag-cell-horizontal-border: 1px dotted var(--color-primary);
-	--ag-header-column-resize-handle-color: var(--color-primary);
+	--ag-header-column-resize-handle-color: var(--color-bg);
 	--ag-cell-horizontal-padding: 10px;
+}
+
+.ag-header-cell,
+.ag-header-group-cell-with-group {
+	border-right: 1px solid var(--ag-border-color);
 }
 
 .ag-theme-quartz .ag-header-group-cell {
 	font-size: 16px;
+	font-weight: 600;
 }
 .ag-theme-quartz .ag-header-cell {
 	font-size: 15px;

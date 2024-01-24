@@ -36,6 +36,7 @@ html {
 ::-webkit-scrollbar {
 	width: 0.5rem;
 	height: 0.5rem;
+	border-radius: 1;
 }
 ::-webkit-scrollbar-track {
 	background: var(--color-bg);
@@ -57,9 +58,7 @@ body {
 	line-height: 1.7;
 	background: var(--color-bg);
 	user-select: none;
-}
-.root {
-	min-height: 100vh;
+	overflow-x: hidden;
 }
 
 .container {
@@ -76,8 +75,52 @@ body {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	justify-content: flex-start;
 }
 
-.App {
-	position: relative;
+.container h1 {
+	font-size: 24px;
+	font-weight: 600;
+	margin-bottom: 20px;
+	color: var(--color-primary);
+}
+
+.btn {
+	width: 100%;
+	font:
+		1em Comic Sans MS,
+		Comic Sans,
+		cursive;
+	padding: 10px 15px;
+	border: none;
+	border-radius: 0.5rem;
+	cursor: pointer;
+	transition: var(--transition);
+}
+
+.btn-primary {
+	background-color: var(--color-primary);
+	color: var(--color-bg);
+}
+
+.btn-primary:hover {
+	background-color: var(--color-primary-variant);
+}
+
+.btn-danger {
+	background-color: red;
+	color: var(--color-bg);
+}
+
+.btn-danger:hover {
+	background-color: var(--color-primary-variant);
+}
+
+.btn-primary-inverse {
+	background-color: var(--color-bg);
+	color: var(--color-primary);
+}
+
+.btn-primary-inverse:hover {
+	background-color: var(--color-bg-variant);
 }

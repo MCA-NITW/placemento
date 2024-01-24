@@ -9,8 +9,12 @@ const Modal = ({ isOpen, onClose, onConfirm, message, buttonTitle }) => {
 			<div className={classes.modal}>
 				<p>{message}</p>
 				<div className={classes['modal__buttons']}>
-					<button onClick={onConfirm}>{buttonTitle}</button>
-					<button onClick={onClose}>Cancel</button>
+					<button className="btn btn-danger" onClick={onConfirm}>
+						{buttonTitle}
+					</button>
+					<button className="btn btn-primary" onClick={onClose}>
+						Cancel
+					</button>
 				</div>
 			</div>
 		</div>,
