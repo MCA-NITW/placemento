@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
+import { useState } from 'react';
+import { toast } from 'react-toastify';
 
 const formatDate = (date) => {
 	const year = date.getFullYear();

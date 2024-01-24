@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
-import { FormFooter } from './FormFooter';
-import { signin, signup } from '../../api/authApi';
-import { toast } from 'react-toastify';
-import classes from './auth.module.css';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import PropTypes from 'prop-types';
+import { useState } from 'react';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { signin, signup } from '../../api/authApi';
+import { FormFooter } from './FormFooter';
+import classes from './auth.module.css';
 
 const ToastContent = ({ res, messages }) => (
 	<div>

@@ -9,10 +9,10 @@
 	"arrowParens": "always",
 	"endOfLine": "auto",
 	"jsxSingleQuote": false,
-	"jsxBracketSameLine": false,
 	"quoteProps": "as-needed",
 	"proseWrap": "always",
 	"htmlWhitespaceSensitivity": "css",
 	"vueIndentScriptAndStyle": true,
-	"embeddedLanguageFormatting": "auto"
+	"embeddedLanguageFormatting": "auto",
+	"plugins": ["prettier-plugin-organize-imports"]
 }

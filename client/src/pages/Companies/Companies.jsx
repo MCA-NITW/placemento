@@ -1,6 +1,5 @@
-import React from 'react';
-import CompanyTable from './CompanyTable';
 import './Companies.css';
+import CompanyTable from './CompanyTable';
 
 const Companies = () => {
 	return (

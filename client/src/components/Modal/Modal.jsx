@@ -1,7 +1,6 @@
-import React from 'react';
+import PropType from 'prop-types';
 import ReactDOM from 'react-dom';
 import classes from './Modal.module.css';
-import PropType from 'prop-types';
 
 const Modal = ({ isOpen, onClose, onConfirm, message, buttonTitle }) => {
 	if (!isOpen) return null;

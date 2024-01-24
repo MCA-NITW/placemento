@@ -1,12 +1,12 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
-import { getCompanies, deleteCompany, updateCompany, addCompany, getCompany } from '../../api/companyApi';
+import { AgGridReact } from 'ag-grid-react';
+import { useCallback, useMemo, useState } from 'react';
 import { MdDelete, MdEdit } from 'react-icons/md';
-import CompanyForm from './CompanyForm';
-import getUserRole from '../../utils/role.js';
+import { addCompany, deleteCompany, getCompanies, getCompany, updateCompany } from '../../api/companyApi';
 import Modal from '../../components/Modal/Modal.jsx';
+import getUserRole from '../../utils/role.js';
+import CompanyForm from './CompanyForm';
 
 const CompanyTable = () => {
 	const [companies, setCompanies] = useState([]);

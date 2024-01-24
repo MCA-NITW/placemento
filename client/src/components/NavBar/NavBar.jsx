@@ -1,16 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
-import { FaHome } from 'react-icons/fa';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import { BiStats } from 'react-icons/bi';
-import { RiTeamFill } from 'react-icons/ri';
-import { FaSignInAlt } from 'react-icons/fa';
-import { FaUsers } from 'react-icons/fa';
+import { FaHome, FaSignInAlt, FaUsers } from 'react-icons/fa';
 import { GoOrganization } from 'react-icons/go';
 import { PiSignOutBold } from 'react-icons/pi';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import classes from './Navbar.module.css';
+import { RiTeamFill } from 'react-icons/ri';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import Modal from '../Modal/Modal';
+import classes from './Navbar.module.css';
 
 const NavBar = () => {
 	const [navItems, setNavItems] = useState([]);

@@ -1,4 +1,3 @@
-import React from 'react';
 import AuthenticationForm from '../../components/AuthForms/AuthenticationForm';
 
 const Authentication = () => {
