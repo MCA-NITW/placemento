@@ -67,19 +67,23 @@
 .ag-header-cell,
 .ag-header-group-cell-with-group {
 	border-right: 1px solid var(--ag-border-color);
+	align-items: center;
+	justify-content: center;
+	font-size: 1rem;
 }
 
-.ag-theme-quartz .ag-header-group-cell {
+.ag-header-group-cell-with-group {
 	font-size: 16px;
 	font-weight: 600;
 }
-.ag-theme-quartz .ag-header-cell {
+
+.ag-header-cell {
 	font-size: 15px;
 }
 
-.btn--icon--del {
+.btn--icon--del,
+.btn--icon--edit {
 	background-color: transparent;
-	color: red;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -88,7 +92,13 @@
 	border: none;
 	border-radius: 5px;
 	cursor: pointer;
-	margin-top: 4px;
+	margin: 1px 0;
+	transition: all 0.3s ease-in-out;
+	font-size: 1rem;
+}
+
+.btn--icon--del {
+	color: red;
 }
 
 .btn--icon--del:hover {
@@ -97,17 +107,7 @@
 }
 
 .btn--icon--edit {
-	background-color: transparent;
 	color: var(--color-primary);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 100%;
-	aspect-ratio: 1/1;
-	border: none;
-	border-radius: 5px;
-	cursor: pointer;
-	margin-top: 4px;
 }
 
 .btn--icon--edit:hover {

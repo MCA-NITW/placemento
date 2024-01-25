@@ -6,6 +6,7 @@ const dotenv = require('dotenv');
 const authRoutes = require('./routes/authRoutes.js');
 const companyRoutes = require('./routes/companyRoutes.js');
 const { authenticateUser } = require('./middleware/authMiddleware.js');
+const statsRoutes = require('./routes/statsRoutes.js');
 
 dotenv.config();
 
@@ -27,6 +28,9 @@ app.use('/auth', authRoutes);
 
 // Use the companyRoutes only once
 app.use('/companies', companyRoutes);
+
+// Use the statsRoutes only once
+app.use('/stats', statsRoutes);
 
 // Example route for testing
 app.get('/', (req, res) => {

@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-// Define Company Schema
 const companySchema = new mongoose.Schema(
 	{
 		name: { type: String, required: true },
@@ -23,7 +22,6 @@ const companySchema = new mongoose.Schema(
 				cgpa: { type: Number, default: 0 },
 				percentage: { type: Number, default: 0 },
 			},
-
 			twelth: {
 				cgpa: { type: Number, default: 0 },
 				percentage: { type: Number, default: 0 },
@@ -39,6 +37,11 @@ const companySchema = new mongoose.Schema(
 			default: 'FTE',
 		},
 		profile: { type: String, default: '' },
+		profileCategory: {
+			type: String,
+			enum: ['Software', 'Analyst', 'Others'],
+			default: 'Others',
+		},
 		ctc: { type: Number, default: 0 },
 		ctcBreakup: {
 			base: { type: Number, default: 0 },
@@ -49,8 +52,6 @@ const companySchema = new mongoose.Schema(
 	{ timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } },
 );
 
-// Create Company model
 const Company = mongoose.model('Company', companySchema);
 
-// Export Company model
 module.exports = Company;

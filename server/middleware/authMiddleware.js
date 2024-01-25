@@ -4,19 +4,12 @@ const logger = require('../utils/logger');
 
 const authenticateUser = async (req, res, next) => {
 	try {
-		// console.log(req.headers);
 		const token = req.headers['authorization']?.split(' ')[1];
 
-		if (!token) {
-			throw new Error('Invalid or missing Authorization header');
-		}
-
+		if (!token) throw new Error('Invalid or missing Authorization header');
 		const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-		// Check if the token has expired
-		if (decoded.exp * 1000 < Date.now()) {
-			throw new Error('Token has expired');
-		}
+		if (decoded.exp * 1000 < Date.now()) throw new Error('Token has expired');
 
 		let user;
 		try {
@@ -26,18 +19,14 @@ const authenticateUser = async (req, res, next) => {
 			throw new Error('Error looking up user');
 		}
 
-		if (!user) {
-			throw new Error('User not found');
-		}
+		if (!user) throw new Error('User not found');
 
 		req.token = token;
 		req.user = user;
 		logger.info(`User ${user.email} authenticated`);
-
 		next();
 	} catch (error) {
 		logger.error(error.message);
-
 		if (error.name === 'TokenExpiredError' || error.name === 'JsonWebTokenError') {
 			res.status(401).json({ message: 'Unauthorized: Invalid or expired token' });
 		} else {

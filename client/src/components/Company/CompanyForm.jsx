@@ -23,6 +23,7 @@ const getDefaultFormData = (initialData) => ({
 	cutoff_10: initialData?.cutoffs?.tenth?.cgpa || initialData?.cutoffs?.tenth?.percentage || 0,
 	typeOfOffer: initialData?.typeOfOffer || 'FTE',
 	profile: initialData?.profile || '',
+	profileCategory: initialData?.profileCategory || '',
 	ctc: initialData?.ctc || 0.0,
 	ctcBase: initialData?.ctcBreakup?.base || 0.0,
 	bond: initialData?.bond || 0,
@@ -91,6 +92,7 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 			},
 			typeOfOffer: formData.typeOfOffer,
 			profile: formData.profile,
+			profileCategory: formData.profileCategory,
 			ctc: formData.ctc,
 			ctcBreakup: {
 				base: formData.ctcBase,
@@ -261,17 +263,34 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 					<option value="Intern">Intern</option>
 				</select>
 			</div>
-
-			<div className="form-group">
-				<label htmlFor="profile">Profile</label>
-				<input
-					type="text"
-					id="profile"
-					className="form-control"
-					placeholder="Profile"
-					value={formData.profile}
-					onChange={(e) => handleChange('profile', e.target.value)}
-				/>
+			<div className="input-group">
+				<div className="form-group">
+					<label htmlFor="profile">Profile</label>
+					<input
+						type="text"
+						id="profile"
+						className="form-control"
+						placeholder="Profile"
+						value={formData.profile}
+						onChange={(e) => handleChange('profile', e.target.value)}
+					/>
+				</div>
+				<div className="form-group">
+					<label htmlFor="profileCategory">Profile Category</label>
+					<select
+						id="profileCategory"
+						className="form-select"
+						value={formData.profileCategory}
+						onChange={(e) => handleChange('profileCategory', e.target.value)}
+					>
+						<option value="" disabled>
+							Select Profile Category
+						</option>
+						<option value="Software">Software</option>
+						<option value="Analyst">Analyst</option>
+						<option value="Others">Others</option>
+					</select>
+				</div>
 			</div>
 
 			<div className="input-group">

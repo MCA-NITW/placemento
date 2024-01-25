@@ -37,6 +37,7 @@ const userSchema = new mongoose.Schema(
 			cgpa: { type: Number, default: 0 },
 			percentage: { type: Number, default: 0 },
 		},
+		backlogs: { type: Number, default: 0 },
 		totalGapInAcademics: { type: Number, default: 0 },
 		placed: { type: Boolean, default: false },
 		placedAt: {
