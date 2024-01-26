@@ -25,7 +25,7 @@
 
 .Toastify__toast {
 	border-radius: 1rem;
-	background: var(--color-bg-variant);
+	background: var(--color-bg);
 	color: var(--color-white);
 }
 
