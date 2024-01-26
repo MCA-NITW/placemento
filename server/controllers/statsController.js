@@ -52,6 +52,8 @@ exports.getCTCStats = async (req, res) => {
 		const highestCTCPlaced = getHighestCTCPlaced(filterCompanies);
 		const highestCTCPlacedCompany = getHighestCTCCompany(filterCompanies, highestCTCPlaced).name;
 		const highestCTCPlacedStudent = getHighestCTCStudent(students, filterCompanies, highestCTCPlacedCompany).name;
+		const totalPlacedStudentsCTC = calculateTotalPlacedStudentsCTC(filterCompanies);
+		const avgCTC = totalPlacedStudentsCTC / calculateTotalPlacedStudents(filterCompanies);
 
 		res.status(200).json({
 			highestCTCOffered,
@@ -59,6 +61,8 @@ exports.getCTCStats = async (req, res) => {
 			highestCTCPlaced,
 			highestCTCPlacedCompany,
 			highestCTCPlacedStudent,
+			totalPlacedStudentsCTC,
+			avgCTC,
 		});
 	} catch (error) {
 		logger.error(error.message);
@@ -111,8 +115,6 @@ exports.getStudentStats = async (req, res) => {
 		const totalStudents = students.length;
 		const totalEligibleStudents = students.filter((student) => student.pg.cgpa >= 6.5 && student.backlogs === 0).length;
 		const totalPlacedStudents = calculateTotalPlacedStudents(filterCompanies);
-		const totalPlacedStudentsCTC = calculateTotalPlacedStudentsCTC(filterCompanies);
-		const avgCTC = calculateAverageCTC(totalPlacedStudentsCTC, totalPlacedStudents);
 		const totalVerifiedStudents = students.filter((student) => student.isVerified === true).length;
 		const totalUnverifiedStudents = students.filter((student) => student.isVerified === false).length;
 		const totalAdmins = students.filter((student) => student.role === 'admin').length;
@@ -122,8 +124,6 @@ exports.getStudentStats = async (req, res) => {
 			totalStudents,
 			totalEligibleStudents,
 			totalPlacedStudents,
-			totalPlacedStudentsCTC,
-			avgCTC,
 			totalVerifiedStudents,
 			totalUnverifiedStudents,
 			totalAdmins,

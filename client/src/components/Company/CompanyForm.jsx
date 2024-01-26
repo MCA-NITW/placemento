@@ -10,24 +10,51 @@ const formatDate = (date) => {
 	return `${year}-${month}-${day}`;
 };
 
-const getDefaultFormData = (initialData) => ({
-	name: initialData?.name || '',
-	status: initialData?.status || 'upcoming',
-	interviewShortlist: initialData?.interviewShortlist || 0,
-	selectedStudents: initialData?.selectedStudentsRollNo || [],
-	dateOfOffer: formatDate(initialData?.dateOfOffer ? new Date(initialData?.dateOfOffer) : new Date()),
-	locations: initialData?.locations || [],
-	cutoff_pg: initialData?.cutoffs?.pg?.cgpa || initialData?.cutoffs?.pg?.percentage || 0,
-	cutoff_ug: initialData?.cutoffs?.ug?.cgpa || initialData?.cutoffs?.ug?.percentage || 0,
-	cutoff_12: initialData?.cutoffs?.twelth?.cgpa || initialData?.cutoffs?.twelth?.percentage || 0,
-	cutoff_10: initialData?.cutoffs?.tenth?.cgpa || initialData?.cutoffs?.tenth?.percentage || 0,
-	typeOfOffer: initialData?.typeOfOffer || 'FTE',
-	profile: initialData?.profile || '',
-	profileCategory: initialData?.profileCategory || '',
-	ctc: initialData?.ctc || 0.0,
-	ctcBase: initialData?.ctcBreakup?.base || 0.0,
-	bond: initialData?.bond || 0,
-});
+const getDefaultFormData = (initialData) => {
+	const defaultData = {
+		name: '',
+		status: '',
+		interviewShortlist: 0,
+		selectedStudents: [],
+		dateOfOffer: formatDate(new Date()),
+		locations: [],
+		cutoff_pg: 0,
+		cutoff_ug: 0,
+		cutoff_12: 0,
+		cutoff_10: 0,
+		typeOfOffer: '',
+		profile: '',
+		profileCategory: '',
+		ctc: 0.0,
+		ctcBase: 0.0,
+		bond: 0,
+	};
+
+	if (initialData) {
+		defaultData.name = initialData.name || defaultData.name;
+		defaultData.status = initialData.status || defaultData.status;
+		defaultData.interviewShortlist = initialData.interviewShortlist || defaultData.interviewShortlist;
+		defaultData.selectedStudents = initialData.selectedStudentsRollNo || defaultData.selectedStudents;
+		defaultData.dateOfOffer = initialData.dateOfOffer
+			? formatDate(new Date(initialData.dateOfOffer))
+			: defaultData.dateOfOffer;
+		defaultData.locations = initialData.locations || defaultData.locations;
+		defaultData.cutoff_pg = initialData.cutoffs && (initialData.cutoffs.pg?.cgpa || initialData.cutoffs.pg?.percentage);
+		defaultData.cutoff_ug = initialData.cutoffs && (initialData.cutoffs.ug?.cgpa || initialData.cutoffs.ug?.percentage);
+		defaultData.cutoff_12 =
+			initialData.cutoffs && (initialData.cutoffs.twelth?.cgpa || initialData.cutoffs.twelth?.percentage);
+		defaultData.cutoff_10 =
+			initialData.cutoffs && (initialData.cutoffs.tenth?.cgpa || initialData.cutoffs.tenth?.percentage);
+		defaultData.typeOfOffer = initialData.typeOfOffer || defaultData.typeOfOffer;
+		defaultData.profile = initialData.profile || defaultData.profile;
+		defaultData.profileCategory = initialData.profileCategory || defaultData.profileCategory;
+		defaultData.ctc = initialData.ctc || defaultData.ctc;
+		defaultData.ctcBase = initialData.ctcBreakup?.base || defaultData.ctcBase;
+		defaultData.bond = initialData.bond || defaultData.bond;
+	}
+
+	return defaultData;
+};
 
 const ToastContent = ({ res, message }) => (
 	<div>

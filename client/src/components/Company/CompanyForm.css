@@ -41,14 +41,6 @@
 	text-wrap: nowrap;
 }
 
-.form-group label {
-	flex: 0 0 100px;
-	font-size: 13px;
-	text-align: right;
-	font-weight: 600;
-	max-width: fit-content;
-}
-
 .form-group input,
 .form-group select,
 .form-group textarea {
@@ -68,6 +60,9 @@
 }
 
 .form-group label {
+	font-size: 13px;
+	font-weight: 600;
+	max-width: fit-content;
 	flex: 0 0 100px;
 	text-align: right;
 	font-weight: 600;

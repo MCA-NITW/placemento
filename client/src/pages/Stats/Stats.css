@@ -40,14 +40,12 @@
 	flex-direction: row;
 	gap: 0.5rem;
 	border-radius: 0.5rem;
-	padding: 0.5rem;
 	background: var(--color-bg);
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-	display: flex;
-	flex-direction: row;
 	justify-content: space-between;
 	align-items: center;
 	height: 100%;
+	padding: 0.5rem;
 }
 
 .stats-section-item-left,
@@ -69,28 +67,38 @@
 	text-align: right;
 }
 
-.stats-section-item-right div {
+.stats-section-item-right-header,
+.stats-section-item-right-child,
+.stats-section-item-left-header,
+.stats-section-item-left-child {
 	flex: 1;
 	font-weight: 500;
 	background: var(--color-bg-variant);
 	border-radius: 0.5rem;
-	padding: 0rem;
 	height: 100%;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	align-items: flex-start;
-	border: 1px solid var(--color-primary);
 }
 
-.stats-section-item-right div:first-child {
+.stats-section-item-right-header,
+.stats-section-item-left-header {
 	font-size: 1.2rem;
-	text-align: left;
+	text-align: right;
 	color: var(--color-primary);
 }
 
-.stats-section-item-right div:last-child {
-	font-size: 0.8rem;
+.stats-section-item-right-header {
 	text-align: left;
+}
+
+.stats-section-item-right-child,
+.stats-section-item-left-child {
+	font-size: 0.8rem;
+	text-align: right;
 	color: var(--color-white);
+}
+
+.stats-section-item-right-child {
+	text-align: left;
 }
