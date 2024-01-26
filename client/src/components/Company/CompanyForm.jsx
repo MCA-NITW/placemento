@@ -57,12 +57,6 @@ ToastContent.propTypes = {
 	message: PropTypes.string.isRequired,
 };
 
-const style = {
-	backgroundColor: 'var(--color-bg)',
-	color: 'var(--color-white)',
-	borderRadius: '1rem',
-};
-
 const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 	const [formData, setFormData] = useState(getDefaultFormData(initialData));
 
@@ -110,14 +104,12 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 		try {
 			const res = isAdd ? await actionFunc(newCompany) : await actionFunc(initialData._id, newCompany);
 			if (res.status === 200)
-				toast.success(<ToastContent res="Success" message={`Company ${isAdd ? 'added' : 'updated'} successfully`} />, {
-					style,
-				});
-			else toast.error(<ToastContent res="Error" message="An unexpected error occurred" />, { style });
+				toast.success(<ToastContent res="Success" message={`Company ${isAdd ? 'added' : 'updated'} successfully`} />);
+			else toast.error(<ToastContent res="Error" message="An unexpected error occurred" />);
 			handleFormClose(true);
 		} catch (error) {
 			console.error('Error:', error);
-			toast.error(<ToastContent res="Error" message="An unexpected error occurred" />, { style });
+			toast.error(<ToastContent res="Error" message="An unexpected error occurred" />);
 		}
 	};
 

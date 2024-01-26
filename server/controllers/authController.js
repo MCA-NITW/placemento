@@ -53,6 +53,9 @@ const validateFields = (user) => {
 	if (user.totalGapInAcademics < 0 || user.totalGapInAcademics == null || user.totalGapInAcademics > 10)
 		errorMessages.push('Total gap in academics must be greater than or equal to 0.');
 
+	if (user.backlogs < 0 || user.backlogs == null || user.backlogs > 10)
+		errorMessages.push('Backlogs must be greater than or equal to 0.');
+
 	return errorMessages;
 };
 

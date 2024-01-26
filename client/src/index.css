@@ -8,6 +8,7 @@
 	box-sizing: border-box;
 	text-decoration: none;
 }
+
 :root {
 	--color-white: #fff;
 	--color-light: rgba(255, 255, 255, 0.6);
@@ -20,6 +21,12 @@
 	--color-bg-variant: #2c2c33;
 	--color-primary: #ffcc66;
 	--color-primary-variant: rgba(255, 204, 102, 0.5);
+}
+
+.Toastify__toast {
+	border-radius: 1rem;
+	background: var(--color-bg-variant);
+	color: var(--color-white);
 }
 
 html {

@@ -25,12 +25,6 @@ ToastContent.propTypes = {
 	messages: PropTypes.array.isRequired,
 };
 
-const style = {
-	backgroundColor: 'var(--color-bg)',
-	color: 'var(--color-white)',
-	borderRadius: '1rem',
-};
-
 const AuthenticationForm = () => {
 	const [name, setName] = useState('');
 	const [rollNo, setRollNo] = useState('');
@@ -45,6 +39,7 @@ const AuthenticationForm = () => {
 	const [sscCgpa, setSscCgpa] = useState();
 	const [sscPercentage, setSscPercentage] = useState();
 	const [totalGapInAcademics, setTotalGapInAcademics] = useState(0);
+	const [backlogs, setBacklogs] = useState(0);
 	const [currentStep, setCurrentStep] = useState(1);
 	const [params] = useSearchParams();
 	const navigate = useNavigate();
@@ -68,6 +63,7 @@ const AuthenticationForm = () => {
 					hsc: { cgpa: hscCgpa, percentage: hscPercentage },
 					ssc: { cgpa: sscCgpa, percentage: sscPercentage },
 					totalGapInAcademics,
+					backlogs: 0,
 				};
 
 		try {
@@ -82,7 +78,6 @@ const AuthenticationForm = () => {
 		toast.success(
 			<ToastContent res={isSignIn ? 'Sign In successful' : 'Sign Up successful'} messages={res.data.messages} />,
 			{
-				style: style,
 				autoClose: 4000,
 				closeOnClick: true,
 				pauseOnHover: true,
@@ -91,21 +86,20 @@ const AuthenticationForm = () => {
 		if (isSignIn) {
 			localStorage.setItem('token', res.data.data.token);
 			navigate('/');
+		} else {
+			navigate('/auth?mode=signin');
 		}
-		console.log(res.data);
 	};
 
 	const handleError = (isSignIn, err) => {
 		toast.error(
 			<ToastContent res={isSignIn ? 'Sign In failed' : 'Sign Up failed'} messages={err.response.data.errors} />,
 			{
-				style: style,
 				autoClose: 4000,
 				closeOnClick: true,
 				pauseOnHover: true,
 			},
 		);
-		console.log(err);
 	};
 
 	const handleEmailChange = (e) => {
@@ -274,6 +268,13 @@ const AuthenticationForm = () => {
 										placeholder="Total Gap in Academics"
 										value={totalGapInAcademics}
 										onChange={(e) => setTotalGapInAcademics(e.target.value)}
+									/>
+									<label htmlFor="backlogs">Backlogs</label>
+									<input
+										type="number"
+										placeholder="Backlogs"
+										value={backlogs}
+										onChange={(e) => setBacklogs(e.target.value)}
 									/>
 								</div>
 
