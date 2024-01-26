@@ -58,8 +58,8 @@ const NavBar = () => {
 			setNavItems([
 				...fixedItems,
 				{
-					to: 'users',
-					label: 'Users',
+					to: 'students',
+					label: 'Students',
 					icon: <FaUsers />,
 				},
 				{

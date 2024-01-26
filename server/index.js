@@ -7,6 +7,7 @@ const authRoutes = require('./routes/authRoutes.js');
 const companyRoutes = require('./routes/companyRoutes.js');
 const { authenticateUser } = require('./middleware/authMiddleware.js');
 const statsRoutes = require('./routes/statsRoutes.js');
+const userRoutes = require('./routes/userRoutes.js');
 
 dotenv.config();
 
@@ -32,10 +33,8 @@ app.use('/companies', companyRoutes);
 // Use the statsRoutes only once
 app.use('/stats', statsRoutes);
 
-// Example route for testing
-app.get('/', (req, res) => {
-	res.send('Hello, this is your MERN app!');
-});
+// Use the userRoutes only once
+app.use('/users', userRoutes);
 
 app.get('/profile', authenticateUser, (req, res) => {
 	res.json({

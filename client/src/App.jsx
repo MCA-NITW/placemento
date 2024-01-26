@@ -6,8 +6,8 @@ import Authentication from './pages/Auth/Authentication';
 import Companies from './pages/Companies/Companies';
 import Home from './pages/Home/Home';
 import Stats from './pages/Stats/Stats';
+import Students from './pages/Students/Students';
 import Teams from './pages/Teams/Teams';
-import Users from './pages/Users/Users';
 import { checkAuthAction, getAuthToken } from './utils/auth';
 
 const App = () => {
@@ -46,8 +46,8 @@ const App = () => {
 					element: <Teams />,
 				},
 				{
-					path: 'users',
-					element: <Users />,
+					path: 'students',
+					element: <Students />,
 					loader: checkAuthAction,
 				},
 				{

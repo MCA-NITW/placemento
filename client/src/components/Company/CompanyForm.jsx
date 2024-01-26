@@ -11,11 +11,25 @@ const formatDate = (date) => {
 };
 
 const getDefaultFormData = (initialData) => {
-	const defaultData = {
+	if (initialData) {
+		const updatedData = {
+			...initialData,
+			dateOfOffer: formatDate(new Date(initialData.dateOfOffer)),
+			cutoff_pg: initialData.cutoffs?.pg?.cgpa || initialData.cutoffs?.pg?.percentage,
+			cutoff_ug: initialData.cutoffs?.ug?.cgpa || initialData.cutoffs?.ug?.percentage,
+			cutoff_12: initialData.cutoffs?.twelth?.cgpa || initialData.cutoffs?.twelth?.percentage,
+			cutoff_10: initialData.cutoffs?.tenth?.cgpa || initialData.cutoffs?.tenth?.percentage,
+			ctcBase: initialData.ctcBreakup?.base,
+			cutoffs: undefined,
+		};
+		return updatedData;
+	}
+
+	return {
 		name: '',
 		status: '',
 		interviewShortlist: 0,
-		selectedStudents: [],
+		selectedStudentsRollNo: [],
 		dateOfOffer: formatDate(new Date()),
 		locations: [],
 		cutoff_pg: 0,
@@ -29,31 +43,6 @@ const getDefaultFormData = (initialData) => {
 		ctcBase: 0.0,
 		bond: 0,
 	};
-
-	if (initialData) {
-		defaultData.name = initialData.name || defaultData.name;
-		defaultData.status = initialData.status || defaultData.status;
-		defaultData.interviewShortlist = initialData.interviewShortlist || defaultData.interviewShortlist;
-		defaultData.selectedStudents = initialData.selectedStudentsRollNo || defaultData.selectedStudents;
-		defaultData.dateOfOffer = initialData.dateOfOffer
-			? formatDate(new Date(initialData.dateOfOffer))
-			: defaultData.dateOfOffer;
-		defaultData.locations = initialData.locations || defaultData.locations;
-		defaultData.cutoff_pg = initialData.cutoffs && (initialData.cutoffs.pg?.cgpa || initialData.cutoffs.pg?.percentage);
-		defaultData.cutoff_ug = initialData.cutoffs && (initialData.cutoffs.ug?.cgpa || initialData.cutoffs.ug?.percentage);
-		defaultData.cutoff_12 =
-			initialData.cutoffs && (initialData.cutoffs.twelth?.cgpa || initialData.cutoffs.twelth?.percentage);
-		defaultData.cutoff_10 =
-			initialData.cutoffs && (initialData.cutoffs.tenth?.cgpa || initialData.cutoffs.tenth?.percentage);
-		defaultData.typeOfOffer = initialData.typeOfOffer || defaultData.typeOfOffer;
-		defaultData.profile = initialData.profile || defaultData.profile;
-		defaultData.profileCategory = initialData.profileCategory || defaultData.profileCategory;
-		defaultData.ctc = initialData.ctc || defaultData.ctc;
-		defaultData.ctcBase = initialData.ctcBreakup?.base || defaultData.ctcBase;
-		defaultData.bond = initialData.bond || defaultData.bond;
-	}
-
-	return defaultData;
 };
 
 const ToastContent = ({ res, message }) => (
@@ -90,7 +79,7 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 
 	const handleSelectedStudentsChange = (value) => {
 		handleChange(
-			'selectedStudents',
+			'selectedStudentsRollNo',
 			value.split(',').map((rollNo) => rollNo.trim()),
 		);
 	};
@@ -104,28 +93,19 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 		e.preventDefault();
 
 		const newCompany = {
-			name: formData.name,
-			status: formData.status,
-			interviewShortlist: formData.interviewShortlist,
-			selected: formData.selectedStudents.length,
-			selectedStudentsRollNo: formData.selectedStudents,
+			...formData,
+			selected: formData.selectedStudentsRollNo.length,
 			dateOfOffer: formatDate(new Date(formData.dateOfOffer)),
-			locations: formData.locations,
 			cutoffs: {
 				pg: processCutoff(formData.cutoff_pg),
 				ug: processCutoff(formData.cutoff_ug),
 				twelth: processCutoff(formData.cutoff_12),
 				tenth: processCutoff(formData.cutoff_10),
 			},
-			typeOfOffer: formData.typeOfOffer,
-			profile: formData.profile,
-			profileCategory: formData.profileCategory,
-			ctc: formData.ctc,
 			ctcBreakup: {
 				base: formData.ctcBase,
 				other: (formData.ctc - formData.ctcBase).toFixed(2),
 			},
-			bond: formData.bond,
 		};
 		try {
 			const res = isAdd ? await actionFunc(newCompany) : await actionFunc(initialData._id, newCompany);
@@ -200,12 +180,12 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 			</div>
 
 			<div className="form-group">
-				<label htmlFor="selectedStudents">Selected Students</label>
+				<label htmlFor="selectedStudentsRollNo">Selected Students</label>
 				<textarea
-					id="selectedStudents"
+					id="selectedStudentsRollNo"
 					className="form-control"
 					placeholder="(Comma separated roll numbers of selected students)"
-					value={formData.selectedStudents.join(', ')}
+					value={formData.selectedStudentsRollNo.join(', ')}
 					onChange={(e) => handleSelectedStudentsChange(e.target.value)}
 				/>
 			</div>

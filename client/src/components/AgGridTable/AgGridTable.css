@@ -1,0 +1,47 @@
+.ag-theme-quartz {
+	width: 100%;
+	margin-top: 20px;
+	height: 60vh;
+	filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.4));
+	display: block;
+
+	--ag-foreground-color: var(--color-white);
+	--ag-background-color: transparent;
+	--ag-header-foreground-color: var(--color-primary);
+	--ag-header-background-color: var(--color-bg);
+	--ag-odd-row-background-color: var(--color-bg);
+	--ag-borders: 3px solid;
+	--ag-border-color: var(--color-primary);
+	--ag-wrapper-border-radius: 1rem;
+	--ag-header-cell-hover-background-color: var(--color-bg-variant);
+	--ag-header-cell-moving-background-color: var(--color-primary-variant);
+	--ag-font-family: cursive;
+	--ag-selected-row-background-color: var(--color-primary-variant);
+	--ag-range-selection-border-color: var(--color-primary);
+	--ag-range-selection-border-style: dashed;
+	--ag-row-border-style: dotted;
+	--ag-row-border-width: 1px;
+	--ag-row-border-color: var(--color-primary);
+	--ag-font-size: 14px;
+	--ag-row-hover-color: var(--color-primary-variant);
+	--ag-cell-horizontal-border: 1px dotted var(--color-primary);
+	--ag-header-column-resize-handle-color: var(--color-bg);
+	--ag-cell-horizontal-padding: 10px;
+}
+
+.ag-header-cell,
+.ag-header-group-cell-with-group {
+	border-right: 1px solid var(--ag-border-color);
+	align-items: center;
+	justify-content: center;
+	font-size: 1rem;
+}
+
+.ag-header-group-cell-with-group {
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.ag-header-cell {
+	font-size: 15px;
+}

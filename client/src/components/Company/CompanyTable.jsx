@@ -1,11 +1,9 @@
-import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-quartz.css';
-import { AgGridReact } from 'ag-grid-react';
 import { useCallback, useMemo, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { MdDelete, MdEdit } from 'react-icons/md';
 import { addCompany, deleteCompany, getCompanies, getCompany, updateCompany } from '../../api/companyApi.jsx';
 import getUserRole from '../../utils/role.js';
+import AgGridTable from '../AgGridTable/AgGridTable.jsx';
 import Modal from '../Modal/Modal.jsx';
 import CompanyForm from './CompanyForm';
 import './CompanyTable.css';
@@ -48,6 +46,7 @@ const CompanyTable = () => {
 	const handleEditButtonClick = async (id) => {
 		setIsAdd(false);
 		const response = await getCompany(id);
+
 		setCompanyData(response.data);
 		setIsFormOpen(true);
 	};
@@ -153,23 +152,14 @@ const CompanyTable = () => {
 	}, []);
 
 	const mapCompanyData = (company) => ({
+		...company,
 		id: company._id,
-		name: company.name,
-		status: company.status,
-		interviewShortlist: company.interviewShortlist,
 		selectedStudents: company.selectedStudentsRollNo.length,
-		dateOfOffer: company.dateOfOffer,
-		locations: company.locations,
 		cutoff_pg: formatCutoff(company.cutoffs.pg),
 		cutoff_ug: formatCutoff(company.cutoffs.ug),
 		cutoff_12: formatCutoff(company.cutoffs.twelth),
 		cutoff_10: formatCutoff(company.cutoffs.tenth),
-		typeOfOffer: company.typeOfOffer,
-		profile: company.profile,
-		profileCategory: company.profileCategory,
-		ctc: company.ctc,
 		ctcBase: company.ctcBreakup.base,
-		bond: company.bond,
 	});
 
 	const rowData = companies.map(mapCompanyData);
@@ -193,7 +183,7 @@ const CompanyTable = () => {
 				<div className="modal-dialog">
 					<CompanyForm
 						actionFunc={isAdd ? addCompany : updateCompany}
-						initialData={isAdd ? null : companyData}
+						initialData={companyData}
 						handleFormClose={handleCloseForm}
 						isAdd={isAdd}
 					/>
@@ -205,22 +195,16 @@ const CompanyTable = () => {
 
 	return (
 		<>
-			<button className="btn btn-primary" onClick={handleAddCompanyClick} style={{ width: '150px' }}>
+			<button className="btn btn-primary" onClick={handleAddCompanyClick}>
 				Add Company
 			</button>
 			{renderCompanyForm()}
-			<div className="ag-theme-quartz">
-				<AgGridReact
-					rowData={rowData}
-					columnDefs={columnDefinitions}
-					rowHeight={40}
-					headerHeight={40}
-					rowSelection="multiple"
-					dataTypeDefinitions={dataTypeDefinitions}
-					onGridReady={fetchData}
-					suppressClickEdit={true}
-				/>
-			</div>
+			<AgGridTable
+				rowData={rowData}
+				columnDefinitions={columnDefinitions}
+				dataTypeDefinitions={dataTypeDefinitions}
+				fetchData={fetchData}
+			/>
 			<Modal
 				isOpen={isModalOpen}
 				onClose={closeModal}

@@ -15,7 +15,6 @@ const Stats = () => {
 			response.data.avgCTC = response.data.avgCTC.toFixed(2);
 			response.data.totalPlacedStudentsCTC = response.data.totalPlacedStudentsCTC.toFixed(2);
 			setCtcStats(response.data);
-			console.log(response.data);
 		} catch (error) {
 			console.log(error);
 		}
@@ -25,7 +24,6 @@ const Stats = () => {
 		try {
 			const response = await getCompanyStats();
 			setCompanyStats(response.data);
-			console.log(response.data);
 		} catch (error) {
 			console.log(error);
 		}
@@ -39,7 +37,6 @@ const Stats = () => {
 				studentStats.totalEligibleStudents
 			).toFixed(2);
 			setStudentStats(response.data);
-			console.log(response.data);
 		} catch (error) {
 			console.log(error);
 		}
