@@ -13,7 +13,7 @@ const authenticateUser = async (req, res, next) => {
 
 		let user;
 		try {
-			user = await User.findOne({ _id: decoded.userId });
+			user = await User.findOne({ _id: decoded.id });
 		} catch (error) {
 			console.error('User lookup error:', error.message);
 			throw new Error('Error looking up user');

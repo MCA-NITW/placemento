@@ -1,0 +1,74 @@
+.verify-button {
+	background-color: transparent;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	aspect-ratio: 1/1;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	margin: 1px 0;
+	transition: all 0.3s ease-in-out;
+	font-size: 1rem;
+}
+
+.verify-button.verified {
+	color: green;
+	font-size: 1.25rem;
+}
+
+.verify-button.verified:hover {
+	background-color: green;
+	color: var(--color-bg);
+}
+
+.verify-button.unverified {
+	color: red;
+	font-size: 1.25rem;
+}
+
+.verify-button.unverified:hover {
+	background-color: red;
+	color: var(--color-bg);
+}
+
+.role-dropdown {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	margin: 0.5rem 0;
+	height: calc(1.5rem + 2px);
+	border-radius: 5px;
+	background: transparent;
+	color: var(--color-white);
+	border: none;
+	cursor: pointer;
+	transition: all 0.3s ease-in-out;
+	padding: 0 0.5rem;
+	box-shadow: 0 0 0 0.5px var(--color-white);
+}
+
+.role-dropdown:hover {
+	background-color: var(--color-bg);
+}
+
+.role-dropdown:focus {
+	background-color: var(--color-bg);
+}
+
+.role-dropdown option {
+	background-color: var(--color-bg);
+	color: var(--color-white);
+	margin: 0.5rem 0;
+	height: calc(1.5rem + 2px);
+	border-radius: 5px;
+	border: none;
+	cursor: pointer;
+	transition: all 0.3s ease-in-out;
+}
+
+.role-dropdown option:hover {
+	background-color: var(--color-bg);
+}

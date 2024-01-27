@@ -1,10 +1,86 @@
 import { useCallback, useMemo, useState } from 'react';
-import { getStudents } from '../../api/studentAPI.jsx';
+import { GrValidate } from 'react-icons/gr';
+import { toast } from 'react-toastify';
+import { getStudents, updateUserRole, updateVerificationStatus } from '../../api/studentAPI.jsx';
+import getUser from '../../utils/user.js';
 import AgGridTable from '../AgGridTable/AgGridTable.jsx';
+import Modal from '../Modal/Modal.jsx';
+import ToastContent from '../ToastContent/ToastContent.jsx';
 import './StudentTable.css';
 
 const StudentTable = () => {
 	const [students, setStudents] = useState([]);
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [selectedStudent, setSelectedStudent] = useState(null);
+	const closeModal = () => setIsModalOpen(false);
+	const user = getUser();
+
+	const handleVerifyButtonClick = (student) => {
+		setIsModalOpen(true);
+		setSelectedStudent(student);
+	};
+
+	const onConfirmVerifyStudent = async () => {
+		try {
+			if (user.id === selectedStudent.id && selectedStudent.isVerified) {
+				toast.error(<ToastContent res="error" messages={['You cannot Unverify yourself.']} />);
+				setIsModalOpen(false);
+				return;
+			}
+			await updateVerificationStatus(selectedStudent.id, !selectedStudent.isVerified);
+			toast.success(
+				<ToastContent
+					res="success"
+					messages={[
+						`Student ${selectedStudent.name} ${selectedStudent.isVerified ? 'unverified' : 'verified'} successfully.`,
+					]}
+				/>,
+			);
+			setIsModalOpen(false);
+			fetchData();
+		} catch (error) {
+			console.error('Error validating student:', error);
+		}
+	};
+
+	const verifyButtonRenderer = (params) => {
+		const onClick = () => handleVerifyButtonClick(params.data);
+		return (
+			<button className={`verify-button ${params.data.isVerified ? 'verified' : 'unverified'}`} onClick={onClick}>
+				<GrValidate />
+			</button>
+		);
+	};
+
+	const roleDropdownRenderer = (params) => {
+		const onChange = async (event) => {
+			try {
+				if (user.id === params.data.id) {
+					toast.error(<ToastContent res="error" messages={['You cannot change your own role.']} />);
+					return;
+				}
+				await updateUserRole(params.data.id, event.target.value);
+				toast.success(
+					<ToastContent res="success" messages={[`Student ${params.data.name} role updated successfully.`]} />,
+				);
+				fetchData();
+			} catch (error) {
+				console.error('Error updating student role:', error);
+			}
+		};
+		return (
+			<select
+				className="role-dropdown"
+				value={params.data.role}
+				onChange={onChange}
+				disabled={user.id === params.data.id}
+			>
+				<option value="student">Student</option>
+				<option value="placementCoordinator">PC</option>
+				<option value="admin">Admin</option>
+			</select>
+		);
+	};
 
 	const fetchData = useCallback(async () => {
 		try {
@@ -28,11 +104,31 @@ const StudentTable = () => {
 		children,
 	});
 
-	const columnDefinitions = [
-		{
+	const actionColumn = (actionName, actionButtonRenderer) => {
+		return {
+			...generateColumn(null, actionName, 55, false, false),
+			pinned: 'left',
+			cellRenderer: actionButtonRenderer,
+			...(user.role !== 'admin' && user.role !== 'placementCoordinator' && { initialHide: true }),
+		};
+	};
+
+	const verifyButtonColumn = () => {
+		return actionColumn('Ver', verifyButtonRenderer);
+	};
+
+	const roleDropdownColumn = () => {
+		return {
 			...generateColumn('role', 'Role', 100),
 			pinned: 'left',
-		},
+			cellRenderer: roleDropdownRenderer,
+			...(user.role !== 'admin' && { initialHide: true }),
+		};
+	};
+
+	const columnDefinitions = [
+		generateNestedColumn('Actions', [verifyButtonColumn()]),
+		roleDropdownColumn(),
 		{
 			...generateColumn('rollNo', 'Roll No', 100),
 			pinned: 'left',
@@ -42,7 +138,6 @@ const StudentTable = () => {
 			pinned: 'left',
 		},
 		generateColumn('email', 'Email', 250),
-		generateColumn('isVerified', 'Verified?', 150),
 		generateColumn('placed', 'Placed?', 80),
 		generateNestedColumn('Grades', [
 			generateNestedColumn('PG', [generateColumn('pg.cgpa', 'CGPA', 85), generateColumn('pg.percentage', '%', 85)]),
@@ -74,6 +169,18 @@ const StudentTable = () => {
 		};
 	}, []);
 
+	const modelRenderer = (params) => {
+		return (
+			<Modal
+				isOpen={isModalOpen}
+				onClose={closeModal}
+				onConfirm={onConfirmVerifyStudent}
+				message={`Are you sure you want to ${selectedStudent.isVerified ? 'unverify' : 'verify'} ${selectedStudent.name}?`}
+				buttonTitle={selectedStudent.isVerified ? 'Unverify' : 'Verify'}
+			/>
+		);
+	};
+
 	return (
 		<>
 			<AgGridTable
@@ -82,6 +189,7 @@ const StudentTable = () => {
 				dataTypeDefinitions={dataTypeDefinitions}
 				fetchData={fetchData}
 			/>
+			{selectedStudent && modelRenderer()}
 		</>
 	);
 };

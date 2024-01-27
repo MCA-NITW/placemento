@@ -1,10 +1,12 @@
 import { useCallback, useMemo, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { MdDelete, MdEdit } from 'react-icons/md';
+import { toast } from 'react-toastify';
 import { addCompany, deleteCompany, getCompanies, getCompany, updateCompany } from '../../api/companyApi.jsx';
-import getUserRole from '../../utils/role.js';
+import getUser from '../../utils/user.js';
 import AgGridTable from '../AgGridTable/AgGridTable.jsx';
 import Modal from '../Modal/Modal.jsx';
+import ToastContent from '../ToastContent/ToastContent.jsx';
 import CompanyForm from './CompanyForm';
 import './CompanyTable.css';
 
@@ -13,10 +15,9 @@ const CompanyTable = () => {
 	const [companyData, setCompanyData] = useState(null);
 	const [isFormOpen, setIsFormOpen] = useState(false);
 	const [isAdd, setIsAdd] = useState(false);
-	const userRole = getUserRole();
-
+	const userRole = getUser().role;
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	const [idToDelete, setIdToDelete] = useState(null);
+	const [companyToDelete, setCompanyToDelete] = useState(null);
 	const closeModal = () => setIsModalOpen(false);
 
 	const fetchData = useCallback(async () => {
@@ -28,14 +29,17 @@ const CompanyTable = () => {
 		}
 	}, []);
 
-	const handleDeleteButtonClick = (id) => {
+	const handleDeleteButtonClick = (company) => {
 		setIsModalOpen(true);
-		setIdToDelete(id);
+		setCompanyToDelete(company);
 	};
 
 	const onConfirmDelete = async () => {
 		try {
-			await deleteCompany(idToDelete);
+			await deleteCompany(companyToDelete.id);
+			toast.success(
+				<ToastContent res="success" messages={[`Company ${companyToDelete.name} deleted successfully.`]} />,
+			);
 			setIsModalOpen(false);
 			fetchData();
 		} catch (error) {
@@ -76,7 +80,7 @@ const CompanyTable = () => {
 
 	const deleteButtonRenderer = (params) => {
 		return (
-			<button className="btn--icon--del" onClick={() => handleDeleteButtonClick(params.data.id)}>
+			<button className="btn--icon--del" onClick={() => handleDeleteButtonClick(params.data)}>
 				<MdDelete />
 			</button>
 		);

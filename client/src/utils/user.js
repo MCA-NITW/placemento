@@ -1,12 +1,12 @@
-// role.js
 import { jwtDecode } from 'jwt-decode';
+import { getAuthToken } from './auth';
 
-const getUserRole = () => {
-	const token = localStorage.getItem('token');
+const getUser = () => {
+	const token = getAuthToken();
 	if (token) {
 		try {
 			const decodedToken = jwtDecode(token);
-			return decodedToken.role;
+			return decodedToken;
 		} catch (error) {
 			console.error('Error decoding token:', error.message);
 			return null;
@@ -17,4 +17,4 @@ const getUserRole = () => {
 	}
 };
 
-export default getUserRole;
+export default getUser;

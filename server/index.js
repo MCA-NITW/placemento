@@ -36,15 +36,8 @@ app.use('/stats', statsRoutes);
 // Use the userRoutes only once
 app.use('/users', userRoutes);
 
-app.get('/profile', authenticateUser, (req, res) => {
-	res.json({
-		name: req.user.name,
-		email: req.user.email,
-		rollNo: req.user.rollNo,
-		role: req.user.role,
-		isVerified: req.user.isVerified,
-		_id: req.user._id,
-	});
+app.get('/token-check', authenticateUser, (req, res) => {
+	res.status(200).json({ message: 'Authorized' });
 });
 
 app.listen(PORT, () => {

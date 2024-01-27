@@ -22,4 +22,10 @@ router.put(
 	userController.updateUser,
 );
 
+// Update Verification Status of a User
+router.put('/verify/:id', authenticateUser, checkUserRole(['admin', 'placementCoordinator']), userController.verify);
+
+// Update Role of a User
+router.put('/role/:id', authenticateUser, checkUserRole(['admin']), userController.updateRole);
+
 module.exports = router;

@@ -1,13 +1,7 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 
-export const getCtcStats = () => {
-	return axios.get('http://localhost:5000/stats/ctc');
-};
+export const getCtcStats = () => axiosInstance.get('/stats/ctc');
 
-export const getCompanyStats = () => {
-	return axios.get('http://localhost:5000/stats/company');
-};
+export const getCompanyStats = () => axiosInstance.get('/stats/company');
 
-export const getStudentStats = () => {
-	return axios.get('http://localhost:5000/stats/student');
-};
+export const getStudentStats = () => axiosInstance.get('/stats/student');

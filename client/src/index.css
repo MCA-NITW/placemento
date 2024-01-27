@@ -23,15 +23,14 @@
 	--color-primary-variant: rgba(255, 204, 102, 0.5);
 }
 
-.Toastify__toast {
-	border-radius: 1rem;
-	background: var(--color-bg);
-	color: var(--color-white);
-}
-
 html {
 	scroll-behavior: smooth;
 	font-size: 90%;
+	font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+	color: var(--color-white);
+	line-height: 1.7;
+	background: var(--color-bg);
+	user-select: none;
 	@media screen and (max-width: 600px) {
 		font-size: 85%;
 	}
@@ -39,6 +38,8 @@ html {
 		font-size: 80%;
 	}
 }
+
+/* Scrollbar CSS */
 
 ::-webkit-scrollbar {
 	width: 0.5rem;
@@ -64,13 +65,7 @@ html {
 	background-color: var(--color-bg);
 }
 
-body {
-	font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-	color: var(--color-white);
-	line-height: 1.7;
-	background: var(--color-bg);
-	user-select: none;
-}
+/* Global CSS */
 
 .container {
 	width: calc(100% - 2rem);

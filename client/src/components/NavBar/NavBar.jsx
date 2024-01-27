@@ -21,9 +21,8 @@ const NavBar = () => {
 				Authorization: `Bearer ${token}`,
 			};
 			axios
-				.get('http://localhost:5000/profile', { headers })
-				.then((response) => {
-					console.log(response);
+				.get('http://localhost:5000/token-check', { headers })
+				.then(() => {
 					setIsAuthenticated(true);
 				})
 				.catch((error) => {

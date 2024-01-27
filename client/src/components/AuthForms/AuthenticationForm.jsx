@@ -1,29 +1,11 @@
-import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { signin, signup } from '../../api/authApi';
+import ToastContent from '../ToastContent/ToastContent';
 import { FormFooter } from './FormFooter';
 import classes from './auth.module.css';
-
-const ToastContent = ({ res, messages }) => (
-	<div>
-		<h3>{res}</h3>
-		<div>
-			{messages.map((message) => (
-				<div key={message} style={{ margin: '0.5rem 0' }}>
-					{message}
-				</div>
-			))}
-		</div>
-	</div>
-);
-
-ToastContent.propTypes = {
-	res: PropTypes.string.isRequired,
-	messages: PropTypes.array.isRequired,
-};
 
 const AuthenticationForm = () => {
 	const [name, setName] = useState('');

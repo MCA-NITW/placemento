@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import ToastContent from '../ToastContent/ToastContent';
 import './CompanyForm.css';
 
 const formatDate = (date) => {
@@ -43,18 +44,6 @@ const getDefaultFormData = (initialData) => {
 		ctcBase: 0.0,
 		bond: 0,
 	};
-};
-
-const ToastContent = ({ res, message }) => (
-	<div>
-		<h3>{res}</h3>
-		<div>{message}</div>
-	</div>
-);
-
-ToastContent.propTypes = {
-	res: PropTypes.string.isRequired,
-	message: PropTypes.string.isRequired,
 };
 
 const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
@@ -104,12 +93,14 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 		try {
 			const res = isAdd ? await actionFunc(newCompany) : await actionFunc(initialData._id, newCompany);
 			if (res.status === 200)
-				toast.success(<ToastContent res="Success" message={`Company ${isAdd ? 'added' : 'updated'} successfully`} />);
-			else toast.error(<ToastContent res="Error" message="An unexpected error occurred" />);
+				toast.success(
+					<ToastContent res="Success" messages={[`Company ${isAdd ? 'added' : 'updated'} successfully`]} />,
+				);
+			else toast.error(<ToastContent res="Error" messages={res.data.errors} />);
 			handleFormClose(true);
 		} catch (error) {
 			console.error('Error:', error);
-			toast.error(<ToastContent res="Error" message="An unexpected error occurred" />);
+			toast.error(<ToastContent res="Error" messages={error.response.data.errors} />);
 		}
 	};
 
@@ -124,7 +115,6 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 					placeholder="Company Name"
 					value={formData.name}
 					onChange={(e) => handleChange('name', e.target.value)}
-					required
 				/>
 			</div>
 
@@ -177,7 +167,7 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 					id="selectedStudentsRollNo"
 					className="form-control"
 					placeholder="(Comma separated roll numbers of selected students)"
-					value={formData.selectedStudentsRollNo.join(', ')}
+					value={formData.selectedStudentsRollNo.join(',')}
 					onChange={(e) => handleSelectedStudentsChange(e.target.value)}
 				/>
 			</div>
@@ -188,7 +178,7 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 					id="locations"
 					className="form-control"
 					placeholder="Locations  (Separate multiple locations with commas)"
-					value={formData.locations.join(', ')}
+					value={formData.locations.join(',')}
 					onChange={(e) => handleLocationsChange(e.target.value)}
 				/>
 			</div>

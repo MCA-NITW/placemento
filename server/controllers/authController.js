@@ -100,9 +100,25 @@ exports.getLogin = async (req, res) => {
 		const passwordMatch = await bcrypt.compare(password, user.password);
 		if (!passwordMatch) return res.status(401).json({ status: false, errors: ['Incorrect Password'] });
 
-		const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
+		const token = jwt.sign(
+			{
+				id: user._id,
+				name: user.name,
+				email: user.email,
+				role: user.role,
+				pg: user.pg,
+				ug: user.ug,
+				hsc: user.hsc,
+				ssc: user.ssc,
+				rollNo: user.rollNo,
+				totalGapInAcademics: user.totalGapInAcademics,
+				backlogs: user.backlogs,
+			},
+			process.env.JWT_SECRET,
+			{ expiresIn: '7d' },
+		);
 		logger.info(`User logged in: ${email}`);
-		res.json({ status: true, data: { user: { email: user.email }, token }, messages: ['Login Successful'] });
+		res.json({ status: true, data: { token }, messages: ['Login Successful'] });
 	} catch (error) {
 		logger.error(error);
 		res.status(500).json({ status: false, messages: ['Internal server error'] });
