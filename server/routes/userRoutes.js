@@ -2,11 +2,12 @@ const express = require('express');
 const router = express.Router();
 const { authenticateUser, checkUserRole } = require('../middleware/authMiddleware');
 const userController = require('../controllers/userController');
+const limiter = require('../utils/limiter');
 
-// View all users
+// View all users without rate limiting
 router.get('/view', authenticateUser, checkUserRole(['admin', 'placementCoordinator']), userController.viewAllUsers);
 
-// View a single user by ID
+// View a single user by ID with rate limiting
 router.get(
 	'/view/:id',
 	authenticateUser,
@@ -14,18 +15,25 @@ router.get(
 	userController.viewSingleUser,
 );
 
-// Update a User
+// Update a User with rate limiting
 router.put(
 	'/update/:id',
 	authenticateUser,
 	checkUserRole(['admin', 'placementCoordinator']),
+	limiter,
 	userController.updateUser,
 );
 
-// Update Verification Status of a User
-router.put('/verify/:id', authenticateUser, checkUserRole(['admin', 'placementCoordinator']), userController.verify);
+// Update Verification Status of a User with rate limiting
+router.put(
+	'/verify/:id',
+	authenticateUser,
+	checkUserRole(['admin', 'placementCoordinator']),
+	limiter,
+	userController.verify,
+);
 
-// Update Role of a User
-router.put('/role/:id', authenticateUser, checkUserRole(['admin']), userController.updateRole);
+// Update Role of a User with rate limiting
+router.put('/role/:id', authenticateUser, checkUserRole(['admin']), limiter, userController.updateRole);
 
 module.exports = router;
