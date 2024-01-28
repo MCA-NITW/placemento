@@ -7,8 +7,8 @@ const validateFields = (company) => {
 	if (!company.status) errorMessages.push('Status is required.');
 	if (!company.profileCategory) errorMessages.push('Profile Category is required.');
 	if (!company.typeOfOffer) errorMessages.push('Type of Offer is required.');
-	for (let i = 0; i < company.selectedStudentsRollNo.length; i++) {
-		if (!company.selectedStudentsRollNo[i].match(/^\d{2}MCF1R\d{2,}$/)) {
+	for (const rollNo of company.selectedStudentsRollNo) {
+		if (!rollNo.match(/^\d{2}MCF1R\d{2,}$/)) {
 			errorMessages.push('Enter a valid roll number. (Eg: 21MCF1R01)');
 			break;
 		}

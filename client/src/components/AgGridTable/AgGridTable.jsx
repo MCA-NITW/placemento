@@ -1,6 +1,7 @@
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import { AgGridReact } from 'ag-grid-react';
+import propTypes from 'prop-types';
 import './AgGridTable.css';
 
 const AgGridTable = ({ rowData, columnDefinitions, dataTypeDefinitions, fetchData }) => {
@@ -18,6 +19,13 @@ const AgGridTable = ({ rowData, columnDefinitions, dataTypeDefinitions, fetchDat
 			/>
 		</div>
 	);
+};
+
+AgGridTable.propTypes = {
+	rowData: propTypes.array.isRequired,
+	columnDefinitions: propTypes.array.isRequired,
+	dataTypeDefinitions: propTypes.array.isRequired,
+	fetchData: propTypes.func.isRequired,
 };
 
 export default AgGridTable;
