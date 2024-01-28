@@ -10,7 +10,6 @@ const Modal = ({ isOpen, onClose, onConfirm, message, buttonTitle, hasInput = nu
 				<p>{message}</p>
 				{hasInput && (
 					<div className={classes['modal__input-container']}>
-						<label htmlFor="input">{hasInput.label}</label>
 						<input type="text" id="input" placeholder={hasInput.placeholder} />
 					</div>
 				)}

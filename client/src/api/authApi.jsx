@@ -9,5 +9,13 @@ export const signin = (user) => {
 };
 
 export const forgotPassword = (email) => {
-	return axiosInstance.post('/auth/forgot-password', email);
+	return axiosInstance.post('/auth/forgot-password/email', email);
+};
+
+export const verifyOTP = (otp) => {
+	return axiosInstance.post('/auth/forgot-password/verify-otp', otp);
+};
+
+export const resetPassword = (password) => {
+	return axiosInstance.post('/auth/forgot-password/reset-password', password);
 };

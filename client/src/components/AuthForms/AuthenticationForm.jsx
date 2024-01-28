@@ -3,6 +3,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { signin, signup } from '../../api/authApi';
+import Modal from '../Modal/Modal';
 import ToastContent from '../ToastContent/ToastContent';
 import { FormFooter } from './FormFooter';
 import classes from './auth.module.css';
@@ -141,6 +142,39 @@ const AuthenticationForm = () => {
 		);
 	};
 
+	const [isFormOpen, setIsFormOpen] = useState(false);
+	const [counter, setCounter] = useState(0);
+	const onCloseAction = () => {
+		setCounter(0);
+		setIsFormOpen(false);
+	};
+
+	const onConfirmAction = () => {
+		if (counter === 0) {
+			toast.success(<ToastContent res="Email sent" messages={['Please check your email for OTP']} />, {
+				autoClose: 4000,
+				closeOnClick: true,
+				pauseOnHover: true,
+			});
+			setCounter(counter + 1);
+		} else if (counter === 1) {
+			toast.success(<ToastContent res="OTP verified" messages={['Please enter your new password']} />, {
+				autoClose: 4000,
+				closeOnClick: true,
+				pauseOnHover: true,
+			});
+			setCounter(counter + 1);
+		} else {
+			toast.success(<ToastContent res="Password reset" messages={['Please sign in with your new password']} />, {
+				autoClose: 4000,
+				closeOnClick: true,
+				pauseOnHover: true,
+			});
+			setCounter(0);
+			setIsFormOpen(false);
+		}
+	};
+
 	return (
 		<div className={classes['auth-form']}>
 			<h1>{isSignIn ? 'Sign In' : 'Sign Up'}</h1>
@@ -272,9 +306,29 @@ const AuthenticationForm = () => {
 						)}
 					</>
 				)}
-				{isSignIn && <div className={classes['forgot-password']}>Forgot Password?</div>}
+				{isSignIn && (
+					<div className={classes['forgot-password']} onClick={() => setIsFormOpen(true)}>
+						Forgot Password?
+					</div>
+				)}
 				<FormFooter mode={isSignIn ? 'signup' : 'signin'} />
 			</form>
+			<Modal
+				isOpen={isFormOpen}
+				onClose={() => onCloseAction()}
+				onConfirm={() => onConfirmAction()}
+				message={
+					counter === 0
+						? 'Enter your College Email ID!!'
+						: counter === 1
+							? 'Check your email for OTP'
+							: 'Enter your new password'
+				}
+				buttonTitle={counter === 0 ? 'Send Email' : counter === 1 ? 'Verify OTP' : 'Reset Password'}
+				hasInput={{
+					placeholder: counter === 0 ? 'Enter your email' : counter === 1 ? 'Enter OTP' : 'Enter new password',
+				}}
+			/>
 		</div>
 	);
 };
