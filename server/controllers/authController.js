@@ -115,13 +115,13 @@ exports.postVerifyEmail = async (req, res) => {
 		logger.error(error);
 		res.status(500).json({ status: false, messages: ['Internal server error'] });
 	}
-}
+};
 
 // postVerifyOTP
 exports.postVerifyOTP = async (req, res) => {
 	try {
 		console.log(req.body);
-		console.log(user.otp)
+		console.log(user.otp);
 		const { email, otp } = req.body;
 
 		if (!email || !otp) return res.status(400).json({ status: false, errors: ['Email and OTP required'] });
@@ -145,7 +145,7 @@ exports.postVerifyOTP = async (req, res) => {
 		logger.error(error);
 		res.status(500).json({ status: false, messages: ['Internal server error'] });
 	}
-}
+};
 
 // postResetPassword
 exports.postResetPassword = async (req, res) => {
@@ -177,5 +177,4 @@ exports.postResetPassword = async (req, res) => {
 		logger.error(error);
 		res.status(500).json({ status: false, messages: ['Internal server error'] });
 	}
-}
-
+};

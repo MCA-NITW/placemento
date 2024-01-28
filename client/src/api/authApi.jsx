@@ -12,11 +12,10 @@ export const forgotPassword = (email) => {
 	return axiosInstance.post('/auth/verify-email', email);
 };
 
-export const verifyOTP = (email,otp) => {
+export const verifyOTP = (email, otp) => {
 	return axiosInstance.post('/auth/verify-otp', email, otp);
 };
 
-export const resetPassword = (email,otp,password) => {
-	return axiosInstance.post('/auth/reset-password', email, otp ,password);
+export const resetPassword = (email, otp, password) => {
+	return axiosInstance.post('/auth/reset-password', email, otp, password);
 };
-

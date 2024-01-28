@@ -155,68 +155,50 @@ const AuthenticationForm = () => {
 		if (counter === 0) {
 			try {
 				const res = await forgotPassword({ email });
-				toast.success(
-					<ToastContent res="Email Sent" messages={res.data.messages} />,
-					{
-						autoClose: 4000,
-						closeOnClick: true,
-						pauseOnHover: true,
-					},
-				);
+				toast.success(<ToastContent res="Email Sent" messages={res.data.messages} />, {
+					autoClose: 4000,
+					closeOnClick: true,
+					pauseOnHover: true,
+				});
 				setCounter(counter + 1);
 			} catch (err) {
-				toast.error(
-					<ToastContent res="Email Sent" messages={err.response.data.errors} />,
-					{
-						autoClose: 4000,
-						closeOnClick: true,
-						pauseOnHover: true,
-					},
-				);
+				toast.error(<ToastContent res="Email Sent" messages={err.response.data.errors} />, {
+					autoClose: 4000,
+					closeOnClick: true,
+					pauseOnHover: true,
+				});
 			}
 		} else if (counter === 1) {
 			try {
 				const res = await verifyOTP({ email, otp });
-				toast.success(
-					<ToastContent res="OTP Verified" messages={res.data.messages} />,
-					{
-						autoClose: 4000,
-						closeOnClick: true,
-						pauseOnHover: true,
-					},
-				);
+				toast.success(<ToastContent res="OTP Verified" messages={res.data.messages} />, {
+					autoClose: 4000,
+					closeOnClick: true,
+					pauseOnHover: true,
+				});
 				setCounter(counter + 1);
 			} catch (err) {
-				toast.error(
-					<ToastContent res="OTP Verification Failed" messages={err.response.data.errors} />,
-					{
-						autoClose: 4000,
-						closeOnClick: true,
-						pauseOnHover: true,
-					},
-				);
+				toast.error(<ToastContent res="OTP Verification Failed" messages={err.response.data.errors} />, {
+					autoClose: 4000,
+					closeOnClick: true,
+					pauseOnHover: true,
+				});
 			}
 		} else {
 			try {
 				const res = await resetPassword({ email, otp, newPassword });
-				toast.success(
-					<ToastContent res="Password Reset Successful" messages={res.data.messages} />,
-					{
-						autoClose: 4000,
-						closeOnClick: true,
-						pauseOnHover: true,
-					},
-				);
+				toast.success(<ToastContent res="Password Reset Successful" messages={res.data.messages} />, {
+					autoClose: 4000,
+					closeOnClick: true,
+					pauseOnHover: true,
+				});
 				setIsFormOpen(false);
 			} catch (err) {
-				toast.error(
-					<ToastContent res="Password Reset Failed" messages={err.response.data.errors} />,
-					{
-						autoClose: 4000,
-						closeOnClick: true,
-						pauseOnHover: true,
-					},
-				);
+				toast.error(<ToastContent res="Password Reset Failed" messages={err.response.data.errors} />, {
+					autoClose: 4000,
+					closeOnClick: true,
+					pauseOnHover: true,
+				});
 			}
 		}
 	};
@@ -234,7 +216,7 @@ const AuthenticationForm = () => {
 					}}
 					value={counter === 0 ? email : counter === 1 ? otp : newPassword}
 					id="input"
-					autoFocus 
+					autoFocus
 				/>
 			</div>
 		);
@@ -390,7 +372,7 @@ const AuthenticationForm = () => {
 							: 'Enter your new password'
 				}
 				buttonTitle={counter === 0 ? 'Send Email' : counter === 1 ? 'Verify OTP' : 'Reset Password'}
-				HasInput={() => ( <InputRenderer /> )}
+				HasInput={() => <InputRenderer />}
 			/>
 		</div>
 	);

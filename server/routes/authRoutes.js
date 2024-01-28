@@ -24,5 +24,4 @@ router.post('/verify-otp', limiter, authController.postVerifyOTP);
 // Reset password route with rate limiting
 router.post('/reset-password', limiter, authController.postResetPassword);
 
-
 module.exports = router;
