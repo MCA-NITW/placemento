@@ -170,3 +170,13 @@
 	cursor: pointer;
 	transition: var(--transition);
 }
+
+.forgot-password {
+	color: var(--color-primary-variant);
+	transition: var(--transition);
+	cursor: pointer;
+}
+
+.forgot-password:hover {
+	color: var(--color-primary);
+}

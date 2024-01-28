@@ -272,6 +272,7 @@ const AuthenticationForm = () => {
 						)}
 					</>
 				)}
+				{isSignIn && <div className={classes['forgot-password']}>Forgot Password?</div>}
 				<FormFooter mode={isSignIn ? 'signup' : 'signin'} />
 			</form>
 		</div>

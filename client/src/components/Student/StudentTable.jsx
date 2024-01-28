@@ -43,20 +43,18 @@ const StudentTable = () => {
 		}
 	};
 
-	const handleRoleChange = async (event,params) => {
-			try {
-				if (user.id === params.id) {
-					toast.error(<ToastContent res="error" messages={['You cannot change your own role.']} />);
-					return;
-				}
-				await updateUserRole(params.id, event.target.value);
-				toast.success(
-					<ToastContent res="success" messages={[`Student ${params.name} role updated successfully.`]} />,
-				);
-				fetchData();
-			} catch (error) {
-				console.error('Error updating student role:', error);
+	const handleRoleChange = async (event, params) => {
+		try {
+			if (user.id === params.id) {
+				toast.error(<ToastContent res="error" messages={['You cannot change your own role.']} />);
+				return;
 			}
+			await updateUserRole(params.id, event.target.value);
+			toast.success(<ToastContent res="success" messages={[`Student ${params.name} role updated successfully.`]} />);
+			fetchData();
+		} catch (error) {
+			console.error('Error updating student role:', error);
+		}
 	};
 
 	const verifyButtonRenderer = (params) => {
@@ -73,7 +71,7 @@ const StudentTable = () => {
 			<select
 				className="role-dropdown"
 				value={params.data.role}
-				onChange={(event) => handleRoleChange(event,params.data)}
+				onChange={(event) => handleRoleChange(event, params.data)}
 				disabled={user.id === params.data.id}
 			>
 				<option value="student">Student</option>
