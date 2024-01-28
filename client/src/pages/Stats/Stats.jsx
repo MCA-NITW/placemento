@@ -2,68 +2,52 @@ import { useCallback, useEffect, useState } from 'react';
 import { getCompanyStats, getCtcStats, getStudentStats } from '../../api/statsApi';
 import './Stats.css';
 
+const StatsSectionItem = ({ left, right }) => (
+	<div className="stats-section-item">
+		<div className="stats-section-item-left">{left}</div>
+		<div className="stats-section-item-right">{right}</div>
+	</div>
+);
+
 const Stats = () => {
 	const [ctcStats, setCtcStats] = useState({});
 	const [companyStats, setCompanyStats] = useState({});
 	const [studentStats, setStudentStats] = useState({});
-	const [isLoading, setIsLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
 
-	const getCtcStatsData = useCallback(async () => {
+	const fetchData = useCallback(async () => {
 		try {
-			const response = await getCtcStats();
-			response.data.highestCTCOffered = response.data.highestCTCOffered.toFixed(2);
-			response.data.highestCTCPlaced = response.data.highestCTCPlaced.toFixed(2);
-			response.data.avgCTC = response.data.avgCTC.toFixed(2);
-			response.data.totalPlacedStudentsCTC = response.data.totalPlacedStudentsCTC.toFixed(2);
-			setCtcStats(response.data);
-		} catch (error) {
-			console.log(error);
-		}
-	}, []);
+			const [ctcResponse, companyResponse, studentResponse] = await Promise.all([
+				getCtcStats(),
+				getCompanyStats(),
+				getStudentStats(),
+			]);
 
-	const getCompanyStatsData = useCallback(async () => {
-		try {
-			const response = await getCompanyStats();
-			setCompanyStats(response.data);
-		} catch (error) {
-			console.log(error);
-		}
-	}, []);
+			const ctcData = ctcResponse.data;
+			ctcData.highestCTCOffered = ctcData.highestCTCOffered.toFixed(2);
+			ctcData.highestCTCPlaced = ctcData.highestCTCPlaced.toFixed(2);
+			ctcData.avgCTC = ctcData.avgCTC.toFixed(2);
+			ctcData.totalPlacedStudentsCTC = ctcData.totalPlacedStudentsCTC.toFixed(2);
 
-	const getStudentStatsData = useCallback(async () => {
-		try {
-			const response = await getStudentStats();
-			response.data.placementPercentage = (
-				(studentStats.totalPlacedStudents * 100) /
-				studentStats.totalEligibleStudents
+			const studentData = studentResponse.data;
+			studentData.placementPercentage = (
+				(studentData.totalPlacedStudents * 100) /
+				studentData.totalEligibleStudents
 			).toFixed(2);
-			setStudentStats(response.data);
+
+			setCtcStats(ctcData);
+			setCompanyStats(companyResponse.data);
+			setStudentStats(studentData);
 		} catch (error) {
 			console.log(error);
+		} finally {
+			setIsLoading(false);
 		}
-	}, [studentStats.totalEligibleStudents, studentStats.totalPlacedStudents]);
+	}, []);
 
 	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const startTime = Date.now();
-				setIsLoading(true);
-
-				await Promise.all([getCtcStatsData(), getCompanyStatsData(), getStudentStatsData()]);
-
-				const endTime = Date.now();
-				const elapsedTime = endTime - startTime;
-				const minimumLoadingTime = 2000;
-				if (elapsedTime < minimumLoadingTime) {
-					await new Promise((resolve) => setTimeout(resolve, minimumLoadingTime - elapsedTime));
-				}
-			} finally {
-				setIsLoading(false);
-			}
-		};
-
 		fetchData();
-	}, [getCtcStatsData, getCompanyStatsData, getStudentStatsData]);
+	}, [fetchData]);
 
 	return (
 		<div className="container">
@@ -76,116 +60,69 @@ const Stats = () => {
 				<div className="stats">
 					<div className="stats-section">
 						<h2>CTC Stats</h2>
-						<div className="stats-section-item">
-							<div className="stats-section-item-left">Highest CTC Offering Company : </div>
-							<div className="stats-section-item-right">
-								<div className="stats-section-item-right-header">{ctcStats.highestCTCOfferedCompany}</div>
-								<div className="stats-section-item-right-child">( {ctcStats.highestCTCOffered} LPA )</div>
-							</div>
-						</div>
-						<div className="stats-section-item">
-							<div className="stats-section-item-left">Student With Highest CTC : </div>
-							<div className="stats-section-item-right">
-								<div className="stats-section-item-right-header">{ctcStats.highestCTCPlacedStudent}</div>
-								<div className="stats-section-item-right-child">{ctcStats.highestCTCPlacedCompany}</div>
-								<div className="stats-section-item-right-child">( {ctcStats.highestCTCPlaced} LPA )</div>
-							</div>
-						</div>
-						<div className="stats-section-item">
-							<div className="stats-section-item-left">
-								<div className="stats-section-item-left-header">Sum of all placed students CTCs : </div>
-							</div>
-							<div className="stats-section-item-right">{ctcStats.totalPlacedStudentsCTC} Lakhs</div>
-						</div>
-						<div className="stats-section-item">
-							<div className="stats-section-item-left">
-								<div className="stats-section-item-left-header">Average of all placed students CTC : </div>
-							</div>
-							<div className="stats-section-item-right">
-								<div className="stats-section-item-right-header">{ctcStats.avgCTC} LPA</div>
-								<div className="stats-section-item-right-child">( {studentStats.totalPlacedStudents} Students )</div>
-							</div>
-						</div>
+						<StatsSectionItem
+							left="Highest CTC Offering Company :"
+							right={
+								<>
+									<div className="stats-section-item-right-header">{ctcStats.highestCTCOfferedCompany}</div>
+									<div className="stats-section-item-right-child">( {ctcStats.highestCTCOffered} LPA )</div>
+								</>
+							}
+						/>
+						<StatsSectionItem
+							left="Student With Highest CTC :"
+							right={
+								<>
+									<div className="stats-section-item-right-header">{ctcStats.highestCTCPlacedStudent}</div>
+									<div className="stats-section-item-right-child">{ctcStats.highestCTCPlacedCompany}</div>
+									<div className="stats-section-item-right-child">( {ctcStats.highestCTCPlaced} LPA )</div>
+								</>
+							}
+						/>
+						<StatsSectionItem
+							left="Sum of all placed students CTCs :"
+							right={<>{ctcStats.totalPlacedStudentsCTC} Lakhs</>}
+						/>
+						<StatsSectionItem
+							left="Average of all placed students CTC :"
+							right={
+								<>
+									{ctcStats.avgCTC} LPA ({studentStats.totalPlacedStudents} Students)
+								</>
+							}
+						/>
 					</div>
 
 					<div className="stats-section">
 						<h2>Company Stats</h2>
-						<div className="stats-section-item">
-							<div className="stats-section-item-left">Total Companies Visited: </div>
-							<div className="stats-section-item-right">{companyStats.totalCompanies}</div>
-						</div>
-						<div className="stats-section-item">
-							<div className="stats-section-item-left">Total Ongoing Companies: </div>
-							<div className="stats-section-item-right">{companyStats.totalOngoingCompanies}</div>
-						</div>
-						<div className="stats-section-item">
-							<div className="stats-section-item-left">Total Successfully Completed Companies: </div>
-							<div className="stats-section-item-right">{companyStats.totalCompletedCompanies}</div>
-						</div>
-						<div className="stats-section-item">
-							<div className="stats-section-item-left">Total PPOs Offering Companies: </div>
-							<div className="stats-section-item-right">{companyStats.totalPPOs}</div>
-						</div>
-						<div className="stats-section-item">
-							<div className="stats-section-item-left">Total FTEs Offering Companies: </div>
-							<div className="stats-section-item-right">{companyStats.totalFTEs}</div>
-						</div>
-						<div className="stats-section-item">
-							<div className="stats-section-item-left">Total Intern Offering Companies: </div>
-							<div className="stats-section-item-right">{companyStats.totalInterns}</div>
-						</div>
-						<div className="stats-section-item">
-							<div className="stats-section-item-left">Total 6M + FTEs Offering Companies: </div>
-							<div className="stats-section-item-right">{companyStats.total6MFTEs}</div>
-						</div>
-						<div className="stats-section-item">
-							<div className="stats-section-item-left">Total Software Role Companies: </div>
-							<div className="stats-section-item-right">{companyStats.totalSoftwareCompanies}</div>
-						</div>
-						<div className="stats-section-item">
-							<div className="stats-section-item-left">Total Analyst Role Companies: </div>
-							<div className="stats-section-item-right">{companyStats.totalAnalystCompanies}</div>
-						</div>
-						<div className="stats-section-item">
-							<div className="stats-section-item-left">Total Other Roles Companies: </div>
-							<div className="stats-section-item-right">{companyStats.totalOthersCompanies}</div>
-						</div>
+						<StatsSectionItem left="Total Companies Visited:" right={companyStats.totalCompanies} />
+						<StatsSectionItem left="Total Ongoing Companies:" right={companyStats.totalOngoingCompanies} />
+						<StatsSectionItem
+							left="Total Successfully Completed Companies:"
+							right={companyStats.totalCompletedCompanies}
+						/>
+						<StatsSectionItem left="Total PPOs Offering Companies:" right={companyStats.totalPPOs} />
+						<StatsSectionItem left="Total FTEs Offering Companies:" right={companyStats.totalFTEs} />
+						<StatsSectionItem left="Total Intern Offering Companies:" right={companyStats.totalInterns} />
+						<StatsSectionItem left="Total 6M + FTEs Offering Companies:" right={companyStats.total6MFTEs} />
+						<StatsSectionItem left="Total Software Role Companies:" right={companyStats.totalSoftwareCompanies} />
+						<StatsSectionItem left="Total Analyst Role Companies:" right={companyStats.totalAnalystCompanies} />
+						<StatsSectionItem left="Total Other Roles Companies:" right={companyStats.totalOthersCompanies} />
 					</div>
 
 					<div className="stats-section">
 						<h2>Student Stats</h2>
-						<div className="stats-section-item">
-							<div className="stats-section-item-left">Total Registered Students: </div>
-							<div className="stats-section-item-right">{studentStats.totalStudents}</div>
-						</div>
-						<div className="stats-section-item">
-							<div className="stats-section-item-left">Total Eligible Students: </div>
-							<div className="stats-section-item-right">{studentStats.totalEligibleStudents}</div>
-						</div>
-						<div className="stats-section-item">
-							<div className="stats-section-item-left">Total Placed Students: </div>
-							<div className="stats-section-item-right">{studentStats.totalPlacedStudents}</div>
-						</div>
-						<div className="stats-section-item">
-							<div className="stats-section-item-left">Total Placement Percentage (Eligible): </div>
-							<div className="stats-section-item-right">{studentStats.placementPercentage} %</div>
-						</div>
-						<div className="stats-section-item">
-							<div className="stats-section-item-left">Total Verified Students: </div>
-							<div className="stats-section-item-right">{studentStats.totalVerifiedStudents}</div>
-						</div>
-						<div className="stats-section-item">
-							<div className="stats-section-item-left">Total Unverified Students: </div>
-							<div className="stats-section-item-right">{studentStats.totalUnverifiedStudents}</div>
-						</div>
-						<div className="stats-section-item">
-							<div className="stats-section-item-left">Total Admins: </div>
-							<div className="stats-section-item-right">{studentStats.totalAdmins}</div>
-						</div>
-						<div className="stats-section-item">
-							<div className="stats-section-item-left">Total Placement Coordinators: </div>
-							<div className="stats-section-item-right">{studentStats.totalPlacementCoordinators}</div>
-						</div>
+						<StatsSectionItem left="Total Registered Students:" right={studentStats.totalStudents} />
+						<StatsSectionItem left="Total Eligible Students:" right={studentStats.totalEligibleStudents} />
+						<StatsSectionItem left="Total Placed Students:" right={studentStats.totalPlacedStudents} />
+						<StatsSectionItem
+							left="Total Placement Percentage (Eligible):"
+							right={<>{studentStats.placementPercentage} %</>}
+						/>
+						<StatsSectionItem left="Total Verified Students:" right={studentStats.totalVerifiedStudents} />
+						<StatsSectionItem left="Total Unverified Students:" right={studentStats.totalUnverifiedStudents} />
+						<StatsSectionItem left="Total Admins:" right={studentStats.totalAdmins} />
+						<StatsSectionItem left="Total Placement Coordinators:" right={studentStats.totalPlacementCoordinators} />
 					</div>
 				</div>
 			)}

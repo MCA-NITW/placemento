@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { MdDelete, MdEdit } from 'react-icons/md';
 import { toast } from 'react-toastify';
@@ -50,7 +50,6 @@ const CompanyTable = () => {
 	const handleEditButtonClick = async (id) => {
 		setIsAdd(false);
 		const response = await getCompany(id);
-
 		setCompanyData(response.data);
 		setIsFormOpen(true);
 	};
@@ -103,16 +102,11 @@ const CompanyTable = () => {
 		};
 	};
 
-	const deleteColumn = () => {
-		return actionColumn('Del', deleteButtonRenderer);
-	};
-
-	const editColumn = () => {
-		return actionColumn('Edit', editButtonRenderer);
-	};
-
 	const columnDefinitions = [
-		generateNestedColumn('Actions', [deleteColumn(), editColumn()]),
+		generateNestedColumn('Actions', [
+			actionColumn('Del', deleteButtonRenderer),
+			actionColumn('Edit', editButtonRenderer),
+		]),
 		{
 			...generateColumn('name', 'Name', 150),
 			pinned: 'left',
@@ -144,17 +138,6 @@ const CompanyTable = () => {
 		generateColumn('bond', 'Bond', 60, false, false),
 	];
 
-	const dataTypeDefinitions = useMemo(() => {
-		return {
-			object: {
-				baseDataType: 'object',
-				extendsDataType: 'object',
-				valueParser: (params) => ({ name: params.newValue }),
-				valueFormatter: (params) => (params.value == null ? '' : params.value.name),
-			},
-		};
-	}, []);
-
 	const mapCompanyData = (company) => ({
 		...company,
 		id: company._id,
@@ -181,19 +164,14 @@ const CompanyTable = () => {
 
 	const renderCompanyForm = () => {
 		if (!isFormOpen) return null;
-		const modalRoot = document.getElementById('form-root');
 		return ReactDOM.createPortal(
-			<div className="modal" id="companyFormModal">
-				<div className="modal-dialog">
-					<CompanyForm
-						actionFunc={isAdd ? addCompany : updateCompany}
-						initialData={companyData}
-						handleFormClose={handleCloseForm}
-						isAdd={isAdd}
-					/>
-				</div>
-			</div>,
-			modalRoot,
+			<CompanyForm
+				actionFunc={isAdd ? addCompany : updateCompany}
+				initialData={companyData}
+				handleFormClose={handleCloseForm}
+				isAdd={isAdd}
+			/>,
+			document.getElementById('form-root'),
 		);
 	};
 
@@ -203,12 +181,7 @@ const CompanyTable = () => {
 				Add Company
 			</button>
 			{renderCompanyForm()}
-			<AgGridTable
-				rowData={rowData}
-				columnDefinitions={columnDefinitions}
-				dataTypeDefinitions={dataTypeDefinitions}
-				fetchData={fetchData}
-			/>
+			<AgGridTable rowData={rowData} columnDefinitions={columnDefinitions} fetchData={fetchData} />
 			<Modal
 				isOpen={isModalOpen}
 				onClose={closeModal}

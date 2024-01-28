@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { GrValidate } from 'react-icons/gr';
 import { toast } from 'react-toastify';
 import { getStudents, updateUserRole, updateVerificationStatus } from '../../api/studentAPI.jsx';
@@ -43,6 +43,22 @@ const StudentTable = () => {
 		}
 	};
 
+	const handleRoleChange = async (event,params) => {
+			try {
+				if (user.id === params.id) {
+					toast.error(<ToastContent res="error" messages={['You cannot change your own role.']} />);
+					return;
+				}
+				await updateUserRole(params.id, event.target.value);
+				toast.success(
+					<ToastContent res="success" messages={[`Student ${params.name} role updated successfully.`]} />,
+				);
+				fetchData();
+			} catch (error) {
+				console.error('Error updating student role:', error);
+			}
+	};
+
 	const verifyButtonRenderer = (params) => {
 		const onClick = () => handleVerifyButtonClick(params.data);
 		return (
@@ -53,26 +69,11 @@ const StudentTable = () => {
 	};
 
 	const roleDropdownRenderer = (params) => {
-		const onChange = async (event) => {
-			try {
-				if (user.id === params.data.id) {
-					toast.error(<ToastContent res="error" messages={['You cannot change your own role.']} />);
-					return;
-				}
-				await updateUserRole(params.data.id, event.target.value);
-				toast.success(
-					<ToastContent res="success" messages={[`Student ${params.data.name} role updated successfully.`]} />,
-				);
-				fetchData();
-			} catch (error) {
-				console.error('Error updating student role:', error);
-			}
-		};
 		return (
 			<select
 				className="role-dropdown"
 				value={params.data.role}
-				onChange={onChange}
+				onChange={(event) => handleRoleChange(event,params.data)}
 				disabled={user.id === params.data.id}
 			>
 				<option value="student">Student</option>
@@ -113,10 +114,6 @@ const StudentTable = () => {
 		};
 	};
 
-	const verifyButtonColumn = () => {
-		return actionColumn('Ver', verifyButtonRenderer);
-	};
-
 	const roleDropdownColumn = () => {
 		return {
 			...generateColumn('role', 'Role', 100),
@@ -127,7 +124,7 @@ const StudentTable = () => {
 	};
 
 	const columnDefinitions = [
-		generateNestedColumn('Actions', [verifyButtonColumn()]),
+		generateNestedColumn('Actions', [actionColumn('Ver', verifyButtonRenderer)]),
 		roleDropdownColumn(),
 		{
 			...generateColumn('rollNo', 'Roll No', 100),
@@ -158,18 +155,7 @@ const StudentTable = () => {
 
 	const rowData = students.map(mapStudentData);
 
-	const dataTypeDefinitions = useMemo(() => {
-		return {
-			object: {
-				baseDataType: 'object',
-				extendsDataType: 'object',
-				valueParser: (params) => ({ name: params.newValue }),
-				valueFormatter: (params) => (params.value == null ? '' : params.value.name),
-			},
-		};
-	}, []);
-
-	const modelRenderer = (params) => {
+	const modelRenderer = () => {
 		return (
 			<Modal
 				isOpen={isModalOpen}
@@ -183,12 +169,7 @@ const StudentTable = () => {
 
 	return (
 		<>
-			<AgGridTable
-				rowData={rowData}
-				columnDefinitions={columnDefinitions}
-				dataTypeDefinitions={dataTypeDefinitions}
-				fetchData={fetchData}
-			/>
+			<AgGridTable rowData={rowData} columnDefinitions={columnDefinitions} fetchData={fetchData} />
 			{selectedStudent && modelRenderer()}
 		</>
 	);

@@ -23,9 +23,6 @@ const calculateTotalPlacedStudentsCTC = (companies) =>
 		0,
 	);
 
-const calculateAverageCTC = (totalPlacedStudentsCTC, totalPlacedStudents) =>
-	totalPlacedStudents ? totalPlacedStudentsCTC / totalPlacedStudents : 0;
-
 const getHighestCTC = (companies) => Math.max(...companies.map((company) => company.ctc));
 
 const getHighestCTCPlaced = (companies) =>

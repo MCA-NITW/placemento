@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const logger = require('../utils/logger');
 const validateUser = require('../utils/validateUser');
+const { isValidObjectId } = require('mongoose');
 
 // View all users
 exports.viewAllUsers = async (req, res) => {
@@ -85,7 +86,8 @@ exports.updateRole = async (req, res) => {
 		if (!isValidObjectId(req.params.id)) {
 			return res.status(400).json({ message: 'Invalid user ID' });
 		}
-		if (req.body.role !== 'admin' && req.body.role !== 'placementCoordinator') {
+		console.log(req.body.role);
+		if (req.body.role !== 'admin' && req.body.role !== 'student' && req.body.role !== 'placementCoordinator') {
 			return res.status(400).json({ message: 'Invalid role' });
 		}
 		const updatedUser = await User.findByIdAndUpdate(req.params.id, { role: req.body.role }, { new: true });

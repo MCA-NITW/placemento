@@ -1,9 +1,9 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 
 export const signup = (user) => {
-	return axios.post('http://localhost:5000/auth/signup', user);
+	return axiosInstance.post('/auth/signup', user);
 };
 
 export const signin = (user) => {
-	return axios.post('http://localhost:5000/auth/login', user);
+	return axiosInstance.post('/auth/login', user);
 };
