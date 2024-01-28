@@ -1,8 +1,5 @@
-import { useState } from 'react';
-import forgetPassword from '../../api/authApi';
-
 const ForgotPassword = () => {
-  return <></>;
+	return <></>;
 };
 
 export default ForgotPassword;
