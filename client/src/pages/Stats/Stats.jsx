@@ -1,3 +1,4 @@
+import porptypes from 'prop-types';
 import { useCallback, useEffect, useState } from 'react';
 import { getCompanyStats, getCtcStats, getStudentStats } from '../../api/statsApi';
 import './Stats.css';
@@ -8,6 +9,11 @@ const StatsSectionItem = ({ left, right }) => (
 		<div className="stats-section-item-right">{right}</div>
 	</div>
 );
+
+StatsSectionItem.propTypes = {
+	left: porptypes.string.isRequired,
+	right: porptypes.node.isRequired,
+};
 
 const Stats = () => {
 	const [ctcStats, setCtcStats] = useState({});
