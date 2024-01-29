@@ -8,7 +8,7 @@ const Modal = ({ isOpen, onClose, onConfirm, message, buttonTitle, HasInput = nu
 		<div className={classes.overlay}>
 			<div className={classes.modal}>
 				<p>{message}</p>
-				<HasInput />
+				{HasInput && <HasInput />}
 				<div className={classes['modal__buttons']}>
 					<button className="btn btn-danger" onClick={onConfirm}>
 						{buttonTitle}
@@ -29,6 +29,7 @@ Modal.propTypes = {
 	onConfirm: PropType.func.isRequired,
 	message: PropType.string.isRequired,
 	buttonTitle: PropType.string.isRequired,
+	HasInput: PropType.func || null,
 };
 
 export default Modal;

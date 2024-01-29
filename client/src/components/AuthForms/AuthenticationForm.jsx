@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { forgotPassword, resetPassword, signin, signup, verifyOTP } from '../../api/authApi';
-import Modal from '../Modal/Modal';
+import { signin, signup } from '../../api/authApi';
 import ToastContent from '../ToastContent/ToastContent';
+import ForgetPassword from './ForgetPassword';
 import { FormFooter } from './FormFooter';
 import classes from './auth.module.css';
 
@@ -143,83 +143,9 @@ const AuthenticationForm = () => {
 	};
 
 	const [isFormOpen, setIsFormOpen] = useState(false);
-	const [counter, setCounter] = useState(0);
-	const [otp, setOtp] = useState('');
-	const [newPassword, setNewPassword] = useState('');
+
 	const onCloseAction = () => {
-		setCounter(0);
 		setIsFormOpen(false);
-	};
-
-	const onConfirmAction = async () => {
-		if (counter === 0) {
-			try {
-				const res = await forgotPassword({ email });
-				toast.success(<ToastContent res="Email Sent" messages={res.data.messages} />, {
-					autoClose: 4000,
-					closeOnClick: true,
-					pauseOnHover: true,
-				});
-				setCounter(counter + 1);
-			} catch (err) {
-				toast.error(<ToastContent res="Email Sent" messages={err.response.data.errors} />, {
-					autoClose: 4000,
-					closeOnClick: true,
-					pauseOnHover: true,
-				});
-			}
-		} else if (counter === 1) {
-			try {
-				const res = await verifyOTP({ email, otp });
-				toast.success(<ToastContent res="OTP Verified" messages={res.data.messages} />, {
-					autoClose: 4000,
-					closeOnClick: true,
-					pauseOnHover: true,
-				});
-				setCounter(counter + 1);
-			} catch (err) {
-				toast.error(<ToastContent res="OTP Verification Failed" messages={err.response.data.errors} />, {
-					autoClose: 4000,
-					closeOnClick: true,
-					pauseOnHover: true,
-				});
-			}
-		} else {
-			try {
-				const res = await resetPassword({ email, otp, newPassword });
-				toast.success(<ToastContent res="Password Reset Successful" messages={res.data.messages} />, {
-					autoClose: 4000,
-					closeOnClick: true,
-					pauseOnHover: true,
-				});
-				setIsFormOpen(false);
-			} catch (err) {
-				toast.error(<ToastContent res="Password Reset Failed" messages={err.response.data.errors} />, {
-					autoClose: 4000,
-					closeOnClick: true,
-					pauseOnHover: true,
-				});
-			}
-		}
-	};
-
-	const InputRenderer = () => {
-		return (
-			<div className={classes['modal__input-container']}>
-				<input
-					type={counter === 0 ? 'email' : counter === 1 ? 'number' : 'password'}
-					placeholder={counter === 0 ? 'Enter your email' : counter === 1 ? 'Enter OTP' : 'Enter new password'}
-					onChange={(e) => {
-						if (counter === 0) setEmail(e.target.value);
-						else if (counter === 1) setOtp(e.target.value);
-						else setNewPassword(e.target.value);
-					}}
-					value={counter === 0 ? email : counter === 1 ? otp : newPassword}
-					id="input"
-					autoFocus
-				/>
-			</div>
-		);
 	};
 
 	return (
@@ -358,22 +284,9 @@ const AuthenticationForm = () => {
 						Forgot Password?
 					</div>
 				)}
+				<ForgetPassword isFormOpen={isFormOpen} setIsFormOpen={setIsFormOpen} onCloseAction={onCloseAction} />
 				<FormFooter mode={isSignIn ? 'signup' : 'signin'} />
 			</form>
-			<Modal
-				isOpen={isFormOpen}
-				onClose={() => onCloseAction()}
-				onConfirm={() => onConfirmAction()}
-				message={
-					counter === 0
-						? 'Enter your College Email ID!!'
-						: counter === 1
-							? 'Check your email for OTP'
-							: 'Enter your new password'
-				}
-				buttonTitle={counter === 0 ? 'Send Email' : counter === 1 ? 'Verify OTP' : 'Reset Password'}
-				HasInput={() => <InputRenderer />}
-			/>
 		</div>
 	);
 };

@@ -3,9 +3,8 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const logger = require('../utils/logger');
 const validateUser = require('../utils/validateUser');
-const emailjs = require('emailjs-com');
-
-const saltRounds = 10;
+const Otp = require('../models/Otp');
+const nodemailer = require('nodemailer');
 
 exports.postSignup = async (req, res) => {
 	try {
@@ -17,7 +16,7 @@ exports.postSignup = async (req, res) => {
 		const existingUser = await User.findOne({ $or: [{ email: user.email }, { rollNo: user.rollNo }] });
 		if (existingUser) return res.status(400).json({ errors: ['User with the same email or rollNo already exists'] });
 
-		const hashedPassword = await bcrypt.hash(user.password, saltRounds);
+		const hashedPassword = await bcrypt.hash(user.password, process.env.JWT_SALT_ROUNDS);
 		user.password = hashedPassword;
 
 		await new User(user).save();
@@ -88,24 +87,34 @@ exports.postVerifyEmail = async (req, res) => {
 		if (!user) return res.status(401).json({ status: false, errors: ['User Not Found'] });
 
 		const otp = Math.floor(100000 + Math.random() * 900000);
-		user.otp = otp;
-		await user.save();
+
+		const existingOtp = await Otp.findOne({ email });
+		if (existingOtp) await Otp.findByIdAndDelete(existingOtp._id);
+
+		await new Otp({ email, otp }).save();
 
 		logger.info(`OTP generated for ${email}: ${otp}`);
 
-		// const templateParams = {
-		// 	to_name: user.name,
-		// 	from_name: 'NITW Placement Portal',
-		// 	otp,
-		// };
+		// Create a nodemailer transporter
+		let transporter = nodemailer.createTransport({
+			service: 'gmail',
+			auth: {
+				user: process.env.EMAIL_ID,
+				pass: process.env.EMAIL_PASSWORD,
+			},
+		});
 
-		// const EmailJSSErviceID = process.env.EMAILJS_SERVICE_ID;
-		// const EmailJSTemplateID = process.env.EMAILJS_TEMPLATE_ID;
-		// const EmailJSUserID = process.env.EMAILJS_USER_ID;
+		// Define email options
+		let mailOptions = {
+			from: 'NITW Placement Portal',
+			to: email,
+			subject: 'OTP for Verification',
+			text: `Your OTP is: ${otp} use it to verify your account within 10 minutes.`,
+		};
 
-		// console.log(EmailJSSErviceID, EmailJSTemplateID, EmailJSUserID);
-
-		// await emailjs.send(EmailJSSErviceID, EmailJSTemplateID, templateParams, EmailJSUserID);
+		// Send email
+		let info = await transporter.sendMail(mailOptions);
+		console.log('Message sent: %s', info.messageId);
 
 		res.status(200).json({
 			status: true,
@@ -113,7 +122,7 @@ exports.postVerifyEmail = async (req, res) => {
 		});
 	} catch (error) {
 		logger.error(error);
-		res.status(500).json({ status: false, messages: ['Internal server error'] });
+		res.status(500).json({ status: false, errors: ['Internal server error'] });
 	}
 };
 
@@ -121,7 +130,6 @@ exports.postVerifyEmail = async (req, res) => {
 exports.postVerifyOTP = async (req, res) => {
 	try {
 		console.log(req.body);
-		console.log(user.otp);
 		const { email, otp } = req.body;
 
 		if (!email || !otp) return res.status(400).json({ status: false, errors: ['Email and OTP required'] });
@@ -129,9 +137,16 @@ exports.postVerifyOTP = async (req, res) => {
 			return res.status(400).json({ status: false, errors: ['Enter a valid NITW email'] });
 
 		const user = await User.findOne({ email });
+		const existingOtp = await Otp.findOne({ email });
 		if (!user) return res.status(401).json({ status: false, errors: ['User Not Found'] });
 
-		if (user.otp !== otp) return res.status(401).json({ status: false, errors: ['Incorrect OTP'] });
+		console.log(existingOtp, otp);
+		if (existingOtp.otp !== otp) return res.status(401).json({ status: false, errors: ['Incorrect OTP'] });
+
+		// Check OTP expiry
+		const otpExpiry = new Date(existingOtp.createdAt).getTime() + 600000;
+		const currentTime = new Date().getTime();
+		if (currentTime > otpExpiry) return res.status(401).json({ status: false, errors: ['OTP expired'] });
 
 		await user.save();
 
@@ -143,29 +158,45 @@ exports.postVerifyOTP = async (req, res) => {
 		});
 	} catch (error) {
 		logger.error(error);
-		res.status(500).json({ status: false, messages: ['Internal server error'] });
+		res.status(500).json({ status: false, errors: ['Internal server error'] });
 	}
 };
 
 // postResetPassword
 exports.postResetPassword = async (req, res) => {
 	try {
-		const { email, otp, password } = req.body;
-
-		if (!email || !password) return res.status(400).json({ status: false, errors: ['Email and Password required'] });
+		const { email, otp, newPassword } = req.body;
+		if (!email || !newPassword) return res.status(400).json({ status: false, errors: ['Email and Password required'] });
 		if (!email.endsWith('@student.nitw.ac.in'))
 			return res.status(400).json({ status: false, errors: ['Enter a valid NITW email'] });
 
 		const user = await User.findOne({ email });
 		if (!user) return res.status(401).json({ status: false, errors: ['User Not Found'] });
 
-		if (user.otp !== otp) return res.status(401).json({ status: false, errors: ['Incorrect OTP'] });
+		const existing = await Otp.findOne({ email });
+		if (!existing) return res.status(401).json({ status: false, errors: ['OTP not generated'] });
 
-		const hashedPassword = await bcrypt.hash(password, saltRounds);
+		if (existing.otp !== otp) return res.status(401).json({ status: false, errors: ['Incorrect OTP'] });
+
+		if (newPassword.length < 6 || !/[a-z]/.test(newPassword) || !/[A-Z]/.test(newPassword) || !/\d/.test(newPassword))
+			return res.status(401).json({
+				status: false,
+				errors: [
+					'Password must be atleast 6 characters long and contain atleast one uppercase, one lowercase and one numeric character.',
+				],
+			});
+
+		// Check OTP expiry
+		const otpExpiry = new Date(existing.createdAt).getTime() + 600000;
+		const currentTime = new Date().getTime();
+		if (currentTime > otpExpiry) return res.status(401).json({ status: false, errors: ['OTP expired'] });
+
+		const hashedPassword = await bcrypt.hash(newPassword, process.env.JWT_SALT_ROUNDS);
 		user.password = hashedPassword;
-		// remove otp
-		user.otp = undefined;
+
 		await user.save();
+
+		await Otp.findByIdAndDelete(existing._id);
 
 		logger.info(`Password reset for ${email}`);
 
@@ -175,6 +206,6 @@ exports.postResetPassword = async (req, res) => {
 		});
 	} catch (error) {
 		logger.error(error);
-		res.status(500).json({ status: false, messages: ['Internal server error'] });
+		res.status(500).json({ status: false, errors: ['Internal server error'] });
 	}
 };

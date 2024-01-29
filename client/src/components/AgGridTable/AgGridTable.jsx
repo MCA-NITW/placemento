@@ -17,7 +17,6 @@ const AgGridTable = ({ rowData, columnDefinitions, fetchData }) => {
 		};
 	}, []);
 	return (
-		<div className="ag-theme-quartz">
 			<AgGridReact
 				rowData={rowData}
 				columnDefs={columnDefinitions}
@@ -27,8 +26,8 @@ const AgGridTable = ({ rowData, columnDefinitions, fetchData }) => {
 				dataTypeDefinitions={dataTypeDefinitions}
 				onGridReady={fetchData}
 				suppressClickEdit={true}
+				className="ag-theme-quartz"
 			/>
-		</div>
 	);
 };
 
