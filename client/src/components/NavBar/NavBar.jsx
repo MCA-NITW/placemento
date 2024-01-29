@@ -18,7 +18,7 @@ const NavBar = () => {
 	useEffect(() => {
 		if (token) {
 			const headers = {
-				Authorization: `Bearer ${token}`,
+				Authorization: `Bearer ${token}`
 			};
 			axios
 				.get('http://localhost:5000/token-check', { headers })
@@ -39,18 +39,18 @@ const NavBar = () => {
 			{
 				to: '/',
 				label: 'Home',
-				icon: <FaHome />,
+				icon: <FaHome />
 			},
 			{
 				to: 'stats',
 				label: 'Stats',
-				icon: <BiStats />,
+				icon: <BiStats />
 			},
 			{
 				to: 'teams',
 				label: 'Teams',
-				icon: <RiTeamFill />,
-			},
+				icon: <RiTeamFill />
+			}
 		];
 
 		if (isAuthenticated) {
@@ -59,13 +59,13 @@ const NavBar = () => {
 				{
 					to: 'students',
 					label: 'Students',
-					icon: <FaUsers />,
+					icon: <FaUsers />
 				},
 				{
 					to: 'companies',
 					label: 'Companies',
-					icon: <GoOrganization />,
-				},
+					icon: <GoOrganization />
+				}
 			]);
 		} else {
 			setNavItems([
@@ -73,8 +73,8 @@ const NavBar = () => {
 				{
 					to: 'auth?mode=signin',
 					label: 'Auth',
-					icon: <FaSignInAlt />,
-				},
+					icon: <FaSignInAlt />
+				}
 			]);
 		}
 	}, [isAuthenticated]);

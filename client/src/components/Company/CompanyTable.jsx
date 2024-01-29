@@ -38,7 +38,7 @@ const CompanyTable = () => {
 		try {
 			await deleteCompany(companyToDelete.id);
 			toast.success(
-				<ToastContent res="success" messages={[`Company ${companyToDelete.name} deleted successfully.`]} />,
+				<ToastContent res="success" messages={[`Company ${companyToDelete.name} deleted successfully.`]} />
 			);
 			setIsModalOpen(false);
 			fetchData();
@@ -59,12 +59,12 @@ const CompanyTable = () => {
 		headerName,
 		width,
 		sortable,
-		resizable,
+		resizable
 	});
 
 	const generateNestedColumn = (headerName, children) => ({
 		headerName,
-		children,
+		children
 	});
 
 	const generateDateColumn = (field, headerName, width, sortable = true, resizable = true) => ({
@@ -72,7 +72,7 @@ const CompanyTable = () => {
 		valueFormatter: (params) =>
 			params.value
 				? new Date(params.value).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
-				: '',
+				: ''
 	});
 
 	const formatCutoff = (cutoff) => (cutoff.cgpa ? `${cutoff.cgpa} CGPA` : `${cutoff.percentage}%`);
@@ -98,18 +98,18 @@ const CompanyTable = () => {
 			...generateColumn(null, actionName, 55, false, false),
 			pinned: 'left',
 			cellRenderer: actionButtonRenderer,
-			...(userRole !== 'admin' && userRole !== 'placementCoordinator' && { initialHide: true }),
+			initialHide: userRole !== 'admin' && userRole !== 'placementCoordinator'
 		};
 	};
 
 	const columnDefinitions = [
 		generateNestedColumn('Actions', [
 			actionColumn('Del', deleteButtonRenderer),
-			actionColumn('Edit', editButtonRenderer),
+			actionColumn('Edit', editButtonRenderer)
 		]),
 		{
 			...generateColumn('name', 'Name', 150),
-			pinned: 'left',
+			pinned: 'left'
 		},
 		generateColumn('status', 'Status', 100, false),
 		generateColumn('typeOfOffer', 'Offer', 90),
@@ -122,20 +122,20 @@ const CompanyTable = () => {
 		generateNestedColumn('CTC (LPA)', [
 			{
 				...generateColumn('ctc', 'CTC', 80, true, false),
-				valueFormatter: (params) => params.value.toFixed(2),
+				valueFormatter: (params) => params.value.toFixed(2)
 			},
 			{
 				...generateColumn('ctcBase', 'Base', 80, true, false),
-				valueFormatter: (params) => params.value.toFixed(2),
-			},
+				valueFormatter: (params) => params.value.toFixed(2)
+			}
 		]),
 		generateNestedColumn('Cutoffs', [
 			generateColumn('cutoff_pg', 'PG', 80, false, false),
 			generateColumn('cutoff_ug', 'UG', 80, false, false),
 			generateColumn('cutoff_12', '12', 80, false, false),
-			generateColumn('cutoff_10', '10', 80, false, false),
+			generateColumn('cutoff_10', '10', 80, false, false)
 		]),
-		generateColumn('bond', 'Bond', 60, false, false),
+		generateColumn('bond', 'Bond', 60, false, false)
 	];
 
 	const mapCompanyData = (company) => ({
@@ -146,7 +146,7 @@ const CompanyTable = () => {
 		cutoff_ug: formatCutoff(company.cutoffs.ug),
 		cutoff_12: formatCutoff(company.cutoffs.twelth),
 		cutoff_10: formatCutoff(company.cutoffs.tenth),
-		ctcBase: company.ctcBreakup.base,
+		ctcBase: company.ctcBreakup.base
 	});
 
 	const rowData = companies.map(mapCompanyData);
@@ -171,7 +171,7 @@ const CompanyTable = () => {
 				handleFormClose={handleCloseForm}
 				isAdd={isAdd}
 			/>,
-			document.getElementById('form-root'),
+			document.getElementById('form-root')
 		);
 	};
 

@@ -5,6 +5,7 @@ const logger = require('../utils/logger');
 const validateUser = require('../utils/validateUser');
 const Otp = require('../models/Otp');
 const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 
 exports.postSignup = async (req, res) => {
 	try {
@@ -16,7 +17,7 @@ exports.postSignup = async (req, res) => {
 		const existingUser = await User.findOne({ $or: [{ email: user.email }, { rollNo: user.rollNo }] });
 		if (existingUser) return res.status(400).json({ errors: ['User with the same email or rollNo already exists'] });
 
-		const hashedPassword = await bcrypt.hash(user.password, process.env.JWT_SALT_ROUNDS);
+		const hashedPassword = await bcrypt.hash(user.password, Number(process.env.JWT_SALT_ROUNDS));
 		user.password = hashedPassword;
 
 		await new User(user).save();
@@ -24,8 +25,8 @@ exports.postSignup = async (req, res) => {
 
 		res.status(201).json({
 			messages: [
-				'Reach out to the admin to verify your account. You will be able to login once your account is verified.',
-			],
+				'Reach out to the admin to verify your account. You will be able to login once your account is verified.'
+			]
 		});
 	} catch (error) {
 		logger.error(error);
@@ -60,10 +61,10 @@ exports.getLogin = async (req, res) => {
 				ssc: user.ssc,
 				rollNo: user.rollNo,
 				totalGapInAcademics: user.totalGapInAcademics,
-				backlogs: user.backlogs,
+				backlogs: user.backlogs
 			},
 			process.env.JWT_SECRET,
-			{ expiresIn: '7d' },
+			{ expiresIn: '7d' }
 		);
 		logger.info(`User logged in: ${email}`);
 		res.json({ status: true, data: { token }, messages: ['Login Successful'] });
@@ -79,14 +80,16 @@ exports.postVerifyEmail = async (req, res) => {
 		console.log(req.body);
 		const { email } = req.body;
 
+		// Generate a secure OTP
+		const otp = crypto.randomInt(100000, 999999);
+
+		// Rest of the code remains unchanged
 		if (!email) return res.status(400).json({ status: false, errors: ['Email required'] });
 		if (!email.endsWith('@student.nitw.ac.in'))
 			return res.status(400).json({ status: false, errors: ['Enter a valid NITW email'] });
 
 		const user = await User.findOne({ email });
 		if (!user) return res.status(401).json({ status: false, errors: ['User Not Found'] });
-
-		const otp = Math.floor(100000 + Math.random() * 900000);
 
 		const existingOtp = await Otp.findOne({ email });
 		if (existingOtp) await Otp.findByIdAndDelete(existingOtp._id);
@@ -100,8 +103,9 @@ exports.postVerifyEmail = async (req, res) => {
 			service: 'gmail',
 			auth: {
 				user: process.env.EMAIL_ID,
-				pass: process.env.EMAIL_PASSWORD,
+				pass: process.env.EMAIL_PASSWORD
 			},
+			secure: true
 		});
 
 		// Define email options
@@ -109,7 +113,7 @@ exports.postVerifyEmail = async (req, res) => {
 			from: 'NITW Placement Portal',
 			to: email,
 			subject: 'OTP for Verification',
-			text: `Your OTP is: ${otp} use it to verify your account within 10 minutes.`,
+			text: `Your OTP is: ${otp} use it to verify your account within 10 minutes.`
 		};
 
 		// Send email
@@ -118,7 +122,7 @@ exports.postVerifyEmail = async (req, res) => {
 
 		res.status(200).json({
 			status: true,
-			messages: [`OTP sent to ${email}`],
+			messages: [`OTP sent to ${email}`]
 		});
 	} catch (error) {
 		logger.error(error);
@@ -129,7 +133,6 @@ exports.postVerifyEmail = async (req, res) => {
 // postVerifyOTP
 exports.postVerifyOTP = async (req, res) => {
 	try {
-		console.log(req.body);
 		const { email, otp } = req.body;
 
 		if (!email || !otp) return res.status(400).json({ status: false, errors: ['Email and OTP required'] });
@@ -139,8 +142,7 @@ exports.postVerifyOTP = async (req, res) => {
 		const user = await User.findOne({ email });
 		const existingOtp = await Otp.findOne({ email });
 		if (!user) return res.status(401).json({ status: false, errors: ['User Not Found'] });
-
-		console.log(existingOtp, otp);
+		if (!existingOtp) return res.status(401).json({ status: false, errors: ['OTP not generated'] });
 		if (existingOtp.otp !== otp) return res.status(401).json({ status: false, errors: ['Incorrect OTP'] });
 
 		// Check OTP expiry
@@ -154,7 +156,7 @@ exports.postVerifyOTP = async (req, res) => {
 
 		res.status(200).json({
 			status: true,
-			messages: ['Email verified successfully'],
+			messages: ['Email verified successfully']
 		});
 	} catch (error) {
 		logger.error(error);
@@ -182,8 +184,8 @@ exports.postResetPassword = async (req, res) => {
 			return res.status(401).json({
 				status: false,
 				errors: [
-					'Password must be atleast 6 characters long and contain atleast one uppercase, one lowercase and one numeric character.',
-				],
+					'Password must be atleast 6 characters long and contain atleast one uppercase, one lowercase and one numeric character.'
+				]
 			});
 
 		// Check OTP expiry
@@ -191,9 +193,8 @@ exports.postResetPassword = async (req, res) => {
 		const currentTime = new Date().getTime();
 		if (currentTime > otpExpiry) return res.status(401).json({ status: false, errors: ['OTP expired'] });
 
-		const hashedPassword = await bcrypt.hash(newPassword, process.env.JWT_SALT_ROUNDS);
+		const hashedPassword = await bcrypt.hash(newPassword, Number(process.env.JWT_SALT_ROUNDS));
 		user.password = hashedPassword;
-
 		await user.save();
 
 		await Otp.findByIdAndDelete(existing._id);
@@ -202,9 +203,10 @@ exports.postResetPassword = async (req, res) => {
 
 		res.status(200).json({
 			status: true,
-			messages: ['Password reset successfully'],
+			messages: ['Password reset successfully']
 		});
 	} catch (error) {
+		console.log(error);
 		logger.error(error);
 		res.status(500).json({ status: false, errors: ['Internal server error'] });
 	}

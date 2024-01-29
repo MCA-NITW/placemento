@@ -6,7 +6,7 @@ const companySchema = new mongoose.Schema(
 		status: {
 			type: String,
 			enum: ['ongoing', 'upcoming', 'completed', 'cancelled'],
-			default: 'upcoming',
+			default: 'upcoming'
 		},
 		interviewShortlist: { type: Number, default: 0 },
 		selected: { type: Number, default: 0 },
@@ -16,40 +16,40 @@ const companySchema = new mongoose.Schema(
 		cutoffs: {
 			pg: {
 				cgpa: { type: Number, default: 0 },
-				percentage: { type: Number, default: 0 },
+				percentage: { type: Number, default: 0 }
 			},
 			ug: {
 				cgpa: { type: Number, default: 0 },
-				percentage: { type: Number, default: 0 },
+				percentage: { type: Number, default: 0 }
 			},
 			twelth: {
 				cgpa: { type: Number, default: 0 },
-				percentage: { type: Number, default: 0 },
+				percentage: { type: Number, default: 0 }
 			},
 			tenth: {
 				cgpa: { type: Number, default: 0 },
-				percentage: { type: Number, default: 0 },
-			},
+				percentage: { type: Number, default: 0 }
+			}
 		},
 		typeOfOffer: {
 			type: String,
 			enum: ['PPO', 'FTE', '6M+FTE', 'Intern'],
-			default: 'FTE',
+			default: 'FTE'
 		},
 		profile: { type: String, default: '' },
 		profileCategory: {
 			type: String,
 			enum: ['Software', 'Analyst', 'Others'],
-			default: 'Others',
+			default: 'Others'
 		},
 		ctc: { type: Number, default: 0 },
 		ctcBreakup: {
 			base: { type: Number, default: 0 },
-			other: { type: Number, default: 0 },
+			other: { type: Number, default: 0 }
 		},
-		bond: { type: Number, default: 0 },
+		bond: { type: Number, default: 0 }
 	},
-	{ timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } },
+	{ timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } }
 );
 
 const Company = mongoose.model('Company', companySchema);

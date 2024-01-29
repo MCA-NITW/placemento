@@ -12,8 +12,8 @@ const AgGridTable = ({ rowData, columnDefinitions, fetchData }) => {
 				baseDataType: 'object',
 				extendsDataType: 'object',
 				valueParser: (params) => ({ name: params.newValue }),
-				valueFormatter: (params) => (params.value == null ? '' : params.value.name),
-			},
+				valueFormatter: (params) => (params.value == null ? '' : params.value.name)
+			}
 		};
 	}, []);
 	return (
@@ -34,7 +34,7 @@ const AgGridTable = ({ rowData, columnDefinitions, fetchData }) => {
 AgGridTable.propTypes = {
 	rowData: propTypes.array.isRequired,
 	columnDefinitions: propTypes.array.isRequired,
-	fetchData: propTypes.func.isRequired,
+	fetchData: propTypes.func.isRequired
 };
 
 export default AgGridTable;

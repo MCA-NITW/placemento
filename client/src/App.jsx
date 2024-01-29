@@ -35,32 +35,32 @@ const App = () => {
 			children: [
 				{
 					index: true,
-					element: <Home />,
+					element: <Home />
 				},
 				{
 					path: 'stats',
-					element: <Stats />,
+					element: <Stats />
 				},
 				{
 					path: 'teams',
-					element: <Teams />,
+					element: <Teams />
 				},
 				{
 					path: 'students',
 					element: <Students />,
-					loader: checkAuthAction,
+					loader: checkAuthAction
 				},
 				{
 					path: 'companies',
 					element: <Companies />,
-					loader: checkAuthAction,
+					loader: checkAuthAction
 				},
 				{
 					path: 'auth',
-					element: <Authentication />,
-				},
-			],
-		},
+					element: <Authentication />
+				}
+			]
+		}
 	]);
 
 	return <RouterProvider router={router} className="App" />;

@@ -21,7 +21,7 @@ const getDefaultFormData = (initialData) => {
 			cutoff_12: initialData.cutoffs?.twelth?.cgpa || initialData.cutoffs?.twelth?.percentage,
 			cutoff_10: initialData.cutoffs?.tenth?.cgpa || initialData.cutoffs?.tenth?.percentage,
 			ctcBase: initialData.ctcBreakup?.base,
-			cutoffs: undefined,
+			cutoffs: undefined
 		};
 		return updatedData;
 	}
@@ -42,7 +42,7 @@ const getDefaultFormData = (initialData) => {
 		profileCategory: '',
 		ctc: 0.0,
 		ctcBase: 0.0,
-		bond: 0,
+		bond: 0
 	};
 };
 
@@ -56,20 +56,20 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 	const handleLocationsChange = (value) => {
 		handleChange(
 			'locations',
-			value.split(',').map((loc) => loc.trim()),
+			value.split(',').map((loc) => loc.trim())
 		);
 	};
 
 	const handleSelectedStudentsChange = (value) => {
 		handleChange(
 			'selectedStudentsRollNo',
-			value.split(',').map((rollNo) => rollNo.trim()),
+			value.split(',').map((rollNo) => rollNo.trim())
 		);
 	};
 
 	const processCutoff = (value) => ({
 		cgpa: value <= 10 ? value : 0,
-		percentage: value > 10 ? value : 0,
+		percentage: value > 10 ? value : 0
 	});
 
 	const handleSubmit = async (e) => {
@@ -83,18 +83,18 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 				pg: processCutoff(formData.cutoff_pg),
 				ug: processCutoff(formData.cutoff_ug),
 				twelth: processCutoff(formData.cutoff_12),
-				tenth: processCutoff(formData.cutoff_10),
+				tenth: processCutoff(formData.cutoff_10)
 			},
 			ctcBreakup: {
 				base: formData.ctcBase,
-				other: (formData.ctc - formData.ctcBase).toFixed(2),
-			},
+				other: (formData.ctc - formData.ctcBase).toFixed(2)
+			}
 		};
 		try {
 			const res = isAdd ? await actionFunc(newCompany) : await actionFunc(initialData._id, newCompany);
 			if (res.status === 200)
 				toast.success(
-					<ToastContent res="Success" messages={[`Company ${isAdd ? 'added' : 'updated'} successfully`]} />,
+					<ToastContent res="Success" messages={[`Company ${isAdd ? 'added' : 'updated'} successfully`]} />
 				);
 			else toast.error(<ToastContent res="Error" messages={res.data.errors} />);
 			handleFormClose(true);
@@ -339,7 +339,7 @@ CompanyForm.propTypes = {
 	actionFunc: PropTypes.func.isRequired,
 	handleFormClose: PropTypes.func.isRequired,
 	initialData: PropTypes.object,
-	isAdd: PropTypes.bool.isRequired,
+	isAdd: PropTypes.bool.isRequired
 };
 
 export default CompanyForm;

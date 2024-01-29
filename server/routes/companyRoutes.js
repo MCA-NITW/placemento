@@ -10,7 +10,7 @@ router.post(
 	authenticateUser,
 	checkUserRole(['admin', 'placementCoordinator']),
 	limiter,
-	companyController.postAddCompany,
+	companyController.postAddCompany
 );
 
 // Update Company with rate limiting
@@ -19,7 +19,7 @@ router.put(
 	authenticateUser,
 	checkUserRole(['admin', 'placementCoordinator']),
 	limiter,
-	companyController.putUpdateCompany,
+	companyController.putUpdateCompany
 );
 
 // Delete Company with rate limiting
@@ -28,7 +28,7 @@ router.delete(
 	authenticateUser,
 	checkUserRole(['admin', 'placementCoordinator']),
 	limiter,
-	companyController.deleteCompany,
+	companyController.deleteCompany
 );
 
 // View All Companies without rate limiting
@@ -36,7 +36,7 @@ router.get(
 	'/view',
 	authenticateUser,
 	checkUserRole(['admin', 'placementCoordinator', 'student']),
-	companyController.getViewCompany,
+	companyController.getViewCompany
 );
 
 // View Company by ID without rate limiting
@@ -44,7 +44,7 @@ router.get(
 	'/view/:id',
 	authenticateUser,
 	checkUserRole(['admin', 'placementCoordinator', 'student']),
-	companyController.getViewCompanyById,
+	companyController.getViewCompanyById
 );
 
 module.exports = router;

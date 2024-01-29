@@ -5,17 +5,15 @@
 	justify-content: center;
 	width: 100%;
 	aspect-ratio: 1/1;
-	border: none;
 	border-radius: 5px;
 	cursor: pointer;
 	margin: 1px 0;
 	transition: all 0.3s ease-in-out;
-	font-size: 1rem;
+	font-size: 1.25rem;
 }
 
 .verify-button.verified {
 	color: green;
-	font-size: 1.25rem;
 }
 
 .verify-button.verified:hover {
@@ -25,7 +23,6 @@
 
 .verify-button.unverified {
 	color: red;
-	font-size: 1.25rem;
 }
 
 .verify-button.unverified:hover {

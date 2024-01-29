@@ -12,7 +12,7 @@ const StatsSectionItem = ({ left, right }) => (
 
 StatsSectionItem.propTypes = {
 	left: porptypes.string.isRequired,
-	right: porptypes.node.isRequired,
+	right: porptypes.node.isRequired
 };
 
 const Stats = () => {
@@ -26,7 +26,7 @@ const Stats = () => {
 			const [ctcResponse, companyResponse, studentResponse] = await Promise.all([
 				getCtcStats(),
 				getCompanyStats(),
-				getStudentStats(),
+				getStudentStats()
 			]);
 
 			const ctcData = ctcResponse.data;

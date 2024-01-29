@@ -1,3 +1,4 @@
+import propTypes from 'prop-types';
 import { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { toast } from 'react-toastify';
@@ -20,14 +21,14 @@ const ForgetPassword = ({ isFormOpen, onCloseAction }) => {
 				toast.success(<ToastContent res="Email Sent" messages={res.data.messages} />, {
 					autoClose: 4000,
 					closeOnClick: true,
-					pauseOnHover: true,
+					pauseOnHover: true
 				});
 				setCounter(counter + 1);
 			} catch (err) {
 				toast.error(<ToastContent res="Email Sent" messages={err.response.data.errors} />, {
 					autoClose: 4000,
 					closeOnClick: true,
-					pauseOnHover: true,
+					pauseOnHover: true
 				});
 			}
 		} else if (counter === 1) {
@@ -36,14 +37,14 @@ const ForgetPassword = ({ isFormOpen, onCloseAction }) => {
 				toast.success(<ToastContent res="OTP Verified" messages={res.data.messages} />, {
 					autoClose: 4000,
 					closeOnClick: true,
-					pauseOnHover: true,
+					pauseOnHover: true
 				});
 				setCounter(counter + 1);
 			} catch (err) {
 				toast.error(<ToastContent res="OTP Verification Failed" messages={err.response.data.errors} />, {
 					autoClose: 4000,
 					closeOnClick: true,
-					pauseOnHover: true,
+					pauseOnHover: true
 				});
 			}
 		} else {
@@ -52,14 +53,14 @@ const ForgetPassword = ({ isFormOpen, onCloseAction }) => {
 				toast.success(<ToastContent res="Password Reset Successful" messages={res.data.messages} />, {
 					autoClose: 4000,
 					closeOnClick: true,
-					pauseOnHover: true,
+					pauseOnHover: true
 				});
 				onCloseAction();
 			} catch (err) {
 				toast.error(<ToastContent res="Password Reset Failed" messages={err.response.data.errors} />, {
 					autoClose: 4000,
 					closeOnClick: true,
-					pauseOnHover: true,
+					pauseOnHover: true
 				});
 			}
 		}
@@ -118,6 +119,11 @@ const ForgetPassword = ({ isFormOpen, onCloseAction }) => {
 			)}
 		/>
 	);
+};
+
+ForgetPassword.propTypes = {
+	isFormOpen: propTypes.bool.isRequired,
+	onCloseAction: propTypes.func.isRequired
 };
 
 export default ForgetPassword;

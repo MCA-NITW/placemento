@@ -13,14 +13,14 @@ const getTotalCompaniesByProfileCategory = (companies, profileCategory) =>
 const calculateTotalPlacedStudents = (companies) =>
 	companies.reduce(
 		(acc, company) => (company.selectedStudentsRollNo[0] !== '' ? acc + company.selectedStudentsRollNo.length : acc),
-		0,
+		0
 	);
 
 const calculateTotalPlacedStudentsCTC = (companies) =>
 	companies.reduce(
 		(acc, company) =>
 			company.selectedStudentsRollNo[0] !== '' ? acc + company.selectedStudentsRollNo.length * company.ctc : acc,
-		0,
+		0
 	);
 
 const getHighestCTC = (companies) => Math.max(...companies.map((company) => company.ctc));
@@ -34,8 +34,8 @@ const getHighestCTCCompany = (companies, highestCTC) =>
 const getHighestCTCStudent = (students, companies, highestCTCPlacedCompany) =>
 	students.find((student) =>
 		companies.find(
-			(company) => company.name === highestCTCPlacedCompany && company.selectedStudentsRollNo.includes(student.rollNo),
-		),
+			(company) => company.name === highestCTCPlacedCompany && company.selectedStudentsRollNo.includes(student.rollNo)
+		)
 	);
 
 exports.getCTCStats = async (req, res) => {
@@ -59,7 +59,7 @@ exports.getCTCStats = async (req, res) => {
 			highestCTCPlacedCompany,
 			highestCTCPlacedStudent,
 			totalPlacedStudentsCTC,
-			avgCTC,
+			avgCTC
 		});
 	} catch (error) {
 		logger.error(error.message);
@@ -96,7 +96,7 @@ exports.getCompanyStats = async (req, res) => {
 			totalPPOs,
 			totalFTEs,
 			total6MFTEs,
-			totalInterns,
+			totalInterns
 		});
 	} catch (error) {
 		logger.error(error.message);
@@ -124,7 +124,7 @@ exports.getStudentStats = async (req, res) => {
 			totalVerifiedStudents,
 			totalUnverifiedStudents,
 			totalAdmins,
-			totalPlacementCoordinators,
+			totalPlacementCoordinators
 		});
 	} catch (error) {
 		logger.error(error.message);

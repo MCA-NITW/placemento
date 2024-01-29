@@ -9,7 +9,7 @@ const validateFields = (user) => {
 		!/\d/.test(user.password)
 	)
 		errorMessages.push(
-			'Password must be atleast 6 characters long and contain atleast one uppercase, one lowercase and one numeric character.',
+			'Password must be atleast 6 characters long and contain atleast one uppercase, one lowercase and one numeric character.'
 		);
 	if (!user.rollNo.match(/^\d{2}MCF1R\d{2,}$/)) errorMessages.push('Enter a valid roll number. (Eg: 21MCF1R01)');
 	if (

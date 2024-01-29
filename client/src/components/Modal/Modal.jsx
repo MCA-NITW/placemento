@@ -19,7 +19,7 @@ const Modal = ({ isOpen, onClose, onConfirm, message, buttonTitle, HasInput = nu
 				</div>
 			</div>
 		</div>,
-		document.getElementById('modal-root'),
+		document.getElementById('modal-root')
 	);
 };
 
@@ -29,7 +29,7 @@ Modal.propTypes = {
 	onConfirm: PropType.func.isRequired,
 	message: PropType.string.isRequired,
 	buttonTitle: PropType.string.isRequired,
-	HasInput: PropType.func || null,
+	HasInput: PropType.func || null
 };
 
 export default Modal;

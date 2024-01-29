@@ -13,14 +13,14 @@ const AuthenticationForm = () => {
 	const [rollNo, setRollNo] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-	const [pgCgpa, setPgCgpa] = useState();
-	const [pgPercentage, setPgPercentage] = useState();
-	const [ugCgpa, setUgCgpa] = useState();
-	const [ugPercentage, setUgPercentage] = useState();
-	const [hscCgpa, setHscCgpa] = useState();
-	const [hscPercentage, setHscPercentage] = useState();
-	const [sscCgpa, setSscCgpa] = useState();
-	const [sscPercentage, setSscPercentage] = useState();
+	const [pgCgpa, setPgCgpa] = useState('');
+	const [pgPercentage, setPgPercentage] = useState('');
+	const [ugCgpa, setUgCgpa] = useState('');
+	const [ugPercentage, setUgPercentage] = useState('');
+	const [hscCgpa, setHscCgpa] = useState('');
+	const [hscPercentage, setHscPercentage] = useState('');
+	const [sscCgpa, setSscCgpa] = useState('');
+	const [sscPercentage, setSscPercentage] = useState('');
 	const [totalGapInAcademics, setTotalGapInAcademics] = useState(0);
 	const [backlogs, setBacklogs] = useState(0);
 	const [currentStep, setCurrentStep] = useState(1);
@@ -46,7 +46,7 @@ const AuthenticationForm = () => {
 					hsc: { cgpa: hscCgpa, percentage: hscPercentage },
 					ssc: { cgpa: sscCgpa, percentage: sscPercentage },
 					totalGapInAcademics,
-					backlogs: 0,
+					backlogs: 0
 				};
 
 		try {
@@ -63,8 +63,8 @@ const AuthenticationForm = () => {
 			{
 				autoClose: 4000,
 				closeOnClick: true,
-				pauseOnHover: true,
-			},
+				pauseOnHover: true
+			}
 		);
 		if (isSignIn) {
 			localStorage.setItem('token', res.data.data.token);
@@ -80,8 +80,8 @@ const AuthenticationForm = () => {
 			{
 				autoClose: 4000,
 				closeOnClick: true,
-				pauseOnHover: true,
-			},
+				pauseOnHover: true
+			}
 		);
 	};
 
@@ -188,7 +188,7 @@ const AuthenticationForm = () => {
 								<div className={classes['auth-form__item']}>
 									<label htmlFor="pg">PG</label>
 									<input
-										type="number"
+										type="text"
 										placeholder="PG CGPA"
 										value={pgCgpa}
 										onChange={(e) => {
@@ -196,9 +196,10 @@ const AuthenticationForm = () => {
 											setPgCgpa(pgCgpaValue);
 											setPgPercentage((pgCgpaValue * 9.5).toFixed(2));
 										}}
+										step="0.01"
 									/>
 									<input
-										type="number"
+										type="text"
 										placeholder="PG Percentage"
 										value={pgPercentage}
 										onChange={(e) => setPgPercentage(e.target.value)}
@@ -208,46 +209,52 @@ const AuthenticationForm = () => {
 								<div className={classes['auth-form__item']}>
 									<label htmlFor="ug">UG</label>
 									<input
-										type="number"
+										type="text"
 										placeholder="UG CGPA"
 										onChange={(e) => setUgCgpa(e.target.value)}
 										value={ugCgpa}
+										step="0.01"
 									/>
 									<input
-										type="number"
+										type="text"
 										placeholder="UG Percentage"
 										onChange={(e) => setUgPercentage(e.target.value)}
 										value={ugPercentage}
+										step="0.01"
 									/>
 								</div>
 								<div className={classes['auth-form__item']}>
 									<label htmlFor="hsc">12th</label>
 									<input
-										type="number"
+										type="text"
 										placeholder="HSC CGPA"
 										onChange={(e) => setHscCgpa(e.target.value)}
 										value={hscCgpa}
+										step="0.01"
 									/>
 									<input
-										type="number"
+										type="text"
 										placeholder="HSC Percentage"
 										onChange={(e) => setHscPercentage(e.target.value)}
 										value={hscPercentage}
+										step="0.01"
 									/>
 								</div>
 								<div className={classes['auth-form__item']}>
 									<label htmlFor="ssc">10th</label>
 									<input
-										type="number"
+										type="text"
 										placeholder="SSC CGPA"
 										onChange={(e) => setSscCgpa(e.target.value)}
 										value={sscCgpa}
+										step="0.01"
 									/>
 									<input
-										type="number"
+										type="text"
 										placeholder="SSC Percentage"
 										onChange={(e) => setSscPercentage(e.target.value)}
 										value={sscPercentage}
+										step="0.01"
 									/>
 								</div>
 								<div className={classes['auth-form__item']}>
@@ -280,11 +287,17 @@ const AuthenticationForm = () => {
 					</>
 				)}
 				{isSignIn && (
-					<div className={classes['forgot-password']} onClick={() => setIsFormOpen(true)} role="button" tabIndex={0}>
+					<div
+						className={classes['forgot-password']}
+						onClick={() => setIsFormOpen(true)}
+						onKeyDown={(e) => {
+							if (e.key === 'delete') setIsFormOpen(true);
+						}}
+					>
 						Forgot Password?
 					</div>
 				)}
-				<ForgetPassword isFormOpen={isFormOpen} setIsFormOpen={setIsFormOpen} onCloseAction={onCloseAction} />
+				<ForgetPassword isFormOpen={isFormOpen} onCloseAction={onCloseAction} />
 				<FormFooter mode={isSignIn ? 'signup' : 'signin'} />
 			</form>
 		</div>

@@ -12,7 +12,7 @@ router.get(
 	'/view/:id',
 	authenticateUser,
 	checkUserRole(['admin', 'placementCoordinator']),
-	userController.viewSingleUser,
+	userController.viewSingleUser
 );
 
 // Update a User with rate limiting
@@ -21,7 +21,7 @@ router.put(
 	authenticateUser,
 	checkUserRole(['admin', 'placementCoordinator']),
 	limiter,
-	userController.updateUser,
+	userController.updateUser
 );
 
 // Update Verification Status of a User with rate limiting
@@ -30,10 +30,19 @@ router.put(
 	authenticateUser,
 	checkUserRole(['admin', 'placementCoordinator']),
 	limiter,
-	userController.verify,
+	userController.verify
 );
 
 // Update Role of a User with rate limiting
 router.put('/role/:id', authenticateUser, checkUserRole(['admin']), limiter, userController.updateRole);
+
+// Delete a User with rate limiting
+router.delete(
+	'/delete/:id',
+	authenticateUser,
+	checkUserRole(['admin', 'placementCoordinator']),
+	limiter,
+	userController.deleteUser
+);
 
 module.exports = router;

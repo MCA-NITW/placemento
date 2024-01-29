@@ -16,7 +16,7 @@ const ToastContent = ({ res, messages }) => (
 
 ToastContent.propTypes = {
 	res: PropTypes.string.isRequired,
-	messages: PropTypes.array.isRequired,
+	messages: PropTypes.array.isRequired
 };
 
 export default ToastContent;

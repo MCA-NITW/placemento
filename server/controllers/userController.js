@@ -68,12 +68,16 @@ exports.verify = async (req, res) => {
 		if (req.body.isVerified !== true && req.body.isVerified !== false) {
 			return res.status(400).json({ message: 'Invalid verification status' });
 		}
+		if (req.params.id === req.user.id) {
+			return res.status(400).json({ message: 'You cannot verify your own account' });
+		}
+
 		const updatedUser = await User.findByIdAndUpdate(req.params.id, { isVerified: req.body.isVerified }, { new: true });
 		if (!updatedUser) {
 			return res.status(404).json({ message: 'User not found' });
 		}
 		logger.info(`User verified: ${updatedUser.name}`);
-		res.status(200).json(updatedUser);
+		res.status(200).json({ message: `Verification status of ${updatedUser.name} updated Successfully` });
 	} catch (error) {
 		logger.error(error);
 		res.status(500).json({ message: 'Internal server error' });
@@ -90,12 +94,36 @@ exports.updateRole = async (req, res) => {
 		if (req.body.role !== 'admin' && req.body.role !== 'student' && req.body.role !== 'placementCoordinator') {
 			return res.status(400).json({ message: 'Invalid role' });
 		}
+		if (req.params.id === req.user.id) {
+			return res.status(400).json({ message: 'You cannot change your own role' });
+		}
 		const updatedUser = await User.findByIdAndUpdate(req.params.id, { role: req.body.role }, { new: true });
 		if (!updatedUser) {
 			return res.status(404).json({ message: 'User not found' });
 		}
 		logger.info(`User role updated: ${updatedUser.name}`);
-		res.status(200).json(updatedUser);
+		res.status(200).json({ message: `Role of ${updatedUser.name} updated Successfully` });
+	} catch (error) {
+		logger.error(error);
+		res.status(500).json({ message: 'Internal server error' });
+	}
+};
+
+// Delete a User
+exports.deleteUser = async (req, res) => {
+	try {
+		if (!isValidObjectId(req.params.id)) {
+			return res.status(400).json({ message: 'Invalid user ID' });
+		}
+		if (req.params.id === req.user.id) {
+			return res.status(400).json({ message: 'You cannot delete your own account' });
+		}
+		const deletedUser = await User.findByIdAndDelete(req.params.id);
+		if (!deletedUser) {
+			return res.status(404).json({ message: 'User not found' });
+		}
+		logger.info(`User deleted: ${deletedUser.name}`);
+		res.status(200).json({ message: `Student ${deletedUser.name} deleted Successfully` });
 	} catch (error) {
 		logger.error(error);
 		res.status(500).json({ message: 'Internal server error' });
