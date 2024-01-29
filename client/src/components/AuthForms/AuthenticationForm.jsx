@@ -280,7 +280,7 @@ const AuthenticationForm = () => {
 					</>
 				)}
 				{isSignIn && (
-					<div className={classes['forgot-password']} onClick={() => setIsFormOpen(true)}>
+					<div className={classes['forgot-password']} onClick={() => setIsFormOpen(true)} role="button" tabIndex={0}>
 						Forgot Password?
 					</div>
 				)}

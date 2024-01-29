@@ -17,17 +17,17 @@ const AgGridTable = ({ rowData, columnDefinitions, fetchData }) => {
 		};
 	}, []);
 	return (
-			<AgGridReact
-				rowData={rowData}
-				columnDefs={columnDefinitions}
-				rowHeight={40}
-				headerHeight={40}
-				rowSelection="multiple"
-				dataTypeDefinitions={dataTypeDefinitions}
-				onGridReady={fetchData}
-				suppressClickEdit={true}
-				className="ag-theme-quartz"
-			/>
+		<AgGridReact
+			rowData={rowData}
+			columnDefs={columnDefinitions}
+			rowHeight={40}
+			headerHeight={40}
+			rowSelection="multiple"
+			dataTypeDefinitions={dataTypeDefinitions}
+			onGridReady={fetchData}
+			suppressClickEdit={true}
+			className="ag-theme-quartz"
+		/>
 	);
 };
 

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { forgotPassword, resetPassword, verifyOTP } from '../../api/authApi';
 import Modal from '../Modal/Modal';
@@ -96,7 +97,7 @@ const ForgetPassword = ({ isFormOpen, onCloseAction }) => {
 			HasInput={() => (
 				<div className={classes['modal__input-container']}>
 					<input
-						type={counter === 0 ? 'email' : counter === 1 ? 'number' : 'password'}
+						type={counter === 0 ? 'email' : counter === 1 ? 'number' : showPassword ? 'text' : 'password'}
 						placeholder={counter === 0 ? 'Enter your email' : counter === 1 ? 'Enter OTP' : 'Enter new password'}
 						onChange={(e) => {
 							if (counter === 0) handleEmailChange(e);
@@ -108,9 +109,9 @@ const ForgetPassword = ({ isFormOpen, onCloseAction }) => {
 						autoFocus
 					/>
 					{counter === 2 && (
-						<div className={classes['modal__input-container__eye']} onClick={() => setShowPassword(!showPassword)}>
-							{showPassword ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>}
-						</div>
+						<button className={classes['password-toggle']} onClick={() => setShowPassword(!showPassword)}>
+							{showPassword ? <FaEyeSlash /> : <FaEye />}
+						</button>
 					)}
 					{counter === 0 && <div className={classes['email-domain']}>@student.nitw.ac.in</div>}
 				</div>
