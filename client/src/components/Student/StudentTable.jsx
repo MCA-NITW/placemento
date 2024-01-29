@@ -91,7 +91,7 @@ const StudentTable = () => {
 				className="role-dropdown"
 				value={params.data.role}
 				onChange={(event) => handleRoleChange(event, params.data)}
-				disabled={user.id === params.data.id}
+				disabled={user.id === params.data._id}
 			>
 				<option value="student">Student</option>
 				<option value="placementCoordinator">PC</option>
@@ -115,6 +115,11 @@ const StudentTable = () => {
 	const fetchData = useCallback(async () => {
 		try {
 			const response = await getStudents();
+			response.data.users.forEach((student) => {
+				if (student.role === 'student') student.role = 'Student';
+				else if (student.role === 'placementCoordinator') student.role = 'PC';
+				else if (student.role === 'admin') student.role = 'Admin';
+			});
 			setStudents(response.data.users);
 		} catch (error) {
 			console.error('Error fetching students:', error);
@@ -149,16 +154,6 @@ const StudentTable = () => {
 		generateColumn(null, 'Verify', 55, 'left', false, false, verifyButtonRenderer)
 	]);
 
-	const roleColumn = generateColumn(
-		'role',
-		'Role',
-		100,
-		'left',
-		false,
-		false,
-		user.role === 'admin' ? roleDropdownRenderer : null
-	);
-
 	const academicColumn = [
 		generateNestedColumn('Grades', [
 			generateNestedColumn('PG', [generateColumn('pg.cgpa', 'CGPA', 85), generateColumn('pg.percentage', '%', 85)]),
@@ -172,7 +167,7 @@ const StudentTable = () => {
 
 	const columnDefinitions = [
 		...(user.role === 'admin' || user.role === 'placementCoordinator' ? [actionsColumn] : []),
-		...(user.role === 'admin' ? [roleColumn] : []),
+		generateColumn('role', 'Role', 100, 'left', false, false, user.role === 'admin' ? roleDropdownRenderer : null),
 		generateColumn('rollNo', 'Roll No', 100, 'left'),
 		generateColumn('name', 'Name', 130, 'left'),
 		generateColumn('email', 'Email', 250),
@@ -180,18 +175,9 @@ const StudentTable = () => {
 		...(user.role === 'admin' || user.role === 'placementCoordinator' ? academicColumn : [])
 	];
 
-	const mapStudentData = (student) => {
-		return {
-			...student,
-			id: student._id
-		};
-	};
-
-	const rowData = students.map(mapStudentData);
-
 	return (
 		<>
-			<AgGridTable rowData={rowData} columnDefinitions={columnDefinitions} fetchData={fetchData} />
+			<AgGridTable rowData={students} columnDefinitions={columnDefinitions} fetchData={fetchData} />
 			{selectedStudent &&
 				modelRenderer(
 					isModalOpen,
