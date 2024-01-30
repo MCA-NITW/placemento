@@ -30,7 +30,7 @@
 	color: var(--color-bg);
 }
 
-.role-dropdown {
+.render-dropdown {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -47,15 +47,15 @@
 	box-shadow: 0 0 0 0.5px var(--color-white);
 }
 
-.role-dropdown:hover {
+.render-dropdown:hover {
 	background-color: var(--color-bg);
 }
 
-.role-dropdown:focus {
+.render-dropdown:focus {
 	background-color: var(--color-bg);
 }
 
-.role-dropdown option {
+.render-dropdown option {
 	background-color: var(--color-bg);
 	color: var(--color-white);
 	margin: 0.5rem 0;
@@ -66,6 +66,6 @@
 	transition: all 0.3s ease-in-out;
 }
 
-.role-dropdown option:hover {
+.render-dropdown option:hover {
 	background-color: var(--color-bg);
 }

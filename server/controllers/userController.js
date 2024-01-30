@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Company = require('../models/Company');
 const logger = require('../utils/logger');
 const validateUser = require('../utils/validateUser');
 const { isValidObjectId } = require('mongoose');
@@ -132,6 +133,55 @@ exports.deleteUser = async (req, res) => {
 		}
 		logger.info(`User deleted: ${deletedUser.name}`);
 		res.status(200).json({ message: `Student ${deletedUser.name} deleted Successfully` });
+	} catch (error) {
+		logger.error(error);
+		res.status(500).json({ message: 'Internal server error' });
+	}
+};
+
+// Update Compay of a User
+exports.updateCompany = async (req, res) => {
+	try {
+		if (!isValidObjectId(req.params.id)) {
+			return res.status(400).json({ message: 'Invalid user ID' });
+		}
+		const user = await User.findById(req.params.id);
+		if (!user) {
+			return res.status(404).json({ message: 'User not found' });
+		}
+		let placedAt = {
+			companyName: 'Not Placed',
+			ctc: 0,
+			ctcBase: 0,
+			profile: 'N/A',
+			offer: 'N/A',
+			location: 'N/A',
+			bond: 0
+		};
+		if(req.body.companyId !== 'np'){
+			let company = await Company.findById(req.body.companyId);
+			placedAt = {
+				companyId: company._id,
+				companyName: company.name,
+				ctc: company.ctc,
+				ctcBase: company.ctcBreakup.base,
+				profile: company.profile,
+				offer: company.typeOfOffer,
+				location: company.locations[0],
+				bond: company.bond
+			};
+		}
+		
+		const updatedUser = await User.findByIdAndUpdate(
+			req.params.id,
+			{
+				placedAt: placedAt,
+				placed: req.body.companyId!=='np' ? true : false
+			},
+			{ new: true }
+		);
+		logger.info(`User company updated: ${updatedUser.name}`);
+		res.status(200).json({ message: `Company of ${updatedUser.name} updated Successfully` });
 	} catch (error) {
 		logger.error(error);
 		res.status(500).json({ message: 'Internal server error' });

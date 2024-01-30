@@ -11,3 +11,5 @@ export const updateVerificationStatus = (id, isVerified) => axiosInstance.put(`/
 export const updateUserRole = (id, role) => axiosInstance.put(`/users/role/${id}`, { role });
 
 export const deleteStudent = (id) => axiosInstance.delete(`/users/delete/${id}`);
+
+export const updateStudentCompany = (id, companyId) => axiosInstance.put(`/users/company/${id}`, { companyId });

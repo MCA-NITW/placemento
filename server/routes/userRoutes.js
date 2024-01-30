@@ -22,4 +22,7 @@ router.put('/role/:id', authenticateUser, checkUserRole(['admin']), limiter, use
 // Delete a User with rate limiting
 router.delete('/delete/:id', authenticateUser, checkUserRole(['admin', 'placementCoordinator']), limiter, userController.deleteUser);
 
+// Update Compay of a User with rate limiting
+router.put('/company/:id', authenticateUser, checkUserRole(['admin', 'placementCoordinator']), limiter, userController.updateCompany);
+
 module.exports = router;
