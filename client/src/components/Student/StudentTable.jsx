@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { GrValidate } from 'react-icons/gr';
 import { MdDelete } from 'react-icons/md';
 import { toast } from 'react-toastify';
@@ -18,20 +18,35 @@ const StudentTable = () => {
 	const [companies, setCompanies] = useState([]);
 	const user = getUser();
 
-	useEffect(() => {
-		const fetchCompanies = async () => {
-			try {
-				const res = await getCompanies();
-				res.data.forEach((company) => {
-					company.id = company._id;
-				});
-				setCompanies(res.data);
-			} catch (error) {
-				console.error('Error fetching companies:', error);
-			}
-		};
-		fetchCompanies();
+	const fetchStudentData = useCallback(async () => {
+		try {
+			const response = await getStudents();
+			response.data.users.forEach((student) => {
+				student.id = student._id;
+			});
+			response.data.users.sort((a, b) => a.rollNo.localeCompare(b.rollNo));
+			setStudents(response.data.users);
+		} catch (error) {
+			console.error('Error fetching students:', error);
+		}
 	}, []);
+
+	const fetchCompaniesData = useCallback(async () => {
+		try {
+			const res = await getCompanies();
+			res.data.forEach((company) => {
+				company.id = company._id;
+			});
+			setCompanies(res.data);
+		} catch (error) {
+			console.error('Error fetching companies:', error);
+		}
+	}, []);
+
+	const fetchData = useCallback(async () => {
+		await fetchStudentData();
+		await fetchCompaniesData();
+	}, [fetchStudentData, fetchCompaniesData]);
 
 	const closeModal = () => {
 		setIsModalOpen(false);
@@ -55,7 +70,7 @@ const StudentTable = () => {
 			toast.success(<ToastContent res="success" messages={[res.data.message]} />);
 			setIsModalOpen(false);
 			setSelectedStudent(null);
-			fetchData();
+			fetchStudentData();
 		} catch (error) {
 			toast.error(<ToastContent res="error" messages={[error.response.data.message]} />);
 		}
@@ -67,7 +82,7 @@ const StudentTable = () => {
 			toast.success(<ToastContent res="success" messages={[res.data.message]} />);
 			setSelectedStudentDelete(null);
 			setIsModalOpen(false);
-			fetchData();
+			fetchStudentData();
 		} catch (error) {
 			toast.error(<ToastContent res="error" messages={[error.response.data.message]} />);
 		}
@@ -77,7 +92,7 @@ const StudentTable = () => {
 		try {
 			const res = await updateUserRole(params.id, event.target.value);
 			toast.success(<ToastContent res="success" messages={[res.data.message]} />);
-			fetchData();
+			fetchStudentData();
 		} catch (error) {
 			toast.error(<ToastContent res="error" messages={[error.response.data.message]} />);
 		}
@@ -87,7 +102,7 @@ const StudentTable = () => {
 		try {
 			const res = await updateStudentCompany(params.id, event.target.value);
 			toast.success(<ToastContent res="success" messages={[res.data.message]} />);
-			fetchData();
+			fetchStudentData();
 		} catch (error) {
 			toast.error(<ToastContent res="error" messages={[error.response.data.message]} />);
 		}
@@ -126,14 +141,12 @@ const StudentTable = () => {
 
 	const companyDropdownRenderer = (params) => {
 		return (
-			<select 
-				className="render-dropdown" 
-				value={params.data.placedAt.companyId} 
-				onChange={(event) => handleCompanyChange(event, params.data)}
-			>
+			<select className="render-dropdown" value={params.data.placedAt.companyId} onChange={(event) => handleCompanyChange(event, params.data)}>
 				<option value="np">Not Placed</option>
 				{companies.map((company) => (
-					<option value={company.id}>{company.name}</option>
+					<option value={company.id} key={company.id}>
+						{company.name}
+					</option>
 				))}
 			</select>
 		);
@@ -142,19 +155,6 @@ const StudentTable = () => {
 	const modelRenderer = (isModalOpen, closeModal, onConfirm, message, buttonTitle) => {
 		return <Modal isOpen={isModalOpen} onClose={() => closeModal()} onConfirm={onConfirm} message={message} buttonTitle={buttonTitle} />;
 	};
-
-	const fetchData = useCallback(async () => {
-		try {
-			const response = await getStudents();
-			response.data.users.forEach((student) => {
-				student.id = student._id;
-			});
-			response.data.users.sort((a, b) => a.rollNo.localeCompare(b.rollNo));
-			setStudents(response.data.users);
-		} catch (error) {
-			console.error('Error fetching students:', error);
-		}
-	}, []);
 
 	const generateColumn = (field, headerName, width, pinned = null, sortable = true, resizable = true, cellRenderer = null) => ({
 		field,

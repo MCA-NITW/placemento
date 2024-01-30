@@ -158,8 +158,8 @@ exports.updateCompany = async (req, res) => {
 			location: 'N/A',
 			bond: 0
 		};
-		if(req.body.companyId !== 'np'){
-			let company = await Company.findById(req.body.companyId);
+		if (req.body.companyId !== 'np') {
+			const company = await Company.findById(req.body.companyId);
 			placedAt = {
 				companyId: company._id,
 				companyName: company.name,
@@ -170,13 +170,25 @@ exports.updateCompany = async (req, res) => {
 				location: company.locations[0],
 				bond: company.bond
 			};
+			// Update in Selected Students Roll No if it already not present
+			if (!company.selectedStudentsRollNo.includes(user.rollNo)) {
+				company.selectedStudentsRollNo.push(user.rollNo);
+				await company.save();
+			}
+		} else {
+			const company = await Company.findById(user.placedAt.companyId);
+			const index = company.selectedStudentsRollNo.indexOf(user.rollNo);
+			if (index > -1) {
+				company.selectedStudentsRollNo.splice(index, 1);
+			}
+			await company.save();
 		}
-		
+
 		const updatedUser = await User.findByIdAndUpdate(
 			req.params.id,
 			{
-				placedAt: placedAt,
-				placed: req.body.companyId!=='np' ? true : false
+				placedAt,
+				placed: req.body.companyId !== 'np' ? true : false
 			},
 			{ new: true }
 		);
