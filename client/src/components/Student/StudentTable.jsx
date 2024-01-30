@@ -68,10 +68,7 @@ const StudentTable = () => {
 
 	const verifyButtonRenderer = (params) => {
 		return (
-			<button
-				className={`verify-button ${params.data.isVerified ? 'verified' : 'unverified'}`}
-				onClick={() => handleVerifyButtonClick(params.data)}
-			>
+			<button className={`verify-button ${params.data.isVerified ? 'verified' : 'unverified'}`} onClick={() => handleVerifyButtonClick(params.data)}>
 				<GrValidate />
 			</button>
 		);
@@ -101,40 +98,34 @@ const StudentTable = () => {
 	};
 
 	const modelRenderer = (isModalOpen, closeModal, onConfirm, message, buttonTitle) => {
-		return (
-			<Modal
-				isOpen={isModalOpen}
-				onClose={() => closeModal()}
-				onConfirm={onConfirm}
-				message={message}
-				buttonTitle={buttonTitle}
-			/>
-		);
+		return <Modal isOpen={isModalOpen} onClose={() => closeModal()} onConfirm={onConfirm} message={message} buttonTitle={buttonTitle} />;
 	};
 
 	const fetchData = useCallback(async () => {
 		try {
 			const response = await getStudents();
 			response.data.users.forEach((student) => {
-				if (student.role === 'student') student.role = 'Student';
-				else if (student.role === 'placementCoordinator') student.role = 'PC';
-				else if (student.role === 'admin') student.role = 'Admin';
+				if (student.placed === true) {
+					student.placed = student.placedAt.company;
+					student.ctc = student.placedAt.ctc;
+					student.ctcBase = student.placedAt.ctcBreakup.base;
+					student.location = student.placedAt.location;
+				} else if (student.placed === false) {
+					student.placed = 'Not Placed';
+					student.ctc = 0;
+					student.ctcBase = 0;
+					student.location = 'N/A';
+				}
+				student.id = student._id;
 			});
+			response.data.users.sort((a, b) => a.rollNo.localeCompare(b.rollNo));
 			setStudents(response.data.users);
 		} catch (error) {
 			console.error('Error fetching students:', error);
 		}
 	}, []);
 
-	const generateColumn = (
-		field,
-		headerName,
-		width,
-		pinned = null,
-		sortable = true,
-		resizable = true,
-		cellRenderer = null
-	) => ({
+	const generateColumn = (field, headerName, width, pinned = null, sortable = true, resizable = true, cellRenderer = null) => ({
 		field,
 		headerName,
 		width,
@@ -156,22 +147,45 @@ const StudentTable = () => {
 
 	const academicColumn = [
 		generateNestedColumn('Grades', [
-			generateNestedColumn('PG', [generateColumn('pg.cgpa', 'CGPA', 85), generateColumn('pg.percentage', '%', 85)]),
-			generateNestedColumn('UG', [generateColumn('ug.cgpa', 'CGPA', 85), generateColumn('ug.percentage', '%', 85)]),
-			generateNestedColumn('HSC', [generateColumn('hsc.cgpa', 'CGPA', 85), generateColumn('hsc.percentage', '%', 85)]),
-			generateNestedColumn('SSC', [generateColumn('ssc.cgpa', 'CGPA', 85), generateColumn('ssc.percentage', '%', 85)])
+			generateNestedColumn('PG', [
+				generateColumn('pg.cgpa', 'CGPA', 85, null, true, true, (params) => params.value.toFixed(2)),
+				generateColumn('pg.percentage', '%', 85, null, true, true, (params) => params.value.toFixed(2))
+			]),
+			generateNestedColumn('UG', [
+				generateColumn('ug.cgpa', 'CGPA', 85, null, true, true, (params) => params.value.toFixed(2)),
+				generateColumn('ug.percentage', '%', 85, null, true, true, (params) => params.value.toFixed(2))
+			]),
+			generateNestedColumn('HSC', [
+				generateColumn('hsc.cgpa', 'CGPA', 85, null, true, true, (params) => params.value.toFixed(2)),
+				generateColumn('hsc.percentage', '%', 85, null, true, true, (params) => params.value.toFixed(2))
+			]),
+			generateNestedColumn('SSC', [
+				generateColumn('ssc.cgpa', 'CGPA', 85, null, true, true, (params) => params.value.toFixed(2)),
+				generateColumn('ssc.percentage', '%', 85, null, true, true, (params) => params.value.toFixed(2))
+			])
 		]),
 		generateColumn('totalGapInAcademics', 'Gap', 75),
 		generateColumn('backlogs', 'Backlogs', 85)
 	];
 
+	const roleFormatter = (params) => {
+		return params.value === 'student' ? 'Student' : params.value === 'placementCoordinator' ? 'PC' : 'Admin';
+	};
+
 	const columnDefinitions = [
 		...(user.role === 'admin' || user.role === 'placementCoordinator' ? [actionsColumn] : []),
-		generateColumn('role', 'Role', 100, 'left', false, false, user.role === 'admin' ? roleDropdownRenderer : null),
-		generateColumn('rollNo', 'Roll No', 100, 'left'),
+		generateColumn('role', 'Role', 100, 'left', false, false, user.role === 'admin' ? roleDropdownRenderer : roleFormatter),
 		generateColumn('name', 'Name', 130, 'left'),
-		generateColumn('email', 'Email', 250),
-		generateColumn('placed', 'Placed?', 80),
+		generateColumn('rollNo', 'Roll No', 100),
+		generateColumn('email', 'Email', 225),
+		generateNestedColumn('Placement Details', [
+			generateColumn('placed', 'Company', 100, null, true, true),
+			generateNestedColumn('CTC (LPA)', [
+				generateColumn('ctc', 'CTC', 80, null, true, false, (params) => params.value.toFixed(2)),
+				generateColumn('ctcBase', 'Base', 80, null, true, false, (params) => params.value.toFixed(2))
+			]),
+			generateColumn('location', 'location', 100, null, true, true)
+		]),
 		...(user.role === 'admin' || user.role === 'placementCoordinator' ? academicColumn : [])
 	];
 
@@ -187,13 +201,7 @@ const StudentTable = () => {
 					selectedStudent.isVerified ? 'Unverify' : 'Verify'
 				)}
 			{selectedStudentDelete &&
-				modelRenderer(
-					isModalOpen,
-					closeModal,
-					onConfirmDeleteStudent,
-					`Are you sure you want to delete ${selectedStudentDelete.name}?`,
-					'Delete'
-				)}
+				modelRenderer(isModalOpen, closeModal, onConfirmDeleteStudent, `Are you sure you want to delete ${selectedStudentDelete.name}?`, 'Delete')}
 		</>
 	);
 };

@@ -58,14 +58,11 @@ const AuthenticationForm = () => {
 	};
 
 	const handleSuccess = (isSignIn, res) => {
-		toast.success(
-			<ToastContent res={isSignIn ? 'Sign In successful' : 'Sign Up successful'} messages={res.data.messages} />,
-			{
-				autoClose: 4000,
-				closeOnClick: true,
-				pauseOnHover: true
-			}
-		);
+		toast.success(<ToastContent res={isSignIn ? 'Sign In successful' : 'Sign Up successful'} messages={res.data.messages} />, {
+			autoClose: 4000,
+			closeOnClick: true,
+			pauseOnHover: true
+		});
 		if (isSignIn) {
 			localStorage.setItem('token', res.data.data.token);
 			navigate('/');
@@ -75,14 +72,11 @@ const AuthenticationForm = () => {
 	};
 
 	const handleError = (isSignIn, err) => {
-		toast.error(
-			<ToastContent res={isSignIn ? 'Sign In failed' : 'Sign Up failed'} messages={err.response.data.errors} />,
-			{
-				autoClose: 4000,
-				closeOnClick: true,
-				pauseOnHover: true
-			}
-		);
+		toast.error(<ToastContent res={isSignIn ? 'Sign In failed' : 'Sign Up failed'} messages={err.response.data.errors} />, {
+			autoClose: 4000,
+			closeOnClick: true,
+			pauseOnHover: true
+		});
 	};
 
 	const handleEmailChange = (e) => {
@@ -115,24 +109,14 @@ const AuthenticationForm = () => {
 				<div className={classes['auth-form__item']}>
 					<label htmlFor="email">Email</label>
 					<div className={classes['email-input-container']}>
-						<input
-							type="text"
-							placeholder="Enter your email"
-							onChange={handleEmailChange}
-							value={email.trim().replace('@student.nitw.ac.in', '')}
-						/>
+						<input type="text" placeholder="Enter your email" onChange={handleEmailChange} value={email.trim().replace('@student.nitw.ac.in', '')} />
 						<span className={classes['email-domain']}>@student.nitw.ac.in</span>
 					</div>
 				</div>
 				<div className={classes['auth-form__item']}>
 					<label htmlFor="password">Password</label>
 					<div className={classes['password-input-container']}>
-						<input
-							type={showPassword ? 'text' : 'password'}
-							placeholder="Password"
-							onChange={(e) => setPassword(e.target.value)}
-							value={password}
-						/>
+						<input type={showPassword ? 'text' : 'password'} placeholder="Password" onChange={(e) => setPassword(e.target.value)} value={password} />
 						<button type="button" className={classes['password-toggle']} onClick={toggleShowPassword}>
 							{showPassword ? <FaEyeSlash /> : <FaEye />}
 						</button>
@@ -198,40 +182,16 @@ const AuthenticationForm = () => {
 										}}
 										step="0.01"
 									/>
-									<input
-										type="text"
-										placeholder="PG Percentage"
-										value={pgPercentage}
-										onChange={(e) => setPgPercentage(e.target.value)}
-										disabled
-									/>
+									<input type="text" placeholder="PG Percentage" value={pgPercentage} onChange={(e) => setPgPercentage(e.target.value)} disabled />
 								</div>
 								<div className={classes['auth-form__item']}>
 									<label htmlFor="ug">UG</label>
-									<input
-										type="text"
-										placeholder="UG CGPA"
-										onChange={(e) => setUgCgpa(e.target.value)}
-										value={ugCgpa}
-										step="0.01"
-									/>
-									<input
-										type="text"
-										placeholder="UG Percentage"
-										onChange={(e) => setUgPercentage(e.target.value)}
-										value={ugPercentage}
-										step="0.01"
-									/>
+									<input type="text" placeholder="UG CGPA" onChange={(e) => setUgCgpa(e.target.value)} value={ugCgpa} step="0.01" />
+									<input type="text" placeholder="UG Percentage" onChange={(e) => setUgPercentage(e.target.value)} value={ugPercentage} step="0.01" />
 								</div>
 								<div className={classes['auth-form__item']}>
 									<label htmlFor="hsc">12th</label>
-									<input
-										type="text"
-										placeholder="HSC CGPA"
-										onChange={(e) => setHscCgpa(e.target.value)}
-										value={hscCgpa}
-										step="0.01"
-									/>
+									<input type="text" placeholder="HSC CGPA" onChange={(e) => setHscCgpa(e.target.value)} value={hscCgpa} step="0.01" />
 									<input
 										type="text"
 										placeholder="HSC Percentage"
@@ -242,13 +202,7 @@ const AuthenticationForm = () => {
 								</div>
 								<div className={classes['auth-form__item']}>
 									<label htmlFor="ssc">10th</label>
-									<input
-										type="text"
-										placeholder="SSC CGPA"
-										onChange={(e) => setSscCgpa(e.target.value)}
-										value={sscCgpa}
-										step="0.01"
-									/>
+									<input type="text" placeholder="SSC CGPA" onChange={(e) => setSscCgpa(e.target.value)} value={sscCgpa} step="0.01" />
 									<input
 										type="text"
 										placeholder="SSC Percentage"
@@ -266,12 +220,7 @@ const AuthenticationForm = () => {
 										onChange={(e) => setTotalGapInAcademics(e.target.value)}
 									/>
 									<label htmlFor="backlogs">Backlogs</label>
-									<input
-										type="number"
-										placeholder="Backlogs"
-										value={backlogs}
-										onChange={(e) => setBacklogs(e.target.value)}
-									/>
+									<input type="number" placeholder="Backlogs" value={backlogs} onChange={(e) => setBacklogs(e.target.value)} />
 								</div>
 
 								<div className={classes['auth-form__item_btn']}>

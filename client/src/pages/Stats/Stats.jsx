@@ -23,11 +23,7 @@ const Stats = () => {
 
 	const fetchData = useCallback(async () => {
 		try {
-			const [ctcResponse, companyResponse, studentResponse] = await Promise.all([
-				getCtcStats(),
-				getCompanyStats(),
-				getStudentStats()
-			]);
+			const [ctcResponse, companyResponse, studentResponse] = await Promise.all([getCtcStats(), getCompanyStats(), getStudentStats()]);
 
 			const ctcData = ctcResponse.data;
 			ctcData.highestCTCOffered = ctcData.highestCTCOffered.toFixed(2);
@@ -36,10 +32,7 @@ const Stats = () => {
 			ctcData.totalPlacedStudentsCTC = ctcData.totalPlacedStudentsCTC.toFixed(2);
 
 			const studentData = studentResponse.data;
-			studentData.placementPercentage = (
-				(studentData.totalPlacedStudents * 100) /
-				studentData.totalEligibleStudents
-			).toFixed(2);
+			studentData.placementPercentage = ((studentData.totalPlacedStudents * 100) / studentData.totalEligibleStudents).toFixed(2);
 
 			setCtcStats(ctcData);
 			setCompanyStats(companyResponse.data);
@@ -85,10 +78,7 @@ const Stats = () => {
 								</>
 							}
 						/>
-						<StatsSectionItem
-							left="Sum of all placed students CTCs :"
-							right={<>{ctcStats.totalPlacedStudentsCTC} Lakhs</>}
-						/>
+						<StatsSectionItem left="Sum of all placed students CTCs :" right={<>{ctcStats.totalPlacedStudentsCTC} Lakhs</>} />
 						<StatsSectionItem
 							left="Average of all placed students CTC :"
 							right={
@@ -103,10 +93,7 @@ const Stats = () => {
 						<h2>Company Stats</h2>
 						<StatsSectionItem left="Total Companies Visited:" right={companyStats.totalCompanies} />
 						<StatsSectionItem left="Total Ongoing Companies:" right={companyStats.totalOngoingCompanies} />
-						<StatsSectionItem
-							left="Total Successfully Completed Companies:"
-							right={companyStats.totalCompletedCompanies}
-						/>
+						<StatsSectionItem left="Total Successfully Completed Companies:" right={companyStats.totalCompletedCompanies} />
 						<StatsSectionItem left="Total PPOs Offering Companies:" right={companyStats.totalPPOs} />
 						<StatsSectionItem left="Total FTEs Offering Companies:" right={companyStats.totalFTEs} />
 						<StatsSectionItem left="Total Intern Offering Companies:" right={companyStats.totalInterns} />
@@ -121,10 +108,7 @@ const Stats = () => {
 						<StatsSectionItem left="Total Registered Students:" right={studentStats.totalStudents} />
 						<StatsSectionItem left="Total Eligible Students:" right={studentStats.totalEligibleStudents} />
 						<StatsSectionItem left="Total Placed Students:" right={studentStats.totalPlacedStudents} />
-						<StatsSectionItem
-							left="Total Placement Percentage (Eligible):"
-							right={<>{studentStats.placementPercentage} %</>}
-						/>
+						<StatsSectionItem left="Total Placement Percentage (Eligible):" right={<>{studentStats.placementPercentage} %</>} />
 						<StatsSectionItem left="Total Verified Students:" right={studentStats.totalVerifiedStudents} />
 						<StatsSectionItem left="Total Unverified Students:" right={studentStats.totalUnverifiedStudents} />
 						<StatsSectionItem left="Total Admins:" right={studentStats.totalAdmins} />

@@ -15,7 +15,7 @@ const CompanyTable = () => {
 	const [companyData, setCompanyData] = useState(null);
 	const [isFormOpen, setIsFormOpen] = useState(false);
 	const [isAdd, setIsAdd] = useState(false);
-	const userRole = getUser().role;
+	const user = getUser();
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [companyToDelete, setCompanyToDelete] = useState(null);
 	const closeModal = () => setIsModalOpen(false);
@@ -37,9 +37,7 @@ const CompanyTable = () => {
 	const onConfirmDelete = async () => {
 		try {
 			await deleteCompany(companyToDelete.id);
-			toast.success(
-				<ToastContent res="success" messages={[`Company ${companyToDelete.name} deleted successfully.`]} />
-			);
+			toast.success(<ToastContent res="success" messages={[`Company ${companyToDelete.name} deleted successfully.`]} />);
 			setIsModalOpen(false);
 			fetchData();
 		} catch (error) {
@@ -54,25 +52,19 @@ const CompanyTable = () => {
 		setIsFormOpen(true);
 	};
 
-	const generateColumn = (field, headerName, width, sortable = true, resizable = true) => ({
+	const generateColumn = (field, headerName, width, pinned = null, sortable = true, resizable = true, cellRenderer = null) => ({
 		field,
 		headerName,
 		width,
+		pinned,
 		sortable,
-		resizable
+		resizable,
+		cellRenderer
 	});
 
 	const generateNestedColumn = (headerName, children) => ({
 		headerName,
 		children
-	});
-
-	const generateDateColumn = (field, headerName, width, sortable = true, resizable = true) => ({
-		...generateColumn(field, headerName, width, sortable, resizable),
-		valueFormatter: (params) =>
-			params.value
-				? new Date(params.value).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
-				: ''
 	});
 
 	const formatCutoff = (cutoff) => (cutoff.cgpa ? `${cutoff.cgpa} CGPA` : `${cutoff.percentage}%`);
@@ -93,49 +85,35 @@ const CompanyTable = () => {
 		);
 	};
 
-	const actionColumn = (actionName, actionButtonRenderer) => {
-		return {
-			...generateColumn(null, actionName, 55, false, false),
-			pinned: 'left',
-			cellRenderer: actionButtonRenderer,
-			initialHide: userRole !== 'admin' && userRole !== 'placementCoordinator'
-		};
-	};
+	const actionsColumn = generateNestedColumn('Actions', [
+		generateColumn(null, 'Delete', 55, 'left', false, false, deleteButtonRenderer),
+		generateColumn(null, 'Edit', 55, 'left', false, false, editButtonRenderer)
+	]);
 
 	const columnDefinitions = [
-		generateNestedColumn('Actions', [
-			actionColumn('Del', deleteButtonRenderer),
-			actionColumn('Edit', editButtonRenderer)
-		]),
-		{
-			...generateColumn('name', 'Name', 150),
-			pinned: 'left'
-		},
-		generateColumn('status', 'Status', 100, false),
+		...(user.role === 'admin' || user.role === 'placementCoordinator' ? [actionsColumn] : []),
+		generateColumn('name', 'Name', 150, 'left'),
+		generateColumn('status', 'Status', 100, null, false),
 		generateColumn('typeOfOffer', 'Offer', 90),
 		generateColumn('profile', 'Profile', 150),
 		generateColumn('profileCategory', 'Category', 100),
 		generateColumn('interviewShortlist', 'Shortlists', 120),
 		generateColumn('selectedStudents', 'Selects', 100),
-		generateDateColumn('dateOfOffer', 'Offer Date', 125),
+		generateColumn('dateOfOffer', 'Offer Date', 125, null, true, false, (params) =>
+			params.value ? new Date(params.value).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) : ''
+		),
 		generateColumn('locations', 'Locations', 130),
 		generateNestedColumn('CTC (LPA)', [
-			{
-				...generateColumn('ctc', 'CTC', 80, true, false),
-				valueFormatter: (params) => params.value.toFixed(2)
-			},
-			{
-				...generateColumn('ctcBase', 'Base', 80, true, false),
-				valueFormatter: (params) => params.value.toFixed(2)
-			}
+			generateColumn('ctc', 'CTC', 80, null, true, false, (params) => params.value.toFixed(2)),
+			generateColumn('ctcBase', 'Base', 80, null, true, false, (params) => params.value.toFixed(2))
 		]),
 		generateNestedColumn('Cutoffs', [
-			generateColumn('cutoff_pg', 'PG', 80, false, false),
-			generateColumn('cutoff_ug', 'UG', 80, false, false),
-			generateColumn('cutoff_12', '12', 80, false, false),
-			generateColumn('cutoff_10', '10', 80, false, false)
+			generateColumn('cutoff_pg', 'PG', 80, null, false, false),
+			generateColumn('cutoff_ug', 'UG', 80, null, false, false),
+			generateColumn('cutoff_12', '12', 80, null, false, false),
+			generateColumn('cutoff_10', '10', 80, null, false, false)
 		]),
-		generateColumn('bond', 'Bond', 60, false, false)
+		generateColumn('bond', 'Bond', 60, null, false, false)
 	];
 
 	const mapCompanyData = (company) => ({
@@ -165,21 +143,18 @@ const CompanyTable = () => {
 	const renderCompanyForm = () => {
 		if (!isFormOpen) return null;
 		return ReactDOM.createPortal(
-			<CompanyForm
-				actionFunc={isAdd ? addCompany : updateCompany}
-				initialData={companyData}
-				handleFormClose={handleCloseForm}
-				isAdd={isAdd}
-			/>,
+			<CompanyForm actionFunc={isAdd ? addCompany : updateCompany} initialData={companyData} handleFormClose={handleCloseForm} isAdd={isAdd} />,
 			document.getElementById('form-root')
 		);
 	};
 
 	return (
 		<>
-			<button className="btn btn-primary" onClick={handleAddCompanyClick}>
-				Add Company
-			</button>
+			{(user.role === 'admin' || user.role === 'placementCoordinator') && (
+				<button className="btn btn-primary" onClick={handleAddCompanyClick}>
+					Add Company
+				</button>
+			)}
 			{renderCompanyForm()}
 			<AgGridTable rowData={rowData} columnDefinitions={columnDefinitions} fetchData={fetchData} />
 			<Modal

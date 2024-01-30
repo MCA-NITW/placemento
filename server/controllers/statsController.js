@@ -4,38 +4,26 @@ const User = require('../models/User');
 
 const filterValidCompanies = (companies) => companies.filter((company) => company.status !== 'cancelled');
 
-const getTotalCompaniesByStatus = (companies, status) =>
-	companies.filter((company) => company.status === status).length;
+const getTotalCompaniesByStatus = (companies, status) => companies.filter((company) => company.status === status).length;
 
 const getTotalCompaniesByProfileCategory = (companies, profileCategory) =>
 	companies.filter((company) => company.profileCategory === profileCategory).length;
 
 const calculateTotalPlacedStudents = (companies) =>
-	companies.reduce(
-		(acc, company) => (company.selectedStudentsRollNo[0] !== '' ? acc + company.selectedStudentsRollNo.length : acc),
-		0
-	);
+	companies.reduce((acc, company) => (company.selectedStudentsRollNo[0] !== '' ? acc + company.selectedStudentsRollNo.length : acc), 0);
 
 const calculateTotalPlacedStudentsCTC = (companies) =>
-	companies.reduce(
-		(acc, company) =>
-			company.selectedStudentsRollNo[0] !== '' ? acc + company.selectedStudentsRollNo.length * company.ctc : acc,
-		0
-	);
+	companies.reduce((acc, company) => (company.selectedStudentsRollNo[0] !== '' ? acc + company.selectedStudentsRollNo.length * company.ctc : acc), 0);
 
 const getHighestCTC = (companies) => Math.max(...companies.map((company) => company.ctc));
 
-const getHighestCTCPlaced = (companies) =>
-	Math.max(...companies.map((company) => (company.selectedStudentsRollNo[0] !== '' ? company.ctc : 0)));
+const getHighestCTCPlaced = (companies) => Math.max(...companies.map((company) => (company.selectedStudentsRollNo[0] !== '' ? company.ctc : 0)));
 
-const getHighestCTCCompany = (companies, highestCTC) =>
-	companies.find((company) => (company.ctc === highestCTC ? company : ''));
+const getHighestCTCCompany = (companies, highestCTC) => companies.find((company) => (company.ctc === highestCTC ? company : ''));
 
 const getHighestCTCStudent = (students, companies, highestCTCPlacedCompany) =>
 	students.find((student) =>
-		companies.find(
-			(company) => company.name === highestCTCPlacedCompany && company.selectedStudentsRollNo.includes(student.rollNo)
-		)
+		companies.find((company) => company.name === highestCTCPlacedCompany && company.selectedStudentsRollNo.includes(student.rollNo))
 	);
 
 exports.getCTCStats = async (req, res) => {

@@ -24,9 +24,7 @@ exports.postSignup = async (req, res) => {
 		logger.info(`New user created: ${user.email}`);
 
 		res.status(201).json({
-			messages: [
-				'Reach out to the admin to verify your account. You will be able to login once your account is verified.'
-			]
+			messages: ['Reach out to the admin to verify your account. You will be able to login once your account is verified.']
 		});
 	} catch (error) {
 		logger.error(error);
@@ -39,13 +37,11 @@ exports.getLogin = async (req, res) => {
 		const { email, password } = req.body;
 
 		if (!email || !password) return res.status(400).json({ status: false, errors: ['Email and Password required'] });
-		if (!email.endsWith('@student.nitw.ac.in'))
-			return res.status(400).json({ status: false, errors: ['Enter a valid NITW email'] });
+		if (!email.endsWith('@student.nitw.ac.in')) return res.status(400).json({ status: false, errors: ['Enter a valid NITW email'] });
 
 		const user = await User.findOne({ email });
 		if (!user) return res.status(401).json({ status: false, errors: ['User Not Found'] });
-		if (!user.isVerified)
-			return res.status(401).json({ status: false, errors: ['User Not Verified!! Please Contact Admin!!'] });
+		if (!user.isVerified) return res.status(401).json({ status: false, errors: ['User Not Verified!! Please Contact Admin!!'] });
 		const passwordMatch = await bcrypt.compare(password, user.password);
 		if (!passwordMatch) return res.status(401).json({ status: false, errors: ['Incorrect Password'] });
 
@@ -85,8 +81,7 @@ exports.postVerifyEmail = async (req, res) => {
 
 		// Rest of the code remains unchanged
 		if (!email) return res.status(400).json({ status: false, errors: ['Email required'] });
-		if (!email.endsWith('@student.nitw.ac.in'))
-			return res.status(400).json({ status: false, errors: ['Enter a valid NITW email'] });
+		if (!email.endsWith('@student.nitw.ac.in')) return res.status(400).json({ status: false, errors: ['Enter a valid NITW email'] });
 
 		const user = await User.findOne({ email });
 		if (!user) return res.status(401).json({ status: false, errors: ['User Not Found'] });
@@ -136,8 +131,7 @@ exports.postVerifyOTP = async (req, res) => {
 		const { email, otp } = req.body;
 
 		if (!email || !otp) return res.status(400).json({ status: false, errors: ['Email and OTP required'] });
-		if (!email.endsWith('@student.nitw.ac.in'))
-			return res.status(400).json({ status: false, errors: ['Enter a valid NITW email'] });
+		if (!email.endsWith('@student.nitw.ac.in')) return res.status(400).json({ status: false, errors: ['Enter a valid NITW email'] });
 
 		const user = await User.findOne({ email });
 		const existingOtp = await Otp.findOne({ email });
@@ -169,8 +163,7 @@ exports.postResetPassword = async (req, res) => {
 	try {
 		const { email, otp, newPassword } = req.body;
 		if (!email || !newPassword) return res.status(400).json({ status: false, errors: ['Email and Password required'] });
-		if (!email.endsWith('@student.nitw.ac.in'))
-			return res.status(400).json({ status: false, errors: ['Enter a valid NITW email'] });
+		if (!email.endsWith('@student.nitw.ac.in')) return res.status(400).json({ status: false, errors: ['Enter a valid NITW email'] });
 
 		const user = await User.findOne({ email });
 		if (!user) return res.status(401).json({ status: false, errors: ['User Not Found'] });
@@ -183,9 +176,7 @@ exports.postResetPassword = async (req, res) => {
 		if (newPassword.length < 6 || !/[a-z]/.test(newPassword) || !/[A-Z]/.test(newPassword) || !/\d/.test(newPassword))
 			return res.status(401).json({
 				status: false,
-				errors: [
-					'Password must be atleast 6 characters long and contain atleast one uppercase, one lowercase and one numeric character.'
-				]
+				errors: ['Password must be atleast 6 characters long and contain atleast one uppercase, one lowercase and one numeric character.']
 			});
 
 		// Check OTP expiry

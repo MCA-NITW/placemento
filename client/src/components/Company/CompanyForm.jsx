@@ -92,10 +92,7 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 		};
 		try {
 			const res = isAdd ? await actionFunc(newCompany) : await actionFunc(initialData._id, newCompany);
-			if (res.status === 200)
-				toast.success(
-					<ToastContent res="Success" messages={[`Company ${isAdd ? 'added' : 'updated'} successfully`]} />
-				);
+			if (res.status === 200) toast.success(<ToastContent res="Success" messages={[`Company ${isAdd ? 'added' : 'updated'} successfully`]} />);
 			else toast.error(<ToastContent res="Error" messages={res.data.errors} />);
 			handleFormClose(true);
 		} catch (error) {
@@ -122,12 +119,7 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 
 					<div className="form-group">
 						<label htmlFor="status">Status</label>
-						<select
-							id="status"
-							className="form-select"
-							value={formData.status}
-							onChange={(e) => handleChange('status', e.target.value)}
-						>
+						<select id="status" className="form-select" value={formData.status} onChange={(e) => handleChange('status', e.target.value)}>
 							<option value="" disabled>
 								Select Status
 							</option>

@@ -6,13 +6,21 @@ const { isValidObjectId } = require('mongoose');
 // View all users
 exports.viewAllUsers = async (req, res) => {
 	try {
-		const users = await User.find({});
+		const users = req.user.role === 'student' ? await User.find({ isVerified: true }) : await User.find();
 		if (!users) {
 			return res.status(404).json({ message: 'No users found' });
 		}
 		logger.info(`All users Viewed`);
 		users.forEach((user) => {
 			user.password = null;
+			if (req.user.role === 'student') {
+				user.pg = null;
+				user.ug = null;
+				user.hsc = null;
+				user.ssc = null;
+				user.backlogs = null;
+				user.totalGapInAcademics = null;
+			}
 		});
 		res.status(200).json({ users });
 	} catch (error) {

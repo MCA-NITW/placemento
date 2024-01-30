@@ -87,13 +87,7 @@ const ForgetPassword = ({ isFormOpen, onCloseAction }) => {
 				onCloseAction();
 			}}
 			onConfirm={() => onConfirmAction()}
-			message={
-				counter === 0
-					? 'Enter your College Email ID!!'
-					: counter === 1
-						? 'Check your email for OTP'
-						: 'Enter your new password'
-			}
+			message={counter === 0 ? 'Enter your College Email ID!!' : counter === 1 ? 'Check your email for OTP' : 'Enter your new password'}
 			buttonTitle={counter === 0 ? 'Send Email' : counter === 1 ? 'Verify OTP' : 'Reset Password'}
 			HasInput={() => (
 				<div className={classes['modal__input-container']}>

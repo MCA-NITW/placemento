@@ -103,12 +103,7 @@ const NavBar = () => {
 				</NavLink>
 				<div className={classes['nav__list']}>
 					{navItems.map((item) => (
-						<NavLink
-							to={item.to}
-							className={({ isActive }) => (isActive ? classes.active : undefined)}
-							aria-label={item.label}
-							key={item.to}
-						>
+						<NavLink to={item.to} className={({ isActive }) => (isActive ? classes.active : undefined)} aria-label={item.label} key={item.to}>
 							{item.icon}
 						</NavLink>
 					))}
