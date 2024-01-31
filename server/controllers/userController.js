@@ -74,19 +74,18 @@ exports.verify = async (req, res) => {
 		if (!isValidObjectId(req.params.id)) {
 			return res.status(400).json({ message: 'Invalid user ID' });
 		}
-		if (req.body.isVerified !== true && req.body.isVerified !== false) {
-			return res.status(400).json({ message: 'Invalid verification status' });
-		}
 		if (req.params.id === req.user.id) {
 			return res.status(400).json({ message: 'You cannot verify your own account' });
 		}
 
-		const updatedUser = await User.findByIdAndUpdate(req.params.id, { isVerified: req.body.isVerified }, { new: true });
+		const user = await User.findById(req.params.id);
+
+		const updatedUser = await User.findByIdAndUpdate(req.params.id, { isVerified: !user.isVerified }, { new: true });
 		if (!updatedUser) {
 			return res.status(404).json({ message: 'User not found' });
 		}
 		logger.info(`User verified: ${updatedUser.name}`);
-		res.status(200).json({ message: `Verification status of ${updatedUser.name} updated Successfully` });
+		res.status(200).json({ message: `${updatedUser.name} ${updatedUser.isVerified ? 'Verified' : 'Unverified'} Successfully` });
 	} catch (error) {
 		logger.error(error);
 		res.status(500).json({ message: 'Internal server error' });
@@ -170,7 +169,6 @@ exports.updateCompany = async (req, res) => {
 				location: company.locations[0],
 				bond: company.bond
 			};
-			// Update in Selected Students Roll No if it already not present
 			if (!company.selectedStudentsRollNo.includes(user.rollNo)) {
 				company.selectedStudentsRollNo.push(user.rollNo);
 				await company.save();
@@ -188,7 +186,7 @@ exports.updateCompany = async (req, res) => {
 			req.params.id,
 			{
 				placedAt,
-				placed: req.body.companyId !== 'np' ? true : false
+				placed: req.body.companyId !== 'np'
 			},
 			{ new: true }
 		);

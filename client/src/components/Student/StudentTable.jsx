@@ -18,35 +18,26 @@ const StudentTable = () => {
 	const [companies, setCompanies] = useState([]);
 	const user = getUser();
 
-	const fetchStudentData = useCallback(async () => {
+	const fetchData = useCallback(async () => {
 		try {
-			const response = await getStudents();
-			response.data.users.forEach((student) => {
+			const response = await Promise.all([getStudents(), getCompanies()]);
+			const studentsResponse = response[0];
+			const companiesResponse = response[1];
+
+			studentsResponse.data.users.forEach((student) => {
 				student.id = student._id;
 			});
-			response.data.users.sort((a, b) => a.rollNo.localeCompare(b.rollNo));
-			setStudents(response.data.users);
-		} catch (error) {
-			console.error('Error fetching students:', error);
-		}
-	}, []);
+			studentsResponse.data.users.sort((a, b) => a.rollNo.localeCompare(b.rollNo));
+			setStudents(studentsResponse.data.users);
 
-	const fetchCompaniesData = useCallback(async () => {
-		try {
-			const res = await getCompanies();
-			res.data.forEach((company) => {
+			companiesResponse.data.forEach((company) => {
 				company.id = company._id;
 			});
-			setCompanies(res.data);
+			setCompanies(companiesResponse.data);
 		} catch (error) {
-			console.error('Error fetching companies:', error);
+			console.error('Error fetching data:', error);
 		}
 	}, []);
-
-	const fetchData = useCallback(async () => {
-		await fetchStudentData();
-		await fetchCompaniesData();
-	}, [fetchStudentData, fetchCompaniesData]);
 
 	const closeModal = () => {
 		setIsModalOpen(false);
@@ -66,11 +57,11 @@ const StudentTable = () => {
 
 	const onConfirmVerifyStudent = async () => {
 		try {
-			const res = await updateVerificationStatus(selectedStudent.id, !selectedStudent.isVerified);
+			const res = await updateVerificationStatus(selectedStudent.id);
 			toast.success(<ToastContent res="success" messages={[res.data.message]} />);
 			setIsModalOpen(false);
 			setSelectedStudent(null);
-			fetchStudentData();
+			fetchData();
 		} catch (error) {
 			toast.error(<ToastContent res="error" messages={[error.response.data.message]} />);
 		}
@@ -80,29 +71,19 @@ const StudentTable = () => {
 		try {
 			const res = await deleteStudent(selectedStudentDelete.id);
 			toast.success(<ToastContent res="success" messages={[res.data.message]} />);
-			setSelectedStudentDelete(null);
 			setIsModalOpen(false);
-			fetchStudentData();
+			setSelectedStudentDelete(null);
+			fetchData();
 		} catch (error) {
 			toast.error(<ToastContent res="error" messages={[error.response.data.message]} />);
 		}
 	};
 
-	const handleRoleChange = async (event, params) => {
+	const handleChange = async (event, params, updateAction) => {
 		try {
-			const res = await updateUserRole(params.id, event.target.value);
+			const res = await updateAction(params.id, event.target.value);
 			toast.success(<ToastContent res="success" messages={[res.data.message]} />);
-			fetchStudentData();
-		} catch (error) {
-			toast.error(<ToastContent res="error" messages={[error.response.data.message]} />);
-		}
-	};
-
-	const handleCompanyChange = async (event, params) => {
-		try {
-			const res = await updateStudentCompany(params.id, event.target.value);
-			toast.success(<ToastContent res="success" messages={[res.data.message]} />);
-			fetchStudentData();
+			fetchData();
 		} catch (error) {
 			toast.error(<ToastContent res="error" messages={[error.response.data.message]} />);
 		}
@@ -126,12 +107,7 @@ const StudentTable = () => {
 
 	const roleDropdownRenderer = (params) => {
 		return (
-			<select
-				className="render-dropdown"
-				value={params.data.role}
-				onChange={(event) => handleRoleChange(event, params.data)}
-				disabled={user.id === params.data._id}
-			>
+			<select className="render-dropdown" value={params.data.role} onChange={(event) => handleChange(event, params.data, updateUserRole)}>
 				<option value="student">Student</option>
 				<option value="placementCoordinator">PC</option>
 				<option value="admin">Admin</option>
@@ -141,7 +117,11 @@ const StudentTable = () => {
 
 	const companyDropdownRenderer = (params) => {
 		return (
-			<select className="render-dropdown" value={params.data.placedAt.companyId} onChange={(event) => handleCompanyChange(event, params.data)}>
+			<select
+				className="render-dropdown"
+				value={params.data.placedAt.companyId}
+				onChange={(event) => handleChange(event, params.data, updateStudentCompany)}
+			>
 				<option value="np">Not Placed</option>
 				{companies.map((company) => (
 					<option value={company.id} key={company.id}>
