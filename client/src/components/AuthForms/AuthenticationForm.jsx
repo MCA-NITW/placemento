@@ -84,9 +84,9 @@ const AuthenticationForm = () => {
 					<label htmlFor="password">Password</label>
 					<div className={classes['input-container']}>
 						<input type={showPassword ? 'text' : 'password'} placeholder="Password" onChange={(e) => setPassword(e.target.value)} value={password} />
-						<div type="button" className={classes['password-toggle']} onClick={() => setShowPassword(!showPassword)}>
+						<button type="button" className={classes['password-toggle']} onClick={() => setShowPassword(!showPassword)}>
 							{showPassword ? <FaEyeSlash /> : <FaEye />}
-						</div>
+						</button>
 					</div>
 				</div>
 			</>

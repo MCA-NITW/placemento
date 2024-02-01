@@ -80,17 +80,11 @@ const ForgetPassword = () => {
 		}
 	}, [counter, email, newPassword, otp, showPassword]);
 
-	if (!isFormOpen) {
-		<div className={classes['forgot-password']} onClick={() => setIsFormOpen(true)} role="button" tabIndex={0}>
-			Forgot Password?
-		</div>;
-	}
-
 	return (
 		<>
-			<div className={classes['forgot-password']} onClick={() => setIsFormOpen(true)} role="button" tabIndex={0}>
+			<button className={classes['forgot-password']} onClick={() => setIsFormOpen(true)} type="button">
 				Forgot Password?
-			</div>
+			</button>
 			{isFormOpen && (
 				<Modal
 					isOpen={isFormOpen}
