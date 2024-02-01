@@ -140,7 +140,8 @@
 	width: 100%;
 }
 
-.email-domain {
+.input-container div,
+.input-container button {
 	background: transparent;
 	color: var(--color-light);
 	font-size: 1rem;
@@ -148,12 +149,8 @@
 }
 
 .password-toggle {
-	background: transparent;
-	color: var(--color-light);
-	font-size: 1rem;
+	padding-top: 0.3rem;
 	cursor: pointer;
-	transition: var(--transition);
-	padding: 0.3rem 0.5rem 0 0.7rem;
 }
 
 .forgot-password {
@@ -164,5 +161,10 @@
 }
 
 .forgot-password:hover {
+	color: var(--color-primary);
+}
+
+.input-container input:focus + div,
+.input-container input:focus + button {
 	color: var(--color-primary);
 }

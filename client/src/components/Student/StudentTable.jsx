@@ -3,7 +3,14 @@ import { GrValidate } from 'react-icons/gr';
 import { MdDelete } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import { getCompanies } from '../../api/companyApi.jsx';
-import { deleteStudent, getStudents, updateStudentCompany, updateUserRole, updateVerificationStatus } from '../../api/studentApi.jsx';
+import {
+	deleteStudent,
+	getStudents,
+	updateStudentCompany,
+	updateStudentCompanyLocation,
+	updateUserRole,
+	updateVerificationStatus
+} from '../../api/studentApi.jsx';
 import getUser from '../../utils/user.js';
 import AgGridTable from '../AgGridTable/AgGridTable.jsx';
 import Modal from '../Modal/Modal.jsx';
@@ -132,6 +139,17 @@ const StudentTable = () => {
 		return dropdownRenderer(params, options, updateStudentCompany, params.data.placedAt?.companyId);
 	};
 
+	const locationDropdownRenderer = (params) => {
+		const company = companies.find((company) => company.id === params.data.placedAt?.companyId);
+		if (!company) return 'N/A';
+		const options = company.locations.map((location) => ({
+			value: location,
+			label: location
+		}));
+		options.unshift({ value: 'N/A', label: 'N/A' });
+		return dropdownRenderer(params, options, updateStudentCompanyLocation, params.data.placedAt?.location);
+	};
+
 	const modelRenderer = (isModalOpen, closeModal, onConfirm, message, buttonTitle) => {
 		return <Modal isOpen={isModalOpen} onClose={() => closeModal()} onConfirm={onConfirm} message={message} buttonTitle={buttonTitle} />;
 	};
@@ -193,12 +211,22 @@ const StudentTable = () => {
 			generateColumn('placedAt.ctc', 'CTC', 80, null, true, false, (params) => params.value.toFixed(2)),
 			generateColumn('placedAt.ctcBase', 'Base', 80, null, true, false, (params) => params.value.toFixed(2))
 		]),
-		generateColumn('placedAt.location', 'Location', 100, null, true, false)
+		generateColumn('placedAt.offer', 'Offer', 80, null, false, false),
+		generateColumn('placedAt.profileType', 'Profile', 100, null, true, true),
+		generateColumn(
+			'placedAt.location',
+			'Location',
+			120,
+			null,
+			true,
+			false,
+			user.role === 'admin' || user.role === 'placementCoordinator' ? locationDropdownRenderer : null
+		)
 	]);
 
 	const columnDefinitions = [
 		...(user.role === 'admin' || user.role === 'placementCoordinator' ? [actionsColumn] : []),
-		generateColumn('role', 'Role', 100, 'left', false, false, user.role === 'admin' ? roleDropdownRenderer : roleFormatter),
+		generateColumn('role', 'Role', 110, 'left', false, false, user.role === 'admin' ? roleDropdownRenderer : roleFormatter),
 		generateColumn('name', 'Name', 130, 'left'),
 		generateColumn('rollNo', 'Roll No', 100),
 		generateColumn('email', 'Email', 225),

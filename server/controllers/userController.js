@@ -148,15 +148,28 @@ exports.updateCompany = async (req, res) => {
 		if (!user) {
 			return res.status(404).json({ message: 'User not found' });
 		}
+
 		let placedAt = {
+			companyId: 'np',
 			companyName: 'Not Placed',
 			ctc: 0,
 			ctcBase: 0,
 			profile: 'N/A',
+			profileType: 'N/A',
 			offer: 'N/A',
 			location: 'N/A',
 			bond: 0
 		};
+
+		if (user.placedAt.companyId !== 'np') {
+			const company = await Company.findById(user.placedAt.companyId);
+			const index = company.selectedStudentsRollNo.indexOf(user.rollNo);
+			if (index > -1) {
+				company.selectedStudentsRollNo.splice(index, 1);
+			}
+			await company.save();
+		}
+
 		if (req.body.companyId !== 'np') {
 			const company = await Company.findById(req.body.companyId);
 			placedAt = {
@@ -165,21 +178,15 @@ exports.updateCompany = async (req, res) => {
 				ctc: company.ctc,
 				ctcBase: company.ctcBreakup.base,
 				profile: company.profile,
+				profileType: company.profileCategory,
 				offer: company.typeOfOffer,
-				location: company.locations[0],
+				location: 'N/A',
 				bond: company.bond
 			};
 			if (!company.selectedStudentsRollNo.includes(user.rollNo)) {
 				company.selectedStudentsRollNo.push(user.rollNo);
 				await company.save();
 			}
-		} else {
-			const company = await Company.findById(user.placedAt.companyId);
-			const index = company.selectedStudentsRollNo.indexOf(user.rollNo);
-			if (index > -1) {
-				company.selectedStudentsRollNo.splice(index, 1);
-			}
-			await company.save();
 		}
 
 		const updatedUser = await User.findByIdAndUpdate(
@@ -192,6 +199,31 @@ exports.updateCompany = async (req, res) => {
 		);
 		logger.info(`User company updated: ${updatedUser.name}`);
 		res.status(200).json({ message: `Company of ${updatedUser.name} updated Successfully` });
+	} catch (error) {
+		logger.error(error);
+		res.status(500).json({ message: 'Internal server error' });
+	}
+};
+
+// Update Users Company Location by Default 'N/A'
+exports.updateCompanyLocation = async (req, res) => {
+	try {
+		if (!isValidObjectId(req.params.id)) {
+			return res.status(400).json({ message: 'Invalid user ID' });
+		}
+		const user = await User.findById(req.params.id);
+		if (!user) {
+			return res.status(404).json({ message: 'User not found' });
+		}
+		const updatedUser = await User.findByIdAndUpdate(
+			req.params.id,
+			{
+				'placedAt.location': req.body.location
+			},
+			{ new: true }
+		);
+		logger.info(`User company location updated: ${updatedUser.name}`);
+		res.status(200).json({ message: `Company location of ${updatedUser.name} updated Successfully` });
 	} catch (error) {
 		logger.error(error);
 		res.status(500).json({ message: 'Internal server error' });

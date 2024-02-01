@@ -13,3 +13,5 @@ export const updateUserRole = (id, role) => axiosInstance.put(`/users/role/${id}
 export const deleteStudent = (id) => axiosInstance.delete(`/users/delete/${id}`);
 
 export const updateStudentCompany = (id, companyId) => axiosInstance.put(`/users/company/${id}`, { companyId });
+
+export const updateStudentCompanyLocation = (id, location) => axiosInstance.put(`/users/companyLocation/${id}`, { location });

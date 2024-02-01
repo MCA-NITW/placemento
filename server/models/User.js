@@ -41,11 +41,12 @@ const userSchema = new mongoose.Schema(
 		totalGapInAcademics: { type: Number, default: 0 },
 		placed: { type: Boolean, default: false },
 		placedAt: {
-			companyId: { type: String, default: 'Not Placed' },
+			companyId: { type: String, default: 'np' },
 			companyName: { type: String, default: 'Not Placed' },
 			ctc: { type: Number, default: 0 },
 			ctcBase: { type: Number, default: 0 },
 			profile: { type: String, default: 'N/A' },
+			profileType: { type: String, default: 'N/A' },
 			offer: { type: String, default: 'N/A' },
 			location: { type: String, default: 'N/A' },
 			bond: { type: Number, default: 0 }

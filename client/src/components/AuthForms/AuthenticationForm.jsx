@@ -13,14 +13,14 @@ const AuthenticationForm = () => {
 	const [rollNo, setRollNo] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-	const [pgCgpa, setPgCgpa] = useState('');
-	const [pgPercentage, setPgPercentage] = useState('');
-	const [ugCgpa, setUgCgpa] = useState('');
-	const [ugPercentage, setUgPercentage] = useState('');
-	const [hscCgpa, setHscCgpa] = useState('');
-	const [hscPercentage, setHscPercentage] = useState('');
-	const [sscCgpa, setSscCgpa] = useState('');
-	const [sscPercentage, setSscPercentage] = useState('');
+	const [pgCgpa, setPgCgpa] = useState('0');
+	const [pgPercentage, setPgPercentage] = useState('0');
+	const [ugCgpa, setUgCgpa] = useState('0');
+	const [ugPercentage, setUgPercentage] = useState('0');
+	const [hscCgpa, setHscCgpa] = useState('0');
+	const [hscPercentage, setHscPercentage] = useState('0');
+	const [sscCgpa, setSscCgpa] = useState('0');
+	const [sscPercentage, setSscPercentage] = useState('0');
 	const [totalGapInAcademics, setTotalGapInAcademics] = useState(0);
 	const [backlogs, setBacklogs] = useState(0);
 	const [currentStep, setCurrentStep] = useState(1);
@@ -135,44 +135,86 @@ const AuthenticationForm = () => {
 						</div>
 						<div className={classes['auth-form__item']}>
 							<label htmlFor="pg">PG</label>
-							<input
-								type="text"
-								placeholder="PG CGPA"
-								value={pgCgpa}
-								onChange={(e) => {
-									const pgCgpaValue = e.target.value;
-									setPgCgpa(pgCgpaValue);
-									setPgPercentage((pgCgpaValue * 9.5).toFixed(2));
-								}}
-								step="0.01"
-							/>
-							<input type="text" placeholder="PG Percentage" value={pgPercentage} onChange={(e) => setPgPercentage(e.target.value)} disabled />
+							<div className={classes['input-container']}>
+								<input
+									type="text"
+									placeholder="PG CGPA"
+									value={pgCgpa}
+									onChange={(e) => {
+										const pgCgpaValue = e.target.value;
+										setPgCgpa(pgCgpaValue);
+										setPgPercentage((pgCgpaValue * 9.5).toFixed(2));
+									}}
+									step="0.01"
+								/>
+								<div>CGPA</div>
+							</div>
+							<div className={classes['input-container']}>
+								<input type="text" placeholder="PG Percentage" value={pgPercentage} onChange={(e) => setPgPercentage(e.target.value)} disabled />
+								<div>%</div>
+							</div>
 						</div>
 						<div className={classes['auth-form__item']}>
 							<label htmlFor="ug">UG</label>
-							<input type="text" placeholder="UG CGPA" onChange={(e) => setUgCgpa(e.target.value)} value={ugCgpa} step="0.01" />
-							<input type="text" placeholder="UG Percentage" onChange={(e) => setUgPercentage(e.target.value)} value={ugPercentage} step="0.01" />
+							<div className={classes['input-container']}>
+								<input type="text" placeholder="UG CGPA" onChange={(e) => setUgCgpa(e.target.value)} value={ugCgpa} step="0.01" />
+								<div>CGPA</div>
+							</div>
+							<div className={classes['input-container']}>
+								<input type="text" placeholder="UG Percentage" onChange={(e) => setUgPercentage(e.target.value)} value={ugPercentage} step="0.01" />
+								<div>%</div>
+							</div>
 						</div>
 						<div className={classes['auth-form__item']}>
 							<label htmlFor="hsc">12th</label>
-							<input type="text" placeholder="HSC CGPA" onChange={(e) => setHscCgpa(e.target.value)} value={hscCgpa} step="0.01" />
-							<input type="text" placeholder="HSC Percentage" onChange={(e) => setHscPercentage(e.target.value)} value={hscPercentage} step="0.01" />
+							<div className={classes['input-container']}>
+								<input type="text" placeholder="HSC CGPA" onChange={(e) => setHscCgpa(e.target.value)} value={hscCgpa} step="0.01" />
+								<div>CGPA</div>
+							</div>
+							<div className={classes['input-container']}>
+								<input
+									type="text"
+									placeholder="HSC Percentage"
+									onChange={(e) => setHscPercentage(e.target.value)}
+									value={hscPercentage}
+									step="0.01"
+								/>
+								<div>%</div>
+							</div>
 						</div>
 						<div className={classes['auth-form__item']}>
 							<label htmlFor="ssc">10th</label>
-							<input type="text" placeholder="SSC CGPA" onChange={(e) => setSscCgpa(e.target.value)} value={sscCgpa} step="0.01" />
-							<input type="text" placeholder="SSC Percentage" onChange={(e) => setSscPercentage(e.target.value)} value={sscPercentage} step="0.01" />
+							<div className={classes['input-container']}>
+								<input type="text" placeholder="SSC CGPA" onChange={(e) => setSscCgpa(e.target.value)} value={sscCgpa} step="0.01" />
+								<div>CGPA</div>
+							</div>
+							<div className={classes['input-container']}>
+								<input
+									type="text"
+									placeholder="SSC Percentage"
+									onChange={(e) => setSscPercentage(e.target.value)}
+									value={sscPercentage}
+									step="0.01"
+								/>
+								<div>%</div>
+							</div>
 						</div>
 						<div className={classes['auth-form__item']}>
 							<label htmlFor="totalGapInAcademics">Gap</label>
-							<input
-								type="number"
-								placeholder="Total Gap in Academics"
-								value={totalGapInAcademics}
-								onChange={(e) => setTotalGapInAcademics(e.target.value)}
-							/>
+							<div className={classes['input-container']}>
+								<input
+									type="number"
+									placeholder="Total Gap in Academics"
+									value={totalGapInAcademics}
+									onChange={(e) => setTotalGapInAcademics(e.target.value)}
+								/>
+								<div>Years</div>
+							</div>
 							<label htmlFor="backlogs">Backlogs</label>
-							<input type="number" placeholder="Backlogs" value={backlogs} onChange={(e) => setBacklogs(e.target.value)} />
+							<div className={classes['input-container']}>
+								<input type="number" placeholder="Backlogs" value={backlogs} onChange={(e) => setBacklogs(e.target.value)} />
+								<div>Subjects</div>
+							</div>
 						</div>
 
 						<div className={classes['auth-form__item_btn']}>
