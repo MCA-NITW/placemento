@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema(
 		email: {
 			type: String,
 			required: true,
-			match: /.+\@student.nitw.ac.in+/,
+			match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
 			unique: true
 		},
 		password: { type: String, required: true },
