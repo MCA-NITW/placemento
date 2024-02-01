@@ -16,6 +16,7 @@ const AgGridTable = ({ rowData, columnDefinitions, fetchData }) => {
 			}
 		};
 	}, []);
+
 	return (
 		<AgGridReact
 			rowData={rowData}

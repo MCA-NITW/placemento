@@ -91,18 +91,6 @@ const CompanyTable = () => {
 		return buttonRenderer(params, 'btn--icon--edit', <MdEdit />, handleEditButtonClick);
 	};
 
-	const locationRenderer = (params) => {
-		return (
-			<select className="render-dropdown" value={params.value}>
-				{params.value.map((location) => (
-					<option key={location} value={location}>
-						{location}
-					</option>
-				))}
-			</select>
-		);
-	};
-
 	const actionsColumn = generateNestedColumn('Actions', [
 		generateColumn(null, 'Delete', 55, 'left', false, false, deleteButtonRenderer),
 		generateColumn(null, 'Edit', 55, 'left', false, false, editButtonRenderer)
@@ -120,7 +108,7 @@ const CompanyTable = () => {
 		generateColumn('dateOfOffer', 'Offer Date', 125, null, true, false, (params) =>
 			params.value ? new Date(params.value).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) : ''
 		),
-		generateColumn('locations', 'Locations', 130, null, false, false, locationRenderer),
+		generateColumn('locations', 'Locations', 130, null, false, true),
 		generateNestedColumn('CTC (LPA)', [
 			generateColumn('ctc', 'CTC', 80, null, true, false, (params) => params.value.toFixed(2)),
 			generateColumn('ctcBase', 'Base', 80, null, true, false, (params) => params.value.toFixed(2))
