@@ -14,7 +14,7 @@
 
 .modal {
 	background-color: var(--color-bg-variant);
-	padding: 20px;
+	padding: 10px 20px;
 	border-radius: 0.5rem;
 	width: 100%;
 	max-width: 400px;
@@ -28,13 +28,14 @@
 .modal p {
 	font-size: 16px;
 	text-align: center;
+	margin-bottom: 10px;
 }
 
 .modal__buttons {
-	margin-top: 20px;
+	margin-top: 10px;
 	width: 100%;
 	display: flex;
 	justify-content: space-around;
 	align-items: center;
-	gap: 20px;
+	gap: 10px;
 }

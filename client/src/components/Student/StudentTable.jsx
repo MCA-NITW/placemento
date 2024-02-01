@@ -152,7 +152,9 @@ const StudentTable = () => {
 	});
 
 	const roleFormatter = (params) => {
-		return params.value === 'student' ? 'Student' : params.value === 'placementCoordinator' ? 'PC' : 'Admin';
+		if (params.value === 'student') return 'Student';
+		else if (params.value === 'placementCoordinator') return 'PC';
+		else return 'Admin';
 	};
 
 	const actionsColumn = generateNestedColumn('Actions', [

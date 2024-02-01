@@ -1,5 +1,4 @@
-import propTypes from 'prop-types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { forgotPassword, resetPassword, verifyOTP } from '../../api/authApi';
@@ -7,61 +6,38 @@ import Modal from '../Modal/Modal';
 import ToastContent from '../ToastContent/ToastContent';
 import classes from './auth.module.css';
 
-const ForgetPassword = ({ isFormOpen, onCloseAction }) => {
+const ForgetPassword = () => {
 	const [counter, setCounter] = useState(0);
 	const [email, setEmail] = useState('');
 	const [otp, setOtp] = useState('');
 	const [newPassword, setNewPassword] = useState('');
 	const [showPassword, setShowPassword] = useState(false);
+	const [isFormOpen, setIsFormOpen] = useState(false);
 
 	const onConfirmAction = async () => {
 		if (counter === 0) {
 			try {
 				const res = await forgotPassword({ email });
-				toast.success(<ToastContent res="Email Sent" messages={res.data.messages} />, {
-					autoClose: 4000,
-					closeOnClick: true,
-					pauseOnHover: true
-				});
+				toast.success(<ToastContent res="Email Sent" messages={res.data.messages} />);
 				setCounter(counter + 1);
 			} catch (err) {
-				toast.error(<ToastContent res="Email Sent" messages={err.response.data.errors} />, {
-					autoClose: 4000,
-					closeOnClick: true,
-					pauseOnHover: true
-				});
+				toast.error(<ToastContent res="Email Sent" messages={err.response.data.errors} />);
 			}
 		} else if (counter === 1) {
 			try {
 				const res = await verifyOTP({ email, otp });
-				toast.success(<ToastContent res="OTP Verified" messages={res.data.messages} />, {
-					autoClose: 4000,
-					closeOnClick: true,
-					pauseOnHover: true
-				});
+				toast.success(<ToastContent res="OTP Verified" messages={res.data.messages} />);
 				setCounter(counter + 1);
 			} catch (err) {
-				toast.error(<ToastContent res="OTP Verification Failed" messages={err.response.data.errors} />, {
-					autoClose: 4000,
-					closeOnClick: true,
-					pauseOnHover: true
-				});
+				toast.error(<ToastContent res="OTP Verification Failed" messages={err.response.data.errors} />);
 			}
 		} else {
 			try {
 				const res = await resetPassword({ email, otp, newPassword });
-				toast.success(<ToastContent res="Password Reset Successful" messages={res.data.messages} />, {
-					autoClose: 4000,
-					closeOnClick: true,
-					pauseOnHover: true
-				});
-				onCloseAction();
+				toast.success(<ToastContent res="Password Reset Successful" messages={res.data.messages} />);
+				setIsFormOpen(false);
 			} catch (err) {
-				toast.error(<ToastContent res="Password Reset Failed" messages={err.response.data.errors} />, {
-					autoClose: 4000,
-					closeOnClick: true,
-					pauseOnHover: true
-				});
+				toast.error(<ToastContent res="Password Reset Failed" messages={err.response.data.errors} />);
 			}
 		}
 	};
@@ -76,48 +52,81 @@ const ForgetPassword = ({ isFormOpen, onCloseAction }) => {
 		}
 		setEmail(formattedEmail);
 	};
+	const [message, setMessage] = useState('Enter your College Email ID!!');
+	const [buttonTitle, setButtonTitle] = useState('Send Email');
+	const [inputType, setInputType] = useState('email');
+	const [inputPlaceholder, setInputPlaceholder] = useState('Enter your email');
+	const [inputValue, setInputValue] = useState(email.trim().replace('@student.nitw.ac.in', ''));
 
-	if (!isFormOpen) return null;
+	useEffect(() => {
+		if (counter === 0) {
+			setMessage('Enter your College Email ID!!');
+			setButtonTitle('Send Email');
+			setInputType('email');
+			setInputPlaceholder('Enter your email');
+			setInputValue(email.trim().replace('@student.nitw.ac.in', ''));
+		} else if (counter === 1) {
+			setMessage('Check your email for OTP');
+			setButtonTitle('Verify OTP');
+			setInputType('number');
+			setInputPlaceholder('Enter OTP');
+			setInputValue(otp);
+		} else {
+			setMessage('Enter your new password');
+			setButtonTitle('Reset Password');
+			setInputType(showPassword ? 'text' : 'password');
+			setInputPlaceholder('Enter new password');
+			setInputValue(newPassword);
+		}
+	}, [counter, email, newPassword, otp, showPassword]);
+
+	if (!isFormOpen) {
+		<div className={classes['forgot-password']} onClick={() => setIsFormOpen(true)} role="button" tabIndex={0}>
+			Forgot Password?
+		</div>;
+	}
 
 	return (
-		<Modal
-			isOpen={isFormOpen}
-			onClose={() => {
-				setCounter(0);
-				onCloseAction();
-			}}
-			onConfirm={() => onConfirmAction()}
-			message={counter === 0 ? 'Enter your College Email ID!!' : counter === 1 ? 'Check your email for OTP' : 'Enter your new password'}
-			buttonTitle={counter === 0 ? 'Send Email' : counter === 1 ? 'Verify OTP' : 'Reset Password'}
-			HasInput={() => (
-				<div className={classes['modal__input-container']}>
-					<input
-						type={counter === 0 ? 'email' : counter === 1 ? 'number' : showPassword ? 'text' : 'password'}
-						placeholder={counter === 0 ? 'Enter your email' : counter === 1 ? 'Enter OTP' : 'Enter new password'}
-						onChange={(e) => {
-							if (counter === 0) handleEmailChange(e);
-							else if (counter === 1) setOtp(e.target.value);
-							else setNewPassword(e.target.value);
-						}}
-						value={counter === 0 ? email.trim().replace('@student.nitw.ac.in', '') : counter === 1 ? otp : newPassword}
-						id="input"
-						autoFocus
-					/>
-					{counter === 2 && (
-						<button className={classes['password-toggle']} onClick={() => setShowPassword(!showPassword)}>
-							{showPassword ? <FaEyeSlash /> : <FaEye />}
-						</button>
+		<>
+			<div className={classes['forgot-password']} onClick={() => setIsFormOpen(true)} role="button" tabIndex={0}>
+				Forgot Password?
+			</div>
+			{isFormOpen && (
+				<Modal
+					isOpen={isFormOpen}
+					onClose={() => {
+						setCounter(0);
+						setIsFormOpen(false);
+					}}
+					onConfirm={() => onConfirmAction()}
+					message={message}
+					buttonTitle={buttonTitle}
+					HasInput={() => (
+						<div className={classes['input-container']}>
+							<input
+								type={inputType}
+								placeholder={inputPlaceholder}
+								onChange={(e) => {
+									if (counter === 0) handleEmailChange(e);
+									else if (counter === 1) setOtp(e.target.value);
+									else setNewPassword(e.target.value);
+								}}
+								value={inputValue}
+								id="input"
+								autoFocus
+							/>
+							{counter === 2 && (
+								<button className={classes['password-toggle']} onClick={() => setShowPassword(!showPassword)}>
+									{showPassword ? <FaEyeSlash /> : <FaEye />}
+								</button>
+							)}
+							{counter === 0 && <div className={classes['email-domain']}>@student.nitw.ac.in</div>}
+						</div>
 					)}
-					{counter === 0 && <div className={classes['email-domain']}>@student.nitw.ac.in</div>}
-				</div>
+				/>
 			)}
-		/>
+		</>
 	);
-};
-
-ForgetPassword.propTypes = {
-	isFormOpen: propTypes.bool.isRequired,
-	onCloseAction: propTypes.func.isRequired
 };
 
 export default ForgetPassword;
