@@ -162,23 +162,25 @@ const StudentTable = () => {
 		generateColumn(null, 'Verify', 55, 'left', false, false, verifyButtonRenderer)
 	]);
 
+	const valueToFixed = (params) => params.value.toFixed(2);
+
 	const academicColumn = [
 		generateNestedColumn('Grades', [
 			generateNestedColumn('PG', [
-				generateColumn('pg.cgpa', 'CGPA', 85, null, true, false, (params) => params.value.toFixed(2)),
-				generateColumn('pg.percentage', '%', 85, null, true, false, (params) => params.value.toFixed(2))
+				generateColumn('pg.cgpa', 'CGPA', 85, null, true, false, valueToFixed),
+				generateColumn('pg.percentage', '%', 85, null, true, false, valueToFixed)
 			]),
 			generateNestedColumn('UG', [
-				generateColumn('ug.cgpa', 'CGPA', 85, null, true, false, (params) => params.value.toFixed(2)),
-				generateColumn('ug.percentage', '%', 85, null, true, false, (params) => params.value.toFixed(2))
+				generateColumn('ug.cgpa', 'CGPA', 85, null, true, false, valueToFixed),
+				generateColumn('ug.percentage', '%', 85, null, true, false, valueToFixed)
 			]),
 			generateNestedColumn('HSC', [
-				generateColumn('hsc.cgpa', 'CGPA', 85, null, true, false, (params) => params.value.toFixed(2)),
-				generateColumn('hsc.percentage', '%', 85, null, true, false, (params) => params.value.toFixed(2))
+				generateColumn('hsc.cgpa', 'CGPA', 85, null, true, false, valueToFixed),
+				generateColumn('hsc.percentage', '%', 85, null, true, false, valueToFixed)
 			]),
 			generateNestedColumn('SSC', [
-				generateColumn('ssc.cgpa', 'CGPA', 85, null, true, false, (params) => params.value.toFixed(2)),
-				generateColumn('ssc.percentage', '%', 85, null, true, false, (params) => params.value.toFixed(2))
+				generateColumn('ssc.cgpa', 'CGPA', 85, null, true, false, valueToFixed),
+				generateColumn('ssc.percentage', '%', 85, null, true, false, valueToFixed)
 			])
 		]),
 		generateColumn('totalGapInAcademics', 'Gap', 75),
