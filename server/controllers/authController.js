@@ -35,6 +35,7 @@ exports.postSignup = async (req, res) => {
 exports.getLogin = async (req, res) => {
 	try {
 		const { email, password } = req.body;
+		console.log(req.body);
 
 		if (!email || !password) return res.status(400).json({ status: false, errors: ['Email and Password required'] });
 		if (!email.endsWith('@student.nitw.ac.in')) return res.status(400).json({ status: false, errors: ['Enter a valid NITW email'] });

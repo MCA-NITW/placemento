@@ -40,6 +40,8 @@ exports.getCTCStats = async (req, res) => {
 		const totalPlacedStudentsCTC = calculateTotalPlacedStudentsCTC(filterCompanies);
 		const avgCTC = totalPlacedStudentsCTC / calculateTotalPlacedStudents(filterCompanies);
 
+		logger.info('CTC Stats fetched successfully');
+
 		res.status(200).json({
 			highestCTCOffered,
 			highestCTCOfferedCompany,
@@ -71,6 +73,8 @@ exports.getCompanyStats = async (req, res) => {
 		const totalFTEs = filterCompanies.filter((company) => company.typeOfOffer === 'FTE').length;
 		const total6MFTEs = filterCompanies.filter((company) => company.typeOfOffer === '6M+FTE').length;
 		const totalInterns = filterCompanies.filter((company) => company.typeOfOffer === 'Intern').length;
+
+		logger.info('Company Stats fetched successfully');
 
 		res.status(200).json({
 			totalCompanies,
@@ -104,6 +108,8 @@ exports.getStudentStats = async (req, res) => {
 		const totalUnverifiedStudents = students.filter((student) => student.isVerified === false).length;
 		const totalAdmins = students.filter((student) => student.role === 'admin').length;
 		const totalPlacementCoordinators = students.filter((student) => student.role === 'placementCoordinator').length;
+
+		logger.info('Student Stats fetched successfully');
 
 		res.status(200).json({
 			totalStudents,

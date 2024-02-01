@@ -1,7 +1,8 @@
+import propTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import classes from './auth.module.css';
 
-export const FormFooter = ({ mode }) => {
+const FormFooter = ({ mode }) => {
 	const footer_note = mode === 'signin' ? 'Already have an account?' : "Don't have an account?";
 	const mode_text = mode === 'signin' ? 'Sign In' : 'Sign Up';
 
@@ -12,3 +13,9 @@ export const FormFooter = ({ mode }) => {
 		</div>
 	);
 };
+
+FormFooter.propTypes = {
+	mode: propTypes.string.isRequired
+};
+
+export default FormFooter;

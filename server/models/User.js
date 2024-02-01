@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema(
 		password: { type: String, required: true },
 		rollNo: {
 			type: String,
-			match: /^[0-9]{2}MCF1R[0-9]{2,}$/,
+			match: /^\d{2}MCF1R\d{2,}$/,
 			unique: true
 		},
 		role: {
