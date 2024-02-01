@@ -80,6 +80,31 @@ const ForgetPassword = () => {
 		}
 	}, [counter, email, newPassword, otp, showPassword]);
 
+	const inputRender = () => {
+		return (
+			<div className={classes['input-container']}>
+				<input
+					type={inputType}
+					placeholder={inputPlaceholder}
+					onChange={(e) => {
+						if (counter === 0) handleEmailChange(e);
+						else if (counter === 1) setOtp(e.target.value);
+						else setNewPassword(e.target.value);
+					}}
+					value={inputValue}
+					id="input"
+					autoFocus
+				/>
+				{counter === 2 && (
+					<button className={classes['password-toggle']} onClick={() => setShowPassword(!showPassword)}>
+						{showPassword ? <FaEyeSlash /> : <FaEye />}
+					</button>
+				)}
+				{counter === 0 && <div className={classes['email-domain']}>@student.nitw.ac.in</div>}
+			</div>
+		);
+	};
+
 	return (
 		<>
 			<button className={classes['forgot-password']} onClick={() => setIsFormOpen(true)} type="button">
@@ -95,28 +120,7 @@ const ForgetPassword = () => {
 					onConfirm={() => onConfirmAction()}
 					message={message}
 					buttonTitle={buttonTitle}
-					HasInput={() => (
-						<div className={classes['input-container']}>
-							<input
-								type={inputType}
-								placeholder={inputPlaceholder}
-								onChange={(e) => {
-									if (counter === 0) handleEmailChange(e);
-									else if (counter === 1) setOtp(e.target.value);
-									else setNewPassword(e.target.value);
-								}}
-								value={inputValue}
-								id="input"
-								autoFocus
-							/>
-							{counter === 2 && (
-								<button className={classes['password-toggle']} onClick={() => setShowPassword(!showPassword)}>
-									{showPassword ? <FaEyeSlash /> : <FaEye />}
-								</button>
-							)}
-							{counter === 0 && <div className={classes['email-domain']}>@student.nitw.ac.in</div>}
-						</div>
-					)}
+					HasInput={() => inputRender()}
 				/>
 			)}
 		</>
