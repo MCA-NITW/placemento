@@ -89,47 +89,47 @@ const StudentTable = () => {
 		}
 	};
 
-	const verifyButtonRenderer = (params) => {
+	const buttonRenderer = (params, action, icon, className) => {
 		return (
-			<button className={`verify-button ${params.data.isVerified ? 'verified' : 'unverified'}`} onClick={() => handleVerifyButtonClick(params.data)}>
-				<GrValidate />
+			<button className={className} onClick={() => action(params.data)}>
+				{icon}
 			</button>
 		);
+	};
+
+	const verifyButtonRenderer = (params) => {
+		return buttonRenderer(params, handleVerifyButtonClick, <GrValidate />, `verify-button ${params.data.isVerified ? 'verified' : 'unverified'}`);
 	};
 
 	const deleteButtonRenderer = (params) => {
-		return (
-			<button className="btn--icon--del" onClick={() => handleDeleteButtonClick(params.data)}>
-				<MdDelete />
-			</button>
-		);
+		return buttonRenderer(params, handleDeleteButtonClick, <MdDelete />, 'btn--icon--del');
 	};
 
-	const roleDropdownRenderer = (params) => {
+	const dropdownRenderer = (params, options, updateAction, value) => {
 		return (
-			<select className="render-dropdown" value={params.data.role} onChange={(event) => handleChange(event, params.data, updateUserRole)}>
-				<option value="student">Student</option>
-				<option value="placementCoordinator">PC</option>
-				<option value="admin">Admin</option>
-			</select>
-		);
-	};
-
-	const companyDropdownRenderer = (params) => {
-		return (
-			<select
-				className="render-dropdown"
-				value={params.data.placedAt.companyId}
-				onChange={(event) => handleChange(event, params.data, updateStudentCompany)}
-			>
-				<option value="np">Not Placed</option>
-				{companies.map((company) => (
-					<option value={company.id} key={company.id}>
-						{company.name}
+			<select className="render-dropdown" value={value} onChange={(event) => handleChange(event, params.data, updateAction)}>
+				{options.map((option) => (
+					<option value={option.value} key={option.value}>
+						{option.label}
 					</option>
 				))}
 			</select>
 		);
+	};
+
+	const roleDropdownRenderer = (params) => {
+		const options = [
+			{ value: 'student', label: 'Student' },
+			{ value: 'placementCoordinator', label: 'PC' },
+			{ value: 'admin', label: 'Admin' }
+		];
+		return dropdownRenderer(params, options, updateUserRole, params.data.role);
+	};
+
+	const companyDropdownRenderer = (params) => {
+		const options = companies.map((company) => ({ value: company.id, label: company.name }));
+		options.unshift({ value: 'np', label: 'Not Placed' });
+		return dropdownRenderer(params, options, updateStudentCompany, params.data.placedAt?.companyId);
 	};
 
 	const modelRenderer = (isModalOpen, closeModal, onConfirm, message, buttonTitle) => {
@@ -162,26 +162,18 @@ const StudentTable = () => {
 		generateColumn(null, 'Verify', 55, 'left', false, false, verifyButtonRenderer)
 	]);
 
-	const valueToFixed = (params) => params.value.toFixed(2);
+	const gradesColumn = (head, cgpa, percentage) =>
+		generateNestedColumn(head, [
+			generateColumn(cgpa, 'CGPA', 85, null, true, false, (params) => params.value.toFixed(2)),
+			generateColumn(percentage, '%', 85, null, true, false, (params) => params.value.toFixed(2))
+		]);
 
 	const academicColumn = [
 		generateNestedColumn('Grades', [
-			generateNestedColumn('PG', [
-				generateColumn('pg.cgpa', 'CGPA', 85, null, true, false, valueToFixed),
-				generateColumn('pg.percentage', '%', 85, null, true, false, valueToFixed)
-			]),
-			generateNestedColumn('UG', [
-				generateColumn('ug.cgpa', 'CGPA', 85, null, true, false, valueToFixed),
-				generateColumn('ug.percentage', '%', 85, null, true, false, valueToFixed)
-			]),
-			generateNestedColumn('HSC', [
-				generateColumn('hsc.cgpa', 'CGPA', 85, null, true, false, valueToFixed),
-				generateColumn('hsc.percentage', '%', 85, null, true, false, valueToFixed)
-			]),
-			generateNestedColumn('SSC', [
-				generateColumn('ssc.cgpa', 'CGPA', 85, null, true, false, valueToFixed),
-				generateColumn('ssc.percentage', '%', 85, null, true, false, valueToFixed)
-			])
+			gradesColumn('PG', 'pg.cgpa', 'pg.percentage'),
+			gradesColumn('UG', 'ug.cgpa', 'ug.percentage'),
+			gradesColumn('12th', 'hsc.cgpa', 'hsc.percentage'),
+			gradesColumn('10th', 'ssc.cgpa', 'ssc.percentage')
 		]),
 		generateColumn('totalGapInAcademics', 'Gap', 75),
 		generateColumn('backlogs', 'Backlogs', 85)

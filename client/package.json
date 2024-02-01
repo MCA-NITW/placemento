@@ -44,7 +44,14 @@
 	},
 	"devDependencies": {
 		"@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+		"@babel/plugin-transform-class-properties": "^7.23.3",
+		"@babel/plugin-transform-nullish-coalescing-operator": "^7.23.4",
+		"@babel/plugin-transform-numeric-separator": "^7.23.4",
+		"@babel/plugin-transform-optional-chaining": "^7.23.4",
+		"@babel/plugin-transform-private-methods": "^7.23.3",
+		"@rollup/plugin-terser": "^0.4.4",
 		"react-scripts": "^5.0.1",
-		"webpack-dev-server": "^4.15.1"
+		"webpack-dev-server": "^4.15.1",
+		"workbox-background-sync": "^7.0.0"
 	}
 }
