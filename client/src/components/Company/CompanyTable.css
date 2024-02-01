@@ -62,3 +62,43 @@
 	background-color: var(--color-primary);
 	color: var(--color-bg);
 }
+
+.render-dropdown {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	margin: 0.5rem 0;
+	height: calc(1.5rem + 2px);
+	border-radius: 5px;
+	background: transparent;
+	color: var(--color-white);
+	border: none;
+	cursor: pointer;
+	transition: all 0.3s ease-in-out;
+	padding: 0 0.5rem;
+	box-shadow: 0 0 0 0.5px var(--color-white);
+}
+
+.render-dropdown:hover {
+	background-color: var(--color-bg);
+}
+
+.render-dropdown:focus {
+	background-color: var(--color-bg);
+}
+
+.render-dropdown option {
+	background-color: var(--color-bg);
+	color: var(--color-white);
+	margin: 0.5rem 0;
+	height: calc(1.5rem + 2px);
+	border-radius: 5px;
+	border: none;
+	cursor: pointer;
+	transition: all 0.3s ease-in-out;
+}
+
+.render-dropdown option:hover {
+	background-color: var(--color-bg);
+}

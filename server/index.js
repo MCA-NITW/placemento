@@ -27,7 +27,6 @@ app.use(cors());
 // Middleware to hide version information
 app.disable('x-powered-by');
 
-
 // Use the authRoutes only once
 app.use('/auth', authRoutes);
 

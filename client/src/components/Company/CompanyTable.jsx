@@ -42,14 +42,20 @@ const CompanyTable = () => {
 			fetchData();
 		} catch (error) {
 			console.error('Error deleting company:', error);
+			toast.error(<ToastContent res="error" messages={[`Error deleting company ${companyToDelete.name}.`]} />);
 		}
 	};
 
-	const handleEditButtonClick = async (id) => {
-		setIsAdd(false);
-		const response = await getCompany(id);
-		setCompanyData(response.data);
-		setIsFormOpen(true);
+	const handleEditButtonClick = async (company) => {
+		try {
+			const response = await getCompany(company.id);
+			setCompanyData(response.data);
+			setIsAdd(false);
+			setIsFormOpen(true);
+		} catch (error) {
+			console.error('Error fetching company:', error);
+			toast.error(<ToastContent res="error" messages={[`Error fetching company ${company.name}.`]} />);
+		}
 	};
 
 	const generateColumn = (field, headerName, width, pinned = null, sortable = true, resizable = true, cellRenderer = null) => ({
@@ -69,19 +75,31 @@ const CompanyTable = () => {
 
 	const formatCutoff = (cutoff) => (cutoff.cgpa ? `${cutoff.cgpa} CGPA` : `${cutoff.percentage}%`);
 
-	const deleteButtonRenderer = (params) => {
+	const buttonRenderer = (params, className, icon, onClick) => {
 		return (
-			<button className="btn--icon--del" onClick={() => handleDeleteButtonClick(params.data)}>
-				<MdDelete />
+			<button className={className} onClick={() => onClick(params.data)}>
+				{icon}
 			</button>
 		);
 	};
 
+	const deleteButtonRenderer = (params) => {
+		return buttonRenderer(params, 'btn--icon--del', <MdDelete />, handleDeleteButtonClick);
+	};
+
 	const editButtonRenderer = (params) => {
+		return buttonRenderer(params, 'btn--icon--edit', <MdEdit />, handleEditButtonClick);
+	};
+
+	const locationRenderer = (params) => {
 		return (
-			<button className="btn--icon--edit" onClick={() => handleEditButtonClick(params.data.id)}>
-				<MdEdit />
-			</button>
+			<select className="render-dropdown" value={params.value}>
+				{params.value.map((location) => (
+					<option key={location} value={location}>
+						{location}
+					</option>
+				))}
+			</select>
 		);
 	};
 
@@ -102,7 +120,7 @@ const CompanyTable = () => {
 		generateColumn('dateOfOffer', 'Offer Date', 125, null, true, false, (params) =>
 			params.value ? new Date(params.value).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) : ''
 		),
-		generateColumn('locations', 'Locations', 130),
+		generateColumn('locations', 'Locations', 130, null, false, false, locationRenderer),
 		generateNestedColumn('CTC (LPA)', [
 			generateColumn('ctc', 'CTC', 80, null, true, false, (params) => params.value.toFixed(2)),
 			generateColumn('ctcBase', 'Base', 80, null, true, false, (params) => params.value.toFixed(2))
