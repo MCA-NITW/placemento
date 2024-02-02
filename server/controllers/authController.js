@@ -40,7 +40,7 @@ exports.getLogin = async (req, res) => {
 		if (!email || !password) return res.status(400).json({ status: false, errors: ['Email and Password required'] });
 		if (!email.endsWith('@student.nitw.ac.in')) return res.status(400).json({ status: false, errors: ['Enter a valid NITW email'] });
 
-		const user = await User.findOne({ email });
+		const user = await User.findOne({ email: email.toString() });
 		if (!user) return res.status(401).json({ status: false, errors: ['User Not Found'] });
 		if (!user.isVerified) return res.status(401).json({ status: false, errors: ['User Not Verified!! Please Contact Admin!!'] });
 		const passwordMatch = await bcrypt.compare(password, user.password);

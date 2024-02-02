@@ -6,13 +6,13 @@ const userSchema = new mongoose.Schema(
 		email: {
 			type: String,
 			required: true,
-			match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+			match: /^((?=(?:[^\s@]+@[^\s@]+\.[^\s@]+))\2)+$/,
 			unique: true
 		},
 		password: { type: String, required: true },
 		rollNo: {
 			type: String,
-			match: /^\d{2}MCF1R\d{2,}$/,
+			match: /^((?=(\d{2}MCF1R\d{2,})))\2$/,
 			unique: true
 		},
 		role: {
