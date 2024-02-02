@@ -14,7 +14,7 @@ exports.postSignup = async (req, res) => {
 		const validationError = validateUser(user);
 		if (validationError.length > 0) return res.status(400).json({ errors: validationError });
 
-		const existingUser = await User.findOne({ $or: [{ email: user.email }, { rollNo: user.rollNo }] });
+		const existingUser = await User.findOne({ $or: [{ email: user.email.toString() }, { rollNo: user.rollNo.toString() }] });
 		if (existingUser) return res.status(400).json({ errors: ['User with the same email or rollNo already exists'] });
 
 		const hashedPassword = await bcrypt.hash(user.password, Number(process.env.JWT_SALT_ROUNDS));
@@ -84,10 +84,10 @@ exports.postVerifyEmail = async (req, res) => {
 		if (!email) return res.status(400).json({ status: false, errors: ['Email required'] });
 		if (!email.endsWith('@student.nitw.ac.in')) return res.status(400).json({ status: false, errors: ['Enter a valid NITW email'] });
 
-		const user = await User.findOne({ email });
+		const user = await User.findOne({ email: email.toString() });
 		if (!user) return res.status(401).json({ status: false, errors: ['User Not Found'] });
 
-		const existingOtp = await Otp.findOne({ email });
+		const existingOtp = await Otp.findOne({ email: email.toString() });
 		if (existingOtp) await Otp.findByIdAndDelete(existingOtp._id);
 
 		await new Otp({ email, otp }).save();
@@ -134,8 +134,8 @@ exports.postVerifyOTP = async (req, res) => {
 		if (!email || !otp) return res.status(400).json({ status: false, errors: ['Email and OTP required'] });
 		if (!email.endsWith('@student.nitw.ac.in')) return res.status(400).json({ status: false, errors: ['Enter a valid NITW email'] });
 
-		const user = await User.findOne({ email });
-		const existingOtp = await Otp.findOne({ email });
+		const user = await User.findOne({ email: email.toString() });
+		const existingOtp = await Otp.findOne({ email: email.toString() });
 		if (!user) return res.status(401).json({ status: false, errors: ['User Not Found'] });
 		if (!existingOtp) return res.status(401).json({ status: false, errors: ['OTP not generated'] });
 		if (existingOtp.otp !== otp) return res.status(401).json({ status: false, errors: ['Incorrect OTP'] });
@@ -166,10 +166,10 @@ exports.postResetPassword = async (req, res) => {
 		if (!email || !newPassword) return res.status(400).json({ status: false, errors: ['Email and Password required'] });
 		if (!email.endsWith('@student.nitw.ac.in')) return res.status(400).json({ status: false, errors: ['Enter a valid NITW email'] });
 
-		const user = await User.findOne({ email });
+		const user = await User.findOne({ email: email.toString() });
 		if (!user) return res.status(401).json({ status: false, errors: ['User Not Found'] });
 
-		const existing = await Otp.findOne({ email });
+		const existing = await Otp.findOne({ email: email.toString()});
 		if (!existing) return res.status(401).json({ status: false, errors: ['OTP not generated'] });
 
 		if (existing.otp !== otp) return res.status(401).json({ status: false, errors: ['Incorrect OTP'] });
