@@ -102,7 +102,7 @@ exports.getStudentStats = async (req, res) => {
 		const companies = await Company.find();
 		const filterCompanies = filterValidCompanies(companies);
 		const totalStudents = students.length;
-		const totalEligibleStudents = students.filter((student) => student.pg.cgpa >= 6.5 && student.backlogs === 0).length;
+		const totalEligibleStudents = students.filter((student) => (student.pg.cgpa >= 6.5 && student.backlogs === 0) || student.placed).length;
 		const totalPlacedStudents = calculateTotalPlacedStudents(filterCompanies);
 		const totalVerifiedStudents = students.filter((student) => student.isVerified === true).length;
 		const totalUnverifiedStudents = students.filter((student) => student.isVerified === false).length;

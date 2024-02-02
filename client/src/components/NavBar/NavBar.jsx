@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { BiStats } from 'react-icons/bi';
+import { CgProfile } from 'react-icons/cg';
 import { FaHome, FaSignInAlt, FaUsers } from 'react-icons/fa';
 import { GoOrganization } from 'react-icons/go';
 import { PiSignOutBold } from 'react-icons/pi';
@@ -65,6 +66,11 @@ const NavBar = () => {
 					to: 'companies',
 					label: 'Companies',
 					icon: <GoOrganization />
+				},
+				{
+					to: 'profile',
+					label: 'Profile',
+					icon: <CgProfile />
 				}
 			]);
 		} else {
