@@ -67,7 +67,8 @@ exports.getLogin = async (req, res) => {
 				ssc: user.ssc,
 				rollNo: user.rollNo,
 				totalGapInAcademics: user.totalGapInAcademics,
-				backlogs: user.backlogs
+				backlogs: user.backlogs,
+				companyId: user.placedAt.companyId
 			},
 			process.env.JWT_SECRET,
 			{ expiresIn: '7d' }

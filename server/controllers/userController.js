@@ -3,6 +3,7 @@ const Company = require('../models/Company');
 const logger = require('../utils/logger');
 const validateUser = require('../utils/validateUser');
 const { isValidObjectId } = require('mongoose');
+const { Console } = require('winston/lib/winston/transports');
 
 // View all users
 exports.viewAllUsers = async (req, res) => {
@@ -58,10 +59,26 @@ exports.updateUser = async (req, res) => {
 			return res.status(404).json({ message: 'User not found' });
 		}
 
-		const { password, ...updatedData } = req.body;
-
 		if (req.user.role === 'student' && req.params.id !== req.user.id) {
 			return res.status(403).json({ message: 'Forbidden' });
+		}
+
+		const updatedData = req.body;
+		if (req.user.role === 'student') {
+			delete updatedData.name;
+			delete updatedData.email;
+			delete updatedData.rollNo;
+			delete updatedData.role;
+			delete updatedData.password;
+			delete updatedData.isVerified;
+			delete updatedData.placed;
+			delete updatedData.placedAt.companyId;
+			delete updatedData.placedAt.companyName;
+			delete updatedData.placedAt.ctc;
+			delete updatedData.placedAt.ctcBase;
+			delete updatedData.placedAt.profile;
+			delete updatedData.placedAt.profileType;
+			delete updatedData.placedAt.offer;
 		}
 
 		const updatedUser = await User.findByIdAndUpdate(req.params.id, { ...user.toObject(), ...updatedData }, { new: true });
@@ -180,6 +197,7 @@ exports.updateCompany = async (req, res) => {
 			}
 			await company.save();
 		}
+		console.log(req.body.companyId);
 
 		if (req.body.companyId !== 'np') {
 			const company = await Company.findById(req.body.companyId);
