@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Clicker+Script&family=Poppins:wght@200;300;400;500;600&family=Roboto&display=swap');
-
 * {
 	margin: 0;
 	padding: 0;
@@ -7,6 +5,7 @@
 	outline: 0;
 	box-sizing: border-box;
 	text-decoration: none;
+	font-family: 'Comic Sans MS', 'Comic Sans', cursive;
 }
 
 :root {
@@ -19,14 +18,22 @@
 
 	--color-bg: #1e1e26;
 	--color-bg-variant: #2c2c33;
+	--color-bg-variant-2: #3a3a40;
 	--color-primary: #ffcc66;
 	--color-primary-variant: rgba(255, 204, 102, 0.5);
+	--color-danger: #ff6666;
+	--color-danger-variant: rgba(255, 102, 102, 0.5);
+	--color-success: #66ff66;
+	--color-success-variant: rgba(102, 255, 102, 0.5);
+	--color-warning: #ffcc66;
+	--color-warning-variant: rgba(255, 204, 102, 0.5);
+	--color-info: #66ccff;
+	--color-info-variant: rgba(102, 204, 255, 0.5);
 }
 
 html {
 	scroll-behavior: smooth;
 	font-size: 90%;
-	font-family: 'Comic Sans MS', 'Comic Sans', cursive;
 	color: var(--color-white);
 	line-height: 1.7;
 	background: var(--color-bg);

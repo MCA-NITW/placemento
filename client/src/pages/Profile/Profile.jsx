@@ -83,6 +83,37 @@ const Profile = () => {
 		);
 	};
 
+	const dropdownItem = (label, name, value) => {
+		return (
+			<div className="item">
+				<label htmlFor={name}>{label}</label>
+				<select name={name} value={value} id={name} onChange={(e) => handleInputChange(name, e.target.value)} disabled={isEditing !== name}>
+					<option value="true">True</option>
+					<option value="false">False</option>
+				</select>
+				{isEditing === name ? (
+					<>
+						<button onClick={handleSubmit}>
+							<GiCheckMark />
+						</button>
+						<button onClick={onCancel}>
+							<RxCross1 />
+						</button>
+					</>
+				) : (
+					<button
+						onClick={() => {
+							document.getElementById(name).disabled = false;
+							setIsEditing(name);
+						}}
+					>
+						<MdOutlineModeEdit />
+					</button>
+				)}
+			</div>
+		);
+	};
+
 	return (
 		<div className="container">
 			<h1>My Profile</h1>
@@ -97,7 +128,7 @@ const Profile = () => {
 					<div className="item-group">
 						<h2>Company Information</h2>
 						{item('Company', 'company', user.placedAt.companyName)}
-						{item('Location', 'location', user.placedAt.location)}
+						{dropdownItem('Placed', 'placed', user.placedAt.placed)}
 					</div>
 				</div>
 			)}

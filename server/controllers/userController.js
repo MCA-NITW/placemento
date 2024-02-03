@@ -60,7 +60,7 @@ exports.updateUser = async (req, res) => {
 
 		const { password, ...updatedData } = req.body;
 
-		if(req.user.role === 'student' && req.params.id !== req.user.id) {
+		if (req.user.role === 'student' && req.params.id !== req.user.id) {
 			return res.status(403).json({ message: 'Forbidden' });
 		}
 
@@ -94,7 +94,9 @@ exports.verify = async (req, res) => {
 			return res.status(404).json({ message: 'User not found' });
 		}
 		logger.info(`User verified: ${updatedUser.name}`);
-		res.status(200).json({ message: `${updatedUser.name} ${updatedUser.isVerified ? 'Verified' : 'Unverified'} Successfully` });
+		res.status(200).json({
+			message: `${updatedUser.name} ${updatedUser.isVerified ? 'Verified' : 'Unverified'} Successfully`
+		});
 	} catch (error) {
 		logger.error(error);
 		res.status(500).json({ message: 'Internal server error' });
@@ -232,10 +234,11 @@ exports.updateCompanyLocation = async (req, res) => {
 			{ new: true }
 		);
 		logger.info(`User company location updated: ${updatedUser.name}`);
-		res.status(200).json({ message: `Company location of ${updatedUser.name} updated Successfully` });
+		res.status(200).json({
+			message: `Company location of ${updatedUser.name} updated Successfully`
+		});
 	} catch (error) {
 		logger.error(error);
 		res.status(500).json({ message: 'Internal server error' });
 	}
 };
-

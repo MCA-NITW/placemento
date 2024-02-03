@@ -134,7 +134,10 @@ const StudentTable = () => {
 	};
 
 	const companyDropdownRenderer = (params) => {
-		const options = companies.map((company) => ({ value: company.id, label: company.name }));
+		const options = companies.map((company) => ({
+			value: company.id,
+			label: company.name
+		}));
 		options.unshift({ value: 'np', label: 'Not Placed' });
 		return dropdownRenderer(params, options, updateStudentCompany, params.data.placedAt?.companyId);
 	};
