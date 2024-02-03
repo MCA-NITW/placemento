@@ -5,6 +5,7 @@ import NavBar from './components/NavBar/NavBar';
 import Authentication from './pages/Auth/Authentication';
 import Companies from './pages/Companies/Companies';
 import Home from './pages/Home/Home';
+import Profile from './pages/Profile/Profile';
 import Stats from './pages/Stats/Stats';
 import Students from './pages/Students/Students';
 import Teams from './pages/Teams/Teams';
@@ -53,6 +54,11 @@ const App = () => {
 				{
 					path: 'companies',
 					element: <Companies />,
+					loader: checkAuthAction
+				},
+				{
+					path: 'profile',
+					element: <Profile />,
 					loader: checkAuthAction
 				},
 				{

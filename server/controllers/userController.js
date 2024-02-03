@@ -39,7 +39,7 @@ exports.viewSingleUser = async (req, res) => {
 		}
 		logger.info(`User Viewed: ${user.name}`);
 		user.password = null;
-		res.status(200).json({ user });
+		res.status(200).json(user);
 	} catch (error) {
 		logger.error(error);
 		res.status(500).json({ error });
@@ -53,13 +53,22 @@ exports.updateUser = async (req, res) => {
 			return res.status(400).json({ message: 'Invalid user ID' });
 		}
 
-		const validationError = validateUser(req.body);
-		if (validationError.length > 0) return res.status(400).json({ errors: validationError });
+		const user = await User.findById(req.params.id);
+		if (!user) {
+			return res.status(404).json({ message: 'User not found' });
+		}
 
-		const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+		const { password, ...updatedData } = req.body;
+
+		if(req.user.role === 'student' && req.params.id !== req.user.id) {
+			return res.status(403).json({ message: 'Forbidden' });
+		}
+
+		const updatedUser = await User.findByIdAndUpdate(req.params.id, { ...user.toObject(), ...updatedData }, { new: true });
 		if (!updatedUser) {
 			return res.status(404).json({ message: 'User not found' });
 		}
+
 		logger.info(`User updated: ${updatedUser.name}`);
 		res.status(200).json(updatedUser);
 	} catch (error) {
@@ -229,3 +238,4 @@ exports.updateCompanyLocation = async (req, res) => {
 		res.status(500).json({ message: 'Internal server error' });
 	}
 };
+

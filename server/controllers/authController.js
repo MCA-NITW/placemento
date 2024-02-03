@@ -169,7 +169,7 @@ exports.postResetPassword = async (req, res) => {
 		const user = await User.findOne({ email: email.toString() });
 		if (!user) return res.status(401).json({ status: false, errors: ['User Not Found'] });
 
-		const existing = await Otp.findOne({ email: email.toString()});
+		const existing = await Otp.findOne({ email: email.toString() });
 		if (!existing) return res.status(401).json({ status: false, errors: ['OTP not generated'] });
 
 		if (existing.otp !== otp) return res.status(401).json({ status: false, errors: ['Incorrect OTP'] });
