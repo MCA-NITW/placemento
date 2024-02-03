@@ -105,7 +105,7 @@ const NavBar = () => {
 		<>
 			<nav className={classes.nav}>
 				<NavLink to="/" aria-label="Home" className={classes['nav__logo']}>
-					<span>MCA</span>
+					<span>Placemento</span>
 				</NavLink>
 				<div className={classes['nav__list']}>
 					{navItems.map((item) => (

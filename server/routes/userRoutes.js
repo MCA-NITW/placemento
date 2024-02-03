@@ -11,7 +11,7 @@ router.get('/view', authenticateUser, checkUserRole(['student', 'admin', 'placem
 router.get('/view/:id', authenticateUser, checkUserRole(['student', 'admin', 'placementCoordinator']), userController.viewSingleUser);
 
 // Update a User with rate limiting
-router.put('/update/:id', authenticateUser, checkUserRole(['student','admin', 'placementCoordinator']), limiter, userController.updateUser);
+router.put('/update/:id', authenticateUser, checkUserRole(['student', 'admin', 'placementCoordinator']), limiter, userController.updateUser);
 
 // Update Verification Status of a User with rate limiting
 router.put('/verify/:id', authenticateUser, checkUserRole(['admin', 'placementCoordinator']), limiter, userController.verify);

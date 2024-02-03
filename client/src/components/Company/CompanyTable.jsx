@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { MdDelete, MdEdit } from 'react-icons/md';
 import { toast } from 'react-toastify';
@@ -23,9 +23,19 @@ const CompanyTable = () => {
 	const fetchData = useCallback(async () => {
 		try {
 			const response = await getCompanies();
+			response.data.forEach((company) => {
+				company.id = company._id;
+				company.selectedStudents = company.selectedStudentsRollNo.length;
+				company.cutoff_pg = formatCutoff(company.cutoffs.pg);
+				company.cutoff_ug = formatCutoff(company.cutoffs.ug);
+				company.cutoff_12 = formatCutoff(company.cutoffs.twelth);
+				company.cutoff_10 = formatCutoff(company.cutoffs.tenth);
+				company.ctcBase = company.ctcBreakup.base;
+			});
 			setCompanies(response.data);
 		} catch (error) {
 			console.error('Error fetching companies:', error);
+			toast.error(<ToastContent res="error" messages={['Error fetching companies.']} />);
 		}
 	}, []);
 
@@ -39,7 +49,7 @@ const CompanyTable = () => {
 			await deleteCompany(companyToDelete.id);
 			toast.success(<ToastContent res="success" messages={[`Company ${companyToDelete.name} deleted successfully.`]} />);
 			setIsModalOpen(false);
-			fetchData();
+			setCompanies((prevCompanies) => prevCompanies.filter((company) => company.id !== companyToDelete.id));
 		} catch (error) {
 			console.error('Error deleting company:', error);
 			toast.error(<ToastContent res="error" messages={[`Error deleting company ${companyToDelete.name}.`]} />);
@@ -75,65 +85,64 @@ const CompanyTable = () => {
 
 	const formatCutoff = (cutoff) => (cutoff.cgpa ? `${cutoff.cgpa} CGPA` : `${cutoff.percentage}%`);
 
-	const buttonRenderer = (params, className, icon, onClick) => {
-		return (
-			<button className={className} onClick={() => onClick(params.data)}>
-				{icon}
-			</button>
-		);
-	};
+	const buttonRenderer = useMemo(
+		() => (params, className, icon, onClick) => {
+			return (
+				<button className={className} onClick={() => onClick(params.data)}>
+					{icon}
+				</button>
+			);
+		},
+		[]
+	);
 
-	const deleteButtonRenderer = (params) => {
-		return buttonRenderer(params, 'btn--icon--del', <MdDelete />, handleDeleteButtonClick);
-	};
+	const actionsColumn = useMemo(
+		() =>
+			generateNestedColumn('Actions', [
+				generateColumn(null, 'Delete', 55, 'left', false, false, (params) =>
+					buttonRenderer(params, 'btn--icon--del', <MdDelete />, handleDeleteButtonClick)
+				),
+				generateColumn(null, 'Edit', 55, 'left', false, false, (params) =>
+					buttonRenderer(params, 'btn--icon--edit', <MdEdit />, handleEditButtonClick)
+				)
+			]),
+		[buttonRenderer]
+	);
 
-	const editButtonRenderer = (params) => {
-		return buttonRenderer(params, 'btn--icon--edit', <MdEdit />, handleEditButtonClick);
-	};
-
-	const actionsColumn = generateNestedColumn('Actions', [
-		generateColumn(null, 'Delete', 55, 'left', false, false, deleteButtonRenderer),
-		generateColumn(null, 'Edit', 55, 'left', false, false, editButtonRenderer)
-	]);
-
-	const columnDefinitions = [
-		...(user.role === 'admin' || user.role === 'placementCoordinator' ? [actionsColumn] : []),
-		generateColumn('name', 'Name', 150, 'left'),
-		generateColumn('status', 'Status', 100, null, false),
-		generateColumn('typeOfOffer', 'Offer', 90),
-		generateColumn('profile', 'Profile', 150),
-		generateColumn('profileCategory', 'Category', 100),
-		generateColumn('interviewShortlist', 'Shortlists', 120),
-		generateColumn('selectedStudents', 'Selects', 100),
-		generateColumn('dateOfOffer', 'Offer Date', 125, null, true, false, (params) =>
-			params.value ? new Date(params.value).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) : ''
-		),
-		generateColumn('locations', 'Locations', 130, null, false, true),
-		generateNestedColumn('CTC (LPA)', [
-			generateColumn('ctc', 'CTC', 80, null, true, false, (params) => params.value.toFixed(2)),
-			generateColumn('ctcBase', 'Base', 80, null, true, false, (params) => params.value.toFixed(2))
-		]),
-		generateNestedColumn('Cutoffs', [
-			generateColumn('cutoff_pg', 'PG', 80, null, false, false),
-			generateColumn('cutoff_ug', 'UG', 80, null, false, false),
-			generateColumn('cutoff_12', '12', 80, null, false, false),
-			generateColumn('cutoff_10', '10', 80, null, false, false)
-		]),
-		generateColumn('bond', 'Bond', 60, null, false, false)
-	];
-
-	const mapCompanyData = (company) => ({
-		...company,
-		id: company._id,
-		selectedStudents: company.selectedStudentsRollNo.length,
-		cutoff_pg: formatCutoff(company.cutoffs.pg),
-		cutoff_ug: formatCutoff(company.cutoffs.ug),
-		cutoff_12: formatCutoff(company.cutoffs.twelth),
-		cutoff_10: formatCutoff(company.cutoffs.tenth),
-		ctcBase: company.ctcBreakup.base
-	});
-
-	const rowData = companies.map(mapCompanyData);
+	const columnDefinitions = useMemo(
+		() => [
+			...(user.role === 'admin' || user.role === 'placementCoordinator' ? [actionsColumn] : []),
+			generateColumn('name', 'Name', 150, 'left'),
+			generateColumn('status', 'Status', 100, null, false),
+			generateColumn('typeOfOffer', 'Offer', 90),
+			generateColumn('profile', 'Profile', 150),
+			generateColumn('profileCategory', 'Category', 100),
+			generateColumn('interviewShortlist', 'Shortlists', 120),
+			generateColumn('selectedStudents', 'Selects', 100),
+			generateColumn('dateOfOffer', 'Offer Date', 125, null, true, false, (params) =>
+				params.value
+					? new Date(params.value).toLocaleDateString('en-US', {
+							day: 'numeric',
+							month: 'short',
+							year: 'numeric'
+						})
+					: ''
+			),
+			generateColumn('locations', 'Locations', 130, null, false, true),
+			generateNestedColumn('CTC (LPA)', [
+				generateColumn('ctc', 'CTC', 80, null, true, false, (params) => params.value.toFixed(2)),
+				generateColumn('ctcBase', 'Base', 80, null, true, false, (params) => params.value.toFixed(2))
+			]),
+			generateNestedColumn('Cutoffs', [
+				generateColumn('cutoff_pg', 'PG', 80, null, false, false),
+				generateColumn('cutoff_ug', 'UG', 80, null, false, false),
+				generateColumn('cutoff_12', '12', 80, null, false, false),
+				generateColumn('cutoff_10', '10', 80, null, false, false)
+			]),
+			generateColumn('bond', 'Bond', 60, null, false, false)
+		],
+		[actionsColumn, user.role]
+	);
 
 	const handleAddCompanyClick = () => {
 		setIsAdd(true);
@@ -141,10 +150,13 @@ const CompanyTable = () => {
 		setIsFormOpen(true);
 	};
 
-	const handleCloseForm = (fetch) => {
-		setIsFormOpen(false);
-		if (fetch) fetchData();
-	};
+	const handleCloseForm = useCallback(
+		(fetch) => {
+			setIsFormOpen(false);
+			if (fetch) fetchData();
+		},
+		[fetchData]
+	);
 
 	const renderCompanyForm = () => {
 		if (!isFormOpen) return null;
@@ -162,7 +174,7 @@ const CompanyTable = () => {
 				</button>
 			)}
 			{renderCompanyForm()}
-			<AgGridTable rowData={rowData} columnDefinitions={columnDefinitions} fetchData={fetchData} />
+			<AgGridTable rowData={companies} columnDefinitions={columnDefinitions} fetchData={fetchData} />
 			<Modal
 				isOpen={isModalOpen}
 				onClose={closeModal}

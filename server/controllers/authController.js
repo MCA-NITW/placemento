@@ -14,8 +14,13 @@ exports.postSignup = async (req, res) => {
 		const validationError = validateUser(user);
 		if (validationError.length > 0) return res.status(400).json({ errors: validationError });
 
-		const existingUser = await User.findOne({ $or: [{ email: user.email.toString() }, { rollNo: user.rollNo.toString() }] });
-		if (existingUser) return res.status(400).json({ errors: ['User with the same email or rollNo already exists'] });
+		const existingUser = await User.findOne({
+			$or: [{ email: user.email.toString() }, { rollNo: user.rollNo.toString() }]
+		});
+		if (existingUser)
+			return res.status(400).json({
+				errors: ['User with the same email or rollNo already exists']
+			});
 
 		const hashedPassword = await bcrypt.hash(user.password, Number(process.env.JWT_SALT_ROUNDS));
 		user.password = hashedPassword;
@@ -42,7 +47,11 @@ exports.getLogin = async (req, res) => {
 
 		const user = await User.findOne({ email: email.toString() });
 		if (!user) return res.status(401).json({ status: false, errors: ['User Not Found'] });
-		if (!user.isVerified) return res.status(401).json({ status: false, errors: ['User Not Verified!! Please Contact Admin!!'] });
+		if (!user.isVerified)
+			return res.status(401).json({
+				status: false,
+				errors: ['User Not Verified!! Please Contact Admin!!']
+			});
 		const passwordMatch = await bcrypt.compare(password, user.password);
 		if (!passwordMatch) return res.status(401).json({ status: false, errors: ['Incorrect Password'] });
 
@@ -58,7 +67,8 @@ exports.getLogin = async (req, res) => {
 				ssc: user.ssc,
 				rollNo: user.rollNo,
 				totalGapInAcademics: user.totalGapInAcademics,
-				backlogs: user.backlogs
+				backlogs: user.backlogs,
+				companyId: user.placedAt.companyId
 			},
 			process.env.JWT_SECRET,
 			{ expiresIn: '7d' }
