@@ -7,6 +7,7 @@ import { GoOrganization } from 'react-icons/go';
 import { PiSignOutBold } from 'react-icons/pi';
 import { RiTeamFill } from 'react-icons/ri';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { GiStarSwirl } from "react-icons/gi";
 import Modal from '../Modal/Modal';
 import classes from './Navbar.module.css';
 
@@ -66,6 +67,11 @@ const NavBar = () => {
 					to: 'companies',
 					label: 'Companies',
 					icon: <GoOrganization />
+				},
+				{
+					to: 'experience',
+					label: 'Experience',
+					icon: <GiStarSwirl />
 				},
 				{
 					to: 'profile',

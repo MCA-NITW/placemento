@@ -9,6 +9,7 @@ import Profile from './pages/Profile/Profile';
 import Stats from './pages/Stats/Stats';
 import Students from './pages/Students/Students';
 import Teams from './pages/Teams/Teams';
+import Experience from './pages/Experience/Experience';
 import { checkAuthAction, getAuthToken } from './utils/auth';
 
 const App = () => {
@@ -54,6 +55,11 @@ const App = () => {
 				{
 					path: 'companies',
 					element: <Companies />,
+					loader: checkAuthAction
+				},
+				{
+					path: 'experience',
+					element: <Experience />,
 					loader: checkAuthAction
 				},
 				{

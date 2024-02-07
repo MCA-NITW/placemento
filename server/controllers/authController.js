@@ -77,7 +77,7 @@ exports.getLogin = async (req, res) => {
 		res.json({ status: true, data: { token }, messages: ['Login Successful'] });
 	} catch (error) {
 		logger.error(error);
-		res.status(500).json({ status: false, messages: ['Internal server error'] });
+		res.status(500).json({ status: false, errors: ['Internal server error'] });
 	}
 };
 
@@ -154,8 +154,6 @@ exports.postVerifyOTP = async (req, res) => {
 		const otpExpiry = new Date(existingOtp.createdAt).getTime() + 600000;
 		const currentTime = new Date().getTime();
 		if (currentTime > otpExpiry) return res.status(401).json({ status: false, errors: ['OTP expired'] });
-
-		await user.save();
 
 		logger.info(`User verified: ${email}`);
 

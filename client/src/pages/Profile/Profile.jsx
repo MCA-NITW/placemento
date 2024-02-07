@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { GiCheckMark } from 'react-icons/gi';
 import { MdOutlineModeEdit } from 'react-icons/md';
 import { RxCross1 } from 'react-icons/rx';
 import { toast } from 'react-toastify';
@@ -21,6 +20,9 @@ const Profile = () => {
 		const fetchStudentDetails = async (id) => {
 			try {
 				const student = await getStudent(id);
+				if (student.data.role === 'admin') student.data.role = 'Admin';
+				else if (student.data.role === 'student')	student.data.role = 'Student';
+				else student.data.role = 'Placement Coordinator';
 				setUser(student.data);
 				setPrevUser(student.data);
 			} catch (error) {
@@ -124,16 +126,17 @@ const Profile = () => {
 	const buttons = () => {
 		return (
 			<div className="profile-buttons">
-				<button onClick={handleSubmit}>
-					<GiCheckMark /> Update Changes
+				<button onClick={handleSubmit} className='btn btn-primary' >
+					Update Changes
 				</button>
 				<button
 					onClick={() => {
 						setIsEdited(false);
 						setUser(prevUser);
 					}}
+					className='btn btn-primary'
 				>
-					<RxCross1 /> Discard Changes
+					Discard Changes
 				</button>
 			</div>
 		);
