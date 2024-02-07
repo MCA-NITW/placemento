@@ -1,9 +1,7 @@
 const User = require('../models/User');
 const Company = require('../models/Company');
 const logger = require('../utils/logger');
-const validateUser = require('../utils/validateUser');
 const { isValidObjectId } = require('mongoose');
-const { Console } = require('winston/lib/winston/transports');
 
 // View all users
 exports.viewAllUsers = async (req, res) => {
@@ -69,6 +67,7 @@ exports.updateUser = async (req, res) => {
 			delete updatedData.email;
 			delete updatedData.rollNo;
 			delete updatedData.role;
+			delete updatedData.batch;
 			delete updatedData.password;
 			delete updatedData.isVerified;
 			delete updatedData.placed;

@@ -21,7 +21,7 @@ const Profile = () => {
 			try {
 				const student = await getStudent(id);
 				if (student.data.role === 'admin') student.data.role = 'Admin';
-				else if (student.data.role === 'student')	student.data.role = 'Student';
+				else if (student.data.role === 'student') student.data.role = 'Student';
 				else student.data.role = 'Placement Coordinator';
 				setUser(student.data);
 				setPrevUser(student.data);
@@ -126,7 +126,7 @@ const Profile = () => {
 	const buttons = () => {
 		return (
 			<div className="profile-buttons">
-				<button onClick={handleSubmit} className='btn btn-primary' >
+				<button onClick={handleSubmit} className="btn btn-primary">
 					Update Changes
 				</button>
 				<button
@@ -134,7 +134,7 @@ const Profile = () => {
 						setIsEdited(false);
 						setUser(prevUser);
 					}}
-					className='btn btn-primary'
+					className="btn btn-primary"
 				>
 					Discard Changes
 				</button>

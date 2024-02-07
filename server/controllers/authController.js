@@ -10,10 +10,10 @@ const crypto = require('crypto');
 exports.postSignup = async (req, res) => {
 	try {
 		const user = req.body;
-
 		const validationError = validateUser(user);
 		if (validationError.length > 0) return res.status(400).json({ errors: validationError });
 
+		user.batch = parseInt('20' + (parseInt(user.rollNo.slice(0, 2)) + 3).toString());
 		const existingUser = await User.findOne({
 			$or: [{ email: user.email.toString() }, { rollNo: user.rollNo.toString() }]
 		});
@@ -61,6 +61,7 @@ exports.getLogin = async (req, res) => {
 				name: user.name,
 				email: user.email,
 				role: user.role,
+				batch: user.batch,
 				pg: user.pg,
 				ug: user.ug,
 				hsc: user.hsc,

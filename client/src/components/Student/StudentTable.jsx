@@ -232,6 +232,7 @@ const StudentTable = () => {
 		generateColumn('role', 'Role', 110, 'left', false, false, user.role === 'admin' ? roleDropdownRenderer : roleFormatter),
 		generateColumn('name', 'Name', 130, 'left'),
 		generateColumn('rollNo', 'Roll No', 100),
+		generateColumn('batch', 'Batch', 90, null, false, false),
 		generateColumn('email', 'Email', 225),
 		placementColumn,
 		...(user.role === 'admin' || user.role === 'placementCoordinator' ? academicColumn : [])

@@ -3,11 +3,11 @@ import { useEffect, useState } from 'react';
 import { BiStats } from 'react-icons/bi';
 import { CgProfile } from 'react-icons/cg';
 import { FaHome, FaSignInAlt, FaUsers } from 'react-icons/fa';
+import { GiStarSwirl } from 'react-icons/gi';
 import { GoOrganization } from 'react-icons/go';
 import { PiSignOutBold } from 'react-icons/pi';
 import { RiTeamFill } from 'react-icons/ri';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { GiStarSwirl } from "react-icons/gi";
 import Modal from '../Modal/Modal';
 import classes from './Navbar.module.css';
 

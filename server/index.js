@@ -8,6 +8,7 @@ const companyRoutes = require('./routes/companyRoutes.js');
 const { authenticateUser } = require('./middleware/authMiddleware.js');
 const statsRoutes = require('./routes/statsRoutes.js');
 const userRoutes = require('./routes/userRoutes.js');
+const experienceRoutes = require('./routes/experienceRoutes.js');
 
 dotenv.config();
 
@@ -38,6 +39,9 @@ app.use('/stats', statsRoutes);
 
 // Use the userRoutes only once
 app.use('/users', userRoutes);
+
+// Use the experienceRoutes only once
+app.use('/experiences', experienceRoutes);
 
 app.get('/token-check', authenticateUser, (req, res) => {
 	res.status(200).json({ message: 'Authorized' });
