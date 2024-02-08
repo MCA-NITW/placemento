@@ -78,13 +78,15 @@
 	flex-direction: column;
 	width: 100%;
 	background: var(--color-bg);
-	padding: 20px;
+	padding: 10px;
 	border-radius: 1rem;
 	box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-	border: 1px solid var(--color-primary);
-	margin: 20px 0;
-	overflow-y: scroll;
-	gap: 20px;
+	border: 5px solid var(--color-bg-variant);
+	margin: 20px 0 0 0;
+	overflow-y: auto;
+	gap: 10px;
+	align-items: center;
+	height: 100%;
 }
 
 .experience-item {
@@ -92,9 +94,11 @@
 	flex-direction: column;
 	gap: 10px;
 	padding: 10px;
-	border-radius: 5px;
+	border-radius: 1rem;
 	background: var(--color-bg-variant);
 	width: 100%;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+	border: 5px solid var(--color-bg);
 }
 
 .experience-header {
@@ -131,7 +135,9 @@
 	flex-wrap: wrap;
 	gap: 5px;
 }
-
+.modal {
+	padding: 20px;
+}
 .view-modal-dialog {
 	display: flex;
 	flex-direction: column;
@@ -140,10 +146,10 @@
 	width: 100%;
 	max-width: 900px;
 	background: var(--color-bg);
-	padding: 20px;
 	border-radius: 1rem;
 	box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-	border: 1px solid var(--color-primary);
+	height: 100%;
+	border: 5px solid var(--color-bg);
 }
 
 .experience-view {
@@ -151,4 +157,18 @@
 	flex-direction: column;
 	gap: 10px;
 	width: 100%;
+	padding: 20px;
+	background: var(--color-bg-variant);
+	height: 100%;
+	overflow-y: scroll;
+	border-radius: 1rem;
+}
+
+.experience-content {
+	overflow-y: scroll;
+	background: var(--color-bg);
+	padding: 20px;
+	border-radius: 1rem;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+	border: 5px solid var(--color-bg-variant);
 }

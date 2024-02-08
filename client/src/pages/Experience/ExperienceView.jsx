@@ -81,13 +81,11 @@ const ExperienceView = ({ closeExperienceViewModal, experienceViewModalData }) =
 							{user.rollNo === experienceViewModalData.studentDetails.rollNo ? (
 								<>
 									<button type="button" className="btn btn-primary" onClick={() => handleEditButtonClick(experienceViewModalData)}>
-										{' '}
-										Edit{' '}
+										Edit
 									</button>
 									<button type="button" className="btn btn-danger" onClick={() => handleDeleteButtonClick(experienceViewModalData)}>
-										{' '}
-										Delete{' '}
-									</button>{' '}
+										Delete
+									</button>
 								</>
 							) : (
 								<></>

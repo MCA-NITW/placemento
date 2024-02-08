@@ -80,7 +80,9 @@ const Experience = () => {
 				Add Experience
 			</button>
 			<div className="experience-container">
-				{experiences &&
+				{experiences.length === 0 ? (
+					<div>No experiences to show.</div>
+				) : (
 					experiences.map((experience) => (
 						<div key={experience._id} className="experience-item">
 							<div className="experience-header">
@@ -109,7 +111,8 @@ const Experience = () => {
 								{experience.Comments.length} <FaRegComment />
 							</div>
 						</div>
-					))}
+					))
+				)}
 			</div>
 		</div>
 	);
