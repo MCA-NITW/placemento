@@ -11,7 +11,6 @@ const Experience = () => {
 	const [showAddExperienceModal, setShowAddExperienceModal] = useState(false);
 	const [showExperienceViewModal, setShowExperienceViewModal] = useState(false);
 	const [experienceViewModalData, setExperienceViewModalData] = useState({});
-	const [isAdd, setIsAdd] = useState(true);
 
 	const fetchData = async () => {
 		try {
@@ -76,7 +75,6 @@ const Experience = () => {
 				className="btn btn-primary"
 				onClick={() => {
 					setShowAddExperienceModal(true);
-					setIsAdd(true);
 				}}
 			>
 				Add Experience
