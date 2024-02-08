@@ -1,24 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { toast } from 'react-toastify';
 import { deleteExperience } from '../../api/experienceApi';
 import ToastContent from '../../components/ToastContent/ToastContent';
-import getUser from '../../utils/user';
 import ExperienceForm from './ExperienceForm';
 
-const ExperienceView = ({ closeExperienceViewModal, experienceViewModalData }) => {
+const ExperienceView = ({ closeExperienceViewModal, experienceViewModalData, user }) => {
 	const [initialData, setInitialData] = useState({});
 	const [showupdateExperienceModal, setShowupdateExperienceModal] = useState(false);
-
-	const [user, setUser] = useState({});
-
-	useEffect(() => {
-		const fetchUser = async () => {
-			const user = await getUser();
-			setUser(user);
-		};
-		fetchUser();
-	}, []);
 
 	const handleDeleteButtonClick = async (experience) => {
 		try {
@@ -78,7 +67,7 @@ const ExperienceView = ({ closeExperienceViewModal, experienceViewModalData }) =
 							))}
 						</div>
 						<div className="modal-buttons">
-							{user.rollNo === experienceViewModalData.studentDetails.rollNo ? (
+							{user.rollNo === experienceViewModalData.studentDetails.rollNo && (
 								<>
 									<button type="button" className="btn btn-primary" onClick={() => handleEditButtonClick(experienceViewModalData)}>
 										Edit
@@ -87,8 +76,6 @@ const ExperienceView = ({ closeExperienceViewModal, experienceViewModalData }) =
 										Delete
 									</button>
 								</>
-							) : (
-								<></>
 							)}
 
 							<button type="button" className="btn btn-primary" onClick={() => closeExperienceViewModal(false)}>
