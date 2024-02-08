@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { MdDelete, MdEdit } from 'react-icons/md';
 import { toast } from 'react-toastify';
@@ -15,10 +15,18 @@ const CompanyTable = () => {
 	const [companyData, setCompanyData] = useState(null);
 	const [isFormOpen, setIsFormOpen] = useState(false);
 	const [isAdd, setIsAdd] = useState(false);
-	const user = getUser();
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [companyToDelete, setCompanyToDelete] = useState(null);
 	const closeModal = () => setIsModalOpen(false);
+
+	const [user, setUser] = useState({});
+	useEffect(() => {
+		const fetchUser = async () => {
+			const user = await getUser();
+			setUser(user);
+		};
+		fetchUser();
+	}, []);
 
 	const fetchData = useCallback(async () => {
 		try {

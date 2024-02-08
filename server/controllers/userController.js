@@ -1,29 +1,27 @@
 const User = require('../models/User');
 const Company = require('../models/Company');
 const logger = require('../utils/logger');
-const validateUser = require('../utils/validateUser');
 const { isValidObjectId } = require('mongoose');
-const { Console } = require('winston/lib/winston/transports');
 
 // View all users
 exports.viewAllUsers = async (req, res) => {
 	try {
-		const users = req.user.role === 'student' ? await User.find({ isVerified: true }) : await User.find();
+		const users =
+			req.user.role === 'student'
+				? await User.find({ isVerified: true }).select({
+						password: 0,
+						pg: 0,
+						ug: 0,
+						hsc: 0,
+						ssc: 0,
+						backlogs: 0,
+						totalGapInAcademics: 0
+					})
+				: await User.find().select({ password: 0 });
 		if (!users) {
 			return res.status(404).json({ message: 'No users found' });
 		}
 		logger.info(`All users Viewed`);
-		users.forEach((user) => {
-			user.password = null;
-			if (req.user.role === 'student') {
-				user.pg = null;
-				user.ug = null;
-				user.hsc = null;
-				user.ssc = null;
-				user.backlogs = null;
-				user.totalGapInAcademics = null;
-			}
-		});
 		res.status(200).json({ users });
 	} catch (error) {
 		logger.error(error);
@@ -37,6 +35,9 @@ exports.viewSingleUser = async (req, res) => {
 		const user = await User.findById(req.params.id);
 		if (!user) {
 			return res.status(404).json({ message: 'User not found' });
+		}
+		if (req.user.role === 'student' && req.params.id !== req.user.id) {
+			return res.status(403).json({ message: 'Forbidden' });
 		}
 		logger.info(`User Viewed: ${user.name}`);
 		user.password = null;
@@ -63,25 +64,35 @@ exports.updateUser = async (req, res) => {
 			return res.status(403).json({ message: 'Forbidden' });
 		}
 
-		const updatedData = req.body;
-		if (req.user.role === 'student') {
-			delete updatedData.name;
-			delete updatedData.email;
-			delete updatedData.rollNo;
-			delete updatedData.role;
-			delete updatedData.password;
-			delete updatedData.isVerified;
-			delete updatedData.placed;
-			delete updatedData.placedAt.companyId;
-			delete updatedData.placedAt.companyName;
-			delete updatedData.placedAt.ctc;
-			delete updatedData.placedAt.ctcBase;
-			delete updatedData.placedAt.profile;
-			delete updatedData.placedAt.profileType;
-			delete updatedData.placedAt.offer;
-		}
-
-		const updatedUser = await User.findByIdAndUpdate(req.params.id, { ...user.toObject(), ...updatedData }, { new: true });
+		const updatedUser = await User.findByIdAndUpdate(
+			req.params.id,
+			{
+				...req.user,
+				placedAt: {
+					...req.user.placedAt,
+					location: req.body.placedAt.location
+				},
+				pg: {
+					cgpa: req.body.pg.cgpa,
+					percentage: req.body.pg.percentage
+				},
+				ug: {
+					cgpa: req.body.ug.cgpa,
+					percentage: req.body.ug.percentage
+				},
+				hsc: {
+					cgpa: req.body.hsc.cgpa,
+					percentage: req.body.hsc.percentage
+				},
+				ssc: {
+					cgpa: req.body.ssc.cgpa,
+					percentage: req.body.ssc.percentage
+				},
+				backlogs: req.body.backlogs,
+				totalGapInAcademics: req.body.totalGapInAcademics
+			},
+			{ new: true }
+		);
 		if (!updatedUser) {
 			return res.status(404).json({ message: 'User not found' });
 		}

@@ -15,6 +15,7 @@ const userSchema = new mongoose.Schema(
 			match: /^\d{2}MCF1R\d{2,}$/,
 			unique: true
 		},
+		batch: { type: Number, required: true },
 		role: {
 			type: String,
 			enum: ['student', 'placementCoordinator', 'admin'],

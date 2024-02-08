@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import NavBar from './components/NavBar/NavBar';
 import Authentication from './pages/Auth/Authentication';
 import Companies from './pages/Companies/Companies';
+import Experience from './pages/Experience/Experience';
 import Home from './pages/Home/Home';
 import Profile from './pages/Profile/Profile';
 import Stats from './pages/Stats/Stats';
@@ -54,6 +55,11 @@ const App = () => {
 				{
 					path: 'companies',
 					element: <Companies />,
+					loader: checkAuthAction
+				},
+				{
+					path: 'experience',
+					element: <Experience />,
 					loader: checkAuthAction
 				},
 				{

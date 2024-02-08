@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { BiStats } from 'react-icons/bi';
 import { CgProfile } from 'react-icons/cg';
 import { FaHome, FaSignInAlt, FaUsers } from 'react-icons/fa';
+import { GiStarSwirl } from 'react-icons/gi';
 import { GoOrganization } from 'react-icons/go';
 import { PiSignOutBold } from 'react-icons/pi';
 import { RiTeamFill } from 'react-icons/ri';
@@ -66,6 +67,11 @@ const NavBar = () => {
 					to: 'companies',
 					label: 'Companies',
 					icon: <GoOrganization />
+				},
+				{
+					to: 'experience',
+					label: 'Experience',
+					icon: <GiStarSwirl />
 				},
 				{
 					to: 'profile',

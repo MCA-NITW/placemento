@@ -10,10 +10,10 @@ const crypto = require('crypto');
 exports.postSignup = async (req, res) => {
 	try {
 		const user = req.body;
-
 		const validationError = validateUser(user);
 		if (validationError.length > 0) return res.status(400).json({ errors: validationError });
 
+		user.batch = parseInt('20' + (parseInt(user.rollNo.slice(0, 2)) + 3).toString());
 		const existingUser = await User.findOne({
 			$or: [{ email: user.email.toString() }, { rollNo: user.rollNo.toString() }]
 		});
@@ -52,6 +52,8 @@ exports.getLogin = async (req, res) => {
 				status: false,
 				errors: ['User Not Verified!! Please Contact Admin!!']
 			});
+
+		console.log(user, user.password, password);
 		const passwordMatch = await bcrypt.compare(password, user.password);
 		if (!passwordMatch) return res.status(401).json({ status: false, errors: ['Incorrect Password'] });
 
@@ -61,6 +63,7 @@ exports.getLogin = async (req, res) => {
 				name: user.name,
 				email: user.email,
 				role: user.role,
+				batch: user.batch,
 				pg: user.pg,
 				ug: user.ug,
 				hsc: user.hsc,
@@ -77,7 +80,7 @@ exports.getLogin = async (req, res) => {
 		res.json({ status: true, data: { token }, messages: ['Login Successful'] });
 	} catch (error) {
 		logger.error(error);
-		res.status(500).json({ status: false, messages: ['Internal server error'] });
+		res.status(500).json({ status: false, errors: ['Internal server error'] });
 	}
 };
 
@@ -154,8 +157,6 @@ exports.postVerifyOTP = async (req, res) => {
 		const otpExpiry = new Date(existingOtp.createdAt).getTime() + 600000;
 		const currentTime = new Date().getTime();
 		if (currentTime > otpExpiry) return res.status(401).json({ status: false, errors: ['OTP expired'] });
-
-		await user.save();
 
 		logger.info(`User verified: ${email}`);
 
