@@ -52,6 +52,8 @@ exports.getLogin = async (req, res) => {
 				status: false,
 				errors: ['User Not Verified!! Please Contact Admin!!']
 			});
+
+		console.log(user, user.password, password);
 		const passwordMatch = await bcrypt.compare(password, user.password);
 		if (!passwordMatch) return res.status(401).json({ status: false, errors: ['Incorrect Password'] });
 

@@ -1,20 +1,16 @@
 import { useCallback, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { FaRegComment } from 'react-icons/fa';
-import { toast } from 'react-toastify';
-import { deleteExperience, getAllExperience } from '../../api/experienceApi';
-import ToastContent from '../../components/ToastContent/ToastContent';
-import getUser from '../../utils/user';
+import { getAllExperience } from '../../api/experienceApi';
 import './Experience.css';
 import ExperienceForm from './ExperienceForm';
+import ExperienceView from './ExperienceView';
 
 const Experience = () => {
-	const user = getUser();
 	const [experiences, setExperiences] = useState([]);
 	const [showAddExperienceModal, setShowAddExperienceModal] = useState(false);
 	const [showExperienceViewModal, setShowExperienceViewModal] = useState(false);
 	const [experienceViewModalData, setExperienceViewModalData] = useState({});
-	const [initialData, setInitialData] = useState({});
 	const [isAdd, setIsAdd] = useState(true);
 
 	const fetchData = async () => {
@@ -45,35 +41,20 @@ const Experience = () => {
 		fetchData();
 	}, []);
 
-	const handleDeleteButtonClick = async (experience) => {
-		try {
-			const id = experience._id;
-			await deleteExperience(id);
-			toast.success(<ToastContent res="success" messages={[`Experience deleted successfully.`]} />);
-			fetchData();
-			setShowExperienceViewModal(false);
-		} catch (error) {
-			console.error('Error deleting experience:', error);
-			toast.error(<ToastContent res="Error" messages={error.response.data.errors} />);
-		}
-	};
-
-	const handleEditButtonClick = (experience) => {
-		setInitialData(experience);
-		setIsAdd(false);
-		setShowExperienceViewModal(false);
-		setShowAddExperienceModal(true);
-	};
-
 	const closeExperienceAddModal = useCallback((fetch) => {
 		setShowAddExperienceModal(false);
+		if (fetch) fetchData();
+	}, []);
+
+	const closeExperienceViewModal = useCallback((fetch) => {
+		setShowExperienceViewModal(false);
 		if (fetch) fetchData();
 	}, []);
 
 	const addExperienceModal = () => {
 		if (!showAddExperienceModal) return null;
 		return ReactDOM.createPortal(
-			<ExperienceForm closeExperienceAddModal={closeExperienceAddModal} initialData={initialData} isAdd={isAdd} />,
+			<ExperienceForm closeExperienceAddModal={closeExperienceAddModal} initialData={{}} isAdd={true} />,
 			document.getElementById('modal-root')
 		);
 	};
@@ -81,54 +62,7 @@ const Experience = () => {
 	const experienceViewModal = () => {
 		if (!showExperienceViewModal) return null;
 		return ReactDOM.createPortal(
-			<div className="modal" id="experience-view-modal">
-				<div className="view-modal-dialog">
-					<div className="experience-view">
-						<div className="experience-header">
-							<h3 className="experience-student-details">
-								{experienceViewModalData.studentDetails.name} ({experienceViewModalData.studentDetails.batch})
-							</h3>
-							<div>{experienceViewModalData.postDate}</div>
-						</div>
-						<h3 className="experience-Title">{experienceViewModalData.companyName}</h3>
-						<div className="experience-content">{experienceViewModalData.content}</div>
-						<div className="experience-tags">
-							{experienceViewModalData.tags.map((tag) => (
-								<div key={tag} className="experience-tag">
-									#{tag}
-								</div>
-							))}
-						</div>
-						<div className="experience-comments">
-							{experienceViewModalData.Comments.map((comment) => (
-								<div key={comment._id} className="experience-comment">
-									{comment.content}
-								</div>
-							))}
-						</div>
-						<div className="modal-buttons">
-							{user.rollNo === experienceViewModalData.studentDetails.rollNo ? (
-								<>
-									<button type="button" className="btn btn-primary" onClick={() => handleEditButtonClick(experienceViewModalData)}>
-										{' '}
-										Edit{' '}
-									</button>
-									<button type="button" className="btn btn-danger" onClick={() => handleDeleteButtonClick(experienceViewModalData)}>
-										{' '}
-										Delete{' '}
-									</button>{' '}
-								</>
-							) : (
-								<></>
-							)}
-
-							<button type="button" className="btn btn-primary" onClick={() => setShowExperienceViewModal(false)}>
-								Close
-							</button>
-						</div>
-					</div>
-				</div>
-			</div>,
+			<ExperienceView closeExperienceViewModal={closeExperienceViewModal} experienceViewModalData={experienceViewModalData} />,
 			document.getElementById('modal-root')
 		);
 	};
@@ -142,7 +76,6 @@ const Experience = () => {
 				className="btn btn-primary"
 				onClick={() => {
 					setShowAddExperienceModal(true);
-					setInitialData({});
 					setIsAdd(true);
 				}}
 			>

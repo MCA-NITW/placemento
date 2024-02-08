@@ -99,6 +99,9 @@ exports.updateExperience = async (req, res) => {
 		if (!experience) {
 			return res.status(404).json({ errors: ['Experience not found'] });
 		}
+		if (experience.studentDetails.rollNo !== req.user.rollNo) {
+			return res.status(403).json({ errors: ['Forbidden'] });
+		}
 		experience.companyName = req.body.companyName;
 		experience.content = req.body.content;
 		experience.editDate = new Date();
@@ -119,6 +122,11 @@ exports.deleteExperience = async (req, res) => {
 		if (!experience) {
 			return res.status(404).json({ errors: ['Experience not found'] });
 		}
+
+		if (experience.studentDetails.rollNo !== req.user.rollNo) {
+			return res.status(403).json({ errors: ['Forbidden'] });
+		}
+
 		logger.info(`Experience deleted: ${experience.companyName}`);
 		res.status(200).json({ message: 'Experience Deleted Successfully' });
 	} catch (error) {

@@ -21,6 +21,8 @@ const authenticateUser = async (req, res, next) => {
 
 		if (!user) throw new Error('User not found');
 
+		if (user.isVerified === false) throw new Error('User not verified');
+
 		req.token = token;
 		req.user = user;
 		logger.info(`User ${user.email} authenticated`);

@@ -3,47 +3,47 @@ import { MdOutlineModeEdit } from 'react-icons/md';
 import { RxCross1 } from 'react-icons/rx';
 import { toast } from 'react-toastify';
 import { getCompany } from '../../api/companyApi';
-import { getStudent, updateStudent } from '../../api/studentApi';
+import { updateStudent } from '../../api/studentApi';
 import ToastContent from '../../components/ToastContent/ToastContent';
 import getUser from '../../utils/user.js';
 import './Profile.css';
 
 const Profile = () => {
-	const userDetails = getUser();
 	const [user, setUser] = useState({});
 	const [isEditing, setIsEditing] = useState('');
 	const [isEdited, setIsEdited] = useState(false);
 	const [company, setCompany] = useState([]);
 	const [prevUser, setPrevUser] = useState({});
+	const [userDetails, setUserDetails] = useState({});
 
 	useEffect(() => {
-		const fetchStudentDetails = async (id) => {
+		const fetchUser = async () => {
 			try {
-				const student = await getStudent(id);
-				if (student.data.role === 'admin') student.data.role = 'Admin';
-				else if (student.data.role === 'student') student.data.role = 'Student';
-				else student.data.role = 'Placement Coordinator';
-				setUser(student.data);
-				setPrevUser(student.data);
-			} catch (error) {
-				console.log(error);
+				const user = await getUser();
+				setUserDetails(user);
+				setUser(user);
+				setPrevUser(user);
+			} catch (err) {
+				console.log(err);
 			}
 		};
-		fetchStudentDetails(userDetails.id);
-	}, [userDetails.id]);
+		fetchUser();
+	}, []);
 
 	useEffect(() => {
-		const fetchCompany = async () => {
+		const fetchCompany = async (id) => {
 			try {
-				const response = await getCompany(userDetails.companyId);
+				const response = await getCompany(id);
 				response.data.locations.unshift('N/A');
 				setCompany(response.data);
 			} catch (error) {
 				console.log(error);
 			}
 		};
-		fetchCompany();
-	}, [userDetails.companyId]);
+		if (userDetails.placedAt && userDetails.placedAt.companyId) {
+			fetchCompany(userDetails.placedAt.companyId);
+		}
+	}, [userDetails.placedAt]);
 
 	const handleInputChange = (name, value) => {
 		setUser((prevState) => ({
@@ -109,11 +109,11 @@ const Profile = () => {
 		);
 	};
 
-	const fieldRenderer = (editable, label, name, value, options = []) => {
+	const fieldRenderer = (editable, label, name, value, options = [], isDropdown = false) => {
 		return (
 			<div className="item">
 				<label htmlFor={name}>{label}</label>
-				{options.length > 0 ? dropdownRenderer(name, value, options) : inputRenderer(name, value)}
+				{isDropdown ? dropdownRenderer(name, value, options) : inputRenderer(name, value)}
 				{editable && (
 					<button onClick={() => (isEditing === name ? onCancel() : setIsEditing(name))}>
 						{isEditing === name ? <RxCross1 /> : <MdOutlineModeEdit />}
@@ -153,7 +153,7 @@ const Profile = () => {
 							{fieldRenderer(false, 'Name', 'Name', user.name)}
 							{fieldRenderer(false, 'Email', 'email', user.email)}
 							{fieldRenderer(false, 'Roll No', 'rollNo', user.rollNo)}
-							{fieldRenderer(false, 'Role', 'role', user.role)}
+							{fieldRenderer(false, 'Role', 'role', user.role === 'admin' ? 'Admin' : user.role === 'student' ? 'Student' : 'Placement Coordinator')}
 						</div>
 						{user.placed && (
 							<div className="item-group">
@@ -165,7 +165,7 @@ const Profile = () => {
 								</div>
 								{fieldRenderer(false, 'Profile', 'profile', user.placedAt.profile)}
 								{fieldRenderer(false, 'Offer', 'typeOfOffer', user.placedAt.offer)}
-								{fieldRenderer(true, 'Location', 'location', user.placedAt?.location, company.locations)}
+								{fieldRenderer(true, 'Location', 'location', user.placedAt.location, company.locations, true)}
 							</div>
 						)}
 						<div className="item-group">

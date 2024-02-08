@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { GrValidate } from 'react-icons/gr';
 import { MdDelete } from 'react-icons/md';
 import { toast } from 'react-toastify';
@@ -23,7 +23,15 @@ const StudentTable = () => {
 	const [selectedStudent, setSelectedStudent] = useState(null);
 	const [selectedStudentDelete, setSelectedStudentDelete] = useState(null);
 	const [companies, setCompanies] = useState([]);
-	const user = getUser();
+	const [user, setUser] = useState({});
+
+	useEffect(() => {
+		const fetchUser = async () => {
+			const user = await getUser();
+			setUser(user);
+		};
+		fetchUser();
+	}, []);
 
 	const fetchData = useCallback(async () => {
 		try {
