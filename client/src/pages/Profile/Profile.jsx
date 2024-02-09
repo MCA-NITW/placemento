@@ -14,14 +14,16 @@ const Profile = () => {
 	const [isEdited, setIsEdited] = useState(false);
 	const [company, setCompany] = useState([]);
 	const [prevUser, setPrevUser] = useState({});
-	const [userDetails, setUserDetails] = useState({});
+	const [roleLabel, setRoleLabel] = useState('');
 
 	useEffect(() => {
 		const fetchUser = async () => {
 			try {
 				const user = await getUser();
-				setUserDetails(user);
 				setUser(user);
+				if (user.role === 'student') setRoleLabel('Student');
+				else if (user.role === 'admin') setRoleLabel('Admin');
+				else setRoleLabel('Placement Coordinator');
 				setPrevUser(user);
 			} catch (err) {
 				console.log(err);
@@ -40,10 +42,8 @@ const Profile = () => {
 				console.log(error);
 			}
 		};
-		if (userDetails.placedAt && userDetails.placedAt.companyId) {
-			fetchCompany(userDetails.placedAt.companyId);
-		}
-	}, [userDetails.placedAt]);
+		if (user.placed) fetchCompany(user.placedAt.companyId);
+	}, [user.placedAt, user.placed]);
 
 	const handleInputChange = (name, value) => {
 		setUser((prevState) => ({
@@ -56,7 +56,7 @@ const Profile = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
-			await updateStudent(userDetails.id, user);
+			await updateStudent(user.id, user);
 			setIsEditing('');
 			toast.success(<ToastContent res="success" messages={['Profile updated successfully.']} />);
 			setIsEdited(false);
@@ -153,7 +153,7 @@ const Profile = () => {
 							{fieldRenderer(false, 'Name', 'Name', user.name)}
 							{fieldRenderer(false, 'Email', 'email', user.email)}
 							{fieldRenderer(false, 'Roll No', 'rollNo', user.rollNo)}
-							{fieldRenderer(false, 'Role', 'role', user.role === 'admin' ? 'Admin' : user.role === 'student' ? 'Student' : 'Placement Coordinator')}
+							{fieldRenderer(false, 'Role', 'role', roleLabel)}
 						</div>
 						{user.placed && (
 							<div className="item-group">
