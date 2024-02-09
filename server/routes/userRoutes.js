@@ -26,6 +26,12 @@ router.delete('/delete/:id', authenticateUser, checkUserRole(['admin', 'placemen
 router.put('/company/:id', authenticateUser, checkUserRole(['admin', 'placementCoordinator']), limiter, userController.updateCompany);
 
 // Update Company Location of a User with rate limiting
-router.put('/companyLocation/:id', authenticateUser, checkUserRole(['admin', 'placementCoordinator']), limiter, userController.updateCompanyLocation);
+router.put(
+	'/companyLocation/:id',
+	authenticateUser,
+	checkUserRole(['admin', 'student', 'placementCoordinator']),
+	limiter,
+	userController.updateCompanyLocation
+);
 
 module.exports = router;

@@ -176,7 +176,6 @@ const Experience = () => {
 						))
 					)}
 				</div>
-				<div className="experience-right">Right</div>
 			</div>
 		</div>
 	);

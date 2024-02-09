@@ -1,3 +1,4 @@
+import propTypes from 'prop-types';
 import { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { toast } from 'react-toastify';
@@ -52,9 +53,9 @@ const ExperienceView = ({ closeExperienceViewModal, experienceViewModalData, use
 						</div>
 						<h3 className="experience-Title">{experienceViewModalData.companyName}</h3>
 						<div className="experience-content">{experienceViewModalData.content}</div>
-						<div className="experience-tags">
+						<div className="experience-view-tags">
 							{experienceViewModalData.tags.map((tag) => (
-								<div key={tag} className="experience-tag">
+								<div key={tag} className="experience-view-tag">
 									#{tag}
 								</div>
 							))}
@@ -88,6 +89,12 @@ const ExperienceView = ({ closeExperienceViewModal, experienceViewModalData, use
 			{updateExperienceModal()}
 		</>
 	);
+};
+
+ExperienceView.propTypes = {
+	closeExperienceViewModal: propTypes.func.isRequired,
+	experienceViewModalData: propTypes.object.isRequired,
+	user: propTypes.object.isRequired
 };
 
 export default ExperienceView;

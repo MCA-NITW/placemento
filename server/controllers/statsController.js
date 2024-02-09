@@ -17,9 +17,12 @@ const calculateTotalPlacedStudentsCTC = (companies) =>
 
 const getHighestCTC = (companies) => Math.max(...companies.map((company) => company.ctc));
 
-const getHighestCTCPlaced = (companies) => Math.max(...companies.map((company) => (company.selectedStudentsRollNo[0] !== '' ? company.ctc : 0)));
+const getHighestCTCPlaced = (companies) => Math.max(...companies.map((company) => (company.selectedStudentsRollNo.length > 0 ? company.ctc : 0)));
 
 const getHighestCTCCompany = (companies, highestCTC) => companies.find((company) => (company.ctc === highestCTC ? company : ''));
+
+const getHighestCTCPlacedCompany = (companies, highestCTCPlaced) =>
+	companies.find((company) => (company.selectedStudentsRollNo.length > 0 ? company.ctc === highestCTCPlaced : ''));
 
 const getHighestCTCStudent = (students, companies, highestCTCPlacedCompany) =>
 	students.find((student) =>
@@ -33,10 +36,10 @@ exports.getCTCStats = async (req, res) => {
 		const filterCompanies = filterValidCompanies(companies);
 
 		const highestCTCOffered = getHighestCTC(filterCompanies);
-		const highestCTCOfferedCompany = getHighestCTCCompany(filterCompanies, highestCTCOffered).name;
+		const highestCTCOfferedCompany = getHighestCTCCompany(filterCompanies, highestCTCOffered);
 		const highestCTCPlaced = getHighestCTCPlaced(filterCompanies);
-		const highestCTCPlacedCompany = getHighestCTCCompany(filterCompanies, highestCTCPlaced).name;
-		const highestCTCPlacedStudent = getHighestCTCStudent(students, filterCompanies, highestCTCPlacedCompany).name;
+		const highestCTCPlacedCompany = getHighestCTCPlacedCompany(filterCompanies, highestCTCPlaced);
+		const highestCTCPlacedStudent = getHighestCTCStudent(students, filterCompanies, highestCTCPlacedCompany.name);
 		const totalPlacedStudentsCTC = calculateTotalPlacedStudentsCTC(filterCompanies);
 		const avgCTC = totalPlacedStudentsCTC / calculateTotalPlacedStudents(filterCompanies);
 
@@ -44,10 +47,10 @@ exports.getCTCStats = async (req, res) => {
 
 		res.status(200).json({
 			highestCTCOffered,
-			highestCTCOfferedCompany,
+			highestCTCOfferedCompany: highestCTCOfferedCompany.name,
 			highestCTCPlaced,
-			highestCTCPlacedCompany,
-			highestCTCPlacedStudent,
+			highestCTCPlacedCompany: highestCTCPlacedCompany.name,
+			highestCTCPlacedStudent: highestCTCPlacedStudent.name,
 			totalPlacedStudentsCTC,
 			avgCTC
 		});

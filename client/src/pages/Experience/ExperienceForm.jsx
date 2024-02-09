@@ -1,3 +1,4 @@
+import propTypes from 'prop-types';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { addExperience, updateExperience } from '../../api/experienceApi';
@@ -57,6 +58,12 @@ const ExperienceForm = ({ closeExperienceAddModal, initialData, isAdd }) => {
 			</div>
 		</div>
 	);
+};
+
+ExperienceForm.propTypes = {
+	closeExperienceAddModal: propTypes.func.isRequired,
+	initialData: propTypes.object.isRequired,
+	isAdd: propTypes.bool.isRequired
 };
 
 export default ExperienceForm;

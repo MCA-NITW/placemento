@@ -67,9 +67,8 @@ exports.updateUser = async (req, res) => {
 		const updatedUser = await User.findByIdAndUpdate(
 			req.params.id,
 			{
-				...req.user,
 				placedAt: {
-					...req.user.placedAt,
+					...user.placedAt,
 					location: req.body.placedAt.location
 				},
 				pg: {
@@ -262,6 +261,11 @@ exports.updateCompanyLocation = async (req, res) => {
 			},
 			{ new: true }
 		);
+
+		if (!updatedUser) {
+			return res.status(404).json({ message: 'User not found' });
+		}
+
 		logger.info(`User company location updated: ${updatedUser.name}`);
 		res.status(200).json({
 			message: `Company location of ${updatedUser.name} updated Successfully`

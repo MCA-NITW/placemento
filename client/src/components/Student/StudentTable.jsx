@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { GrValidate } from 'react-icons/gr';
 import { MdDelete } from 'react-icons/md';
 import { toast } from 'react-toastify';
@@ -25,19 +25,12 @@ const StudentTable = () => {
 	const [companies, setCompanies] = useState([]);
 	const [user, setUser] = useState({});
 
-	useEffect(() => {
-		const fetchUser = async () => {
-			const user = await getUser();
-			setUser(user);
-		};
-		fetchUser();
-	}, []);
-
 	const fetchData = useCallback(async () => {
 		try {
-			const response = await Promise.all([getStudents(), getCompanies()]);
+			const response = await Promise.all([getStudents(), getCompanies(), getUser()]);
 			const studentsResponse = response[0];
 			const companiesResponse = response[1];
+			setUser(response[2]);
 
 			studentsResponse.data.users.forEach((student) => {
 				student.id = student._id;

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { MdDelete, MdEdit } from 'react-icons/md';
 import { toast } from 'react-toastify';
@@ -20,18 +20,13 @@ const CompanyTable = () => {
 	const closeModal = () => setIsModalOpen(false);
 
 	const [user, setUser] = useState({});
-	useEffect(() => {
-		const fetchUser = async () => {
-			const user = await getUser();
-			setUser(user);
-		};
-		fetchUser();
-	}, []);
 
 	const fetchData = useCallback(async () => {
 		try {
-			const response = await getCompanies();
-			response.data.forEach((company) => {
+			const response = await Promise.all([getCompanies(), getUser()]);
+			const companiesResponse = response[0];
+			setUser(response[1]);
+			companiesResponse.data.forEach((company) => {
 				company.id = company._id;
 				company.selectedStudents = company.selectedStudentsRollNo.length;
 				company.cutoff_pg = formatCutoff(company.cutoffs.pg);
@@ -40,7 +35,7 @@ const CompanyTable = () => {
 				company.cutoff_10 = formatCutoff(company.cutoffs.tenth);
 				company.ctcBase = company.ctcBreakup.base;
 			});
-			setCompanies(response.data);
+			setCompanies(companiesResponse.data);
 		} catch (error) {
 			console.error('Error fetching companies:', error);
 			toast.error(<ToastContent res="error" messages={['Error fetching companies.']} />);

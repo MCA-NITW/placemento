@@ -5,14 +5,11 @@ const userSchema = new mongoose.Schema(
 		name: { type: String, required: true },
 		email: {
 			type: String,
-			required: true,
-			match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
 			unique: true
 		},
 		password: { type: String, required: true },
 		rollNo: {
 			type: String,
-			match: /^\d{2}MCF1R\d{2,}$/,
 			unique: true
 		},
 		batch: { type: Number, required: true },
