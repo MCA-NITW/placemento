@@ -102,10 +102,10 @@ const CompanyTable = () => {
 	const actionsColumn = useMemo(
 		() =>
 			generateNestedColumn('Actions', [
-				generateColumn(null, 'Delete', 55, 'left', false, false, (params) =>
+				generateColumn(null, 'Del', 45, 'left', false, false, (params) =>
 					buttonRenderer(params, 'btn--icon--del', <MdDelete />, handleDeleteButtonClick)
 				),
-				generateColumn(null, 'Edit', 55, 'left', false, false, (params) =>
+				generateColumn(null, 'Edit', 45, 'left', false, false, (params) =>
 					buttonRenderer(params, 'btn--icon--edit', <MdEdit />, handleEditButtonClick)
 				)
 			]),
@@ -116,13 +116,13 @@ const CompanyTable = () => {
 		() => [
 			...(user.role === 'admin' || user.role === 'placementCoordinator' ? [actionsColumn] : []),
 			generateColumn('name', 'Name', 150, 'left'),
-			generateColumn('status', 'Status', 100, null, false),
-			generateColumn('typeOfOffer', 'Offer', 90),
-			generateColumn('profile', 'Profile', 150),
-			generateColumn('profileCategory', 'Category', 100),
-			generateColumn('interviewShortlist', 'Shortlists', 120),
-			generateColumn('selectedStudents', 'Selects', 100),
-			generateColumn('dateOfOffer', 'Offer Date', 125, null, true, false, (params) =>
+			generateColumn('status', 'Status', 90, null, false),
+			generateColumn('typeOfOffer', 'Offer', 80, null, false, false),
+			generateColumn('profile', 'Profile', 130),
+			generateColumn('profileCategory', 'Category', 85, null, false, false),
+			generateColumn('interviewShortlist', 'Shortlists', 105, null, true, false),
+			generateColumn('selectedStudents', 'Selects', 95, null, true, false),
+			generateColumn('dateOfOffer', 'Offer Date', 115, null, true, false, (params) =>
 				params.value
 					? new Date(params.value).toLocaleDateString('en-US', {
 							day: 'numeric',
@@ -133,8 +133,8 @@ const CompanyTable = () => {
 			),
 			generateColumn('locations', 'Locations', 130, null, false, true),
 			generateNestedColumn('CTC (LPA)', [
-				generateColumn('ctc', 'CTC', 80, null, true, false, (params) => params.value.toFixed(2)),
-				generateColumn('ctcBase', 'Base', 80, null, true, false, (params) => params.value.toFixed(2))
+				generateColumn('ctc', 'CTC', 75, null, true, false, (params) => params.value.toFixed(2)),
+				generateColumn('ctcBase', 'Base', 75, null, true, false, (params) => params.value.toFixed(2))
 			]),
 			generateNestedColumn('Cutoffs', [
 				generateColumn('cutoff_pg', 'PG', 80, null, false, false),
@@ -171,20 +171,26 @@ const CompanyTable = () => {
 
 	return (
 		<>
-			{(user.role === 'admin' || user.role === 'placementCoordinator') && (
-				<button className="btn btn-primary" onClick={handleAddCompanyClick}>
-					Add Company
-				</button>
-			)}
-			{renderCompanyForm()}
-			<AgGridTable rowData={companies} columnDefinitions={columnDefinitions} fetchData={fetchData} />
-			<Modal
-				isOpen={isModalOpen}
-				onClose={closeModal}
-				onConfirm={onConfirmDelete}
-				message="Are you sure you want to delete this company?"
-				buttonTitle="Delete"
-			/>
+			<div className="companies-container">
+				{renderCompanyForm()}
+				<div className="companies-left">
+					{(user.role === 'admin' || user.role === 'placementCoordinator') && (
+						<button className="btn btn-primary" onClick={handleAddCompanyClick}>
+							Add Company
+						</button>
+					)}
+				</div>
+				<div className="companies-right">
+					<AgGridTable rowData={companies} columnDefinitions={columnDefinitions} fetchData={fetchData} />
+					<Modal
+						isOpen={isModalOpen}
+						onClose={closeModal}
+						onConfirm={onConfirmDelete}
+						message="Are you sure you want to delete this company?"
+						buttonTitle="Delete"
+					/>
+				</div>
+			</div>
 		</>
 	);
 };

@@ -180,14 +180,14 @@ const StudentTable = () => {
 	};
 
 	const actionsColumn = generateNestedColumn('Actions', [
-		generateColumn(null, 'Delete', 55, 'left', false, false, deleteButtonRenderer),
-		generateColumn(null, 'Verify', 55, 'left', false, false, verifyButtonRenderer)
+		generateColumn(null, 'Del', 45, 'left', false, false, deleteButtonRenderer),
+		generateColumn(null, 'Ver', 45, 'left', false, false, verifyButtonRenderer)
 	]);
 
 	const gradesColumn = (head, cgpa, percentage) =>
 		generateNestedColumn(head, [
-			generateColumn(cgpa, 'CGPA', 85, null, true, false, (params) => params.value.toFixed(2)),
-			generateColumn(percentage, '%', 85, null, true, false, (params) => params.value.toFixed(2))
+			generateColumn(cgpa, 'CGPA', 75, null, true, false, (params) => params.value.toFixed(2)),
+			generateColumn(percentage, '%', 75, null, true, false, (params) => params.value.toFixed(2))
 		]);
 
 	const academicColumn = [
@@ -197,25 +197,25 @@ const StudentTable = () => {
 			gradesColumn('12th', 'hsc.cgpa', 'hsc.percentage'),
 			gradesColumn('10th', 'ssc.cgpa', 'ssc.percentage')
 		]),
-		generateColumn('totalGapInAcademics', 'Gap', 75),
-		generateColumn('backlogs', 'Backlogs', 85)
+		generateColumn('totalGapInAcademics', 'Gap', 70),
+		generateColumn('backlogs', 'Backlogs', 80)
 	];
 
 	const placementColumn = generateNestedColumn('Placement Details', [
 		generateColumn(
 			'placedAt.companyName',
 			'Company',
-			275,
+			225,
 			null,
 			true,
 			true,
 			user.role === 'admin' || user.role === 'placementCoordinator' ? companyDropdownRenderer : null
 		),
 		generateNestedColumn('CTC (LPA)', [
-			generateColumn('placedAt.ctc', 'CTC', 80, null, true, false, (params) => params.value.toFixed(2)),
-			generateColumn('placedAt.ctcBase', 'Base', 80, null, true, false, (params) => params.value.toFixed(2))
+			generateColumn('placedAt.ctc', 'CTC', 70, null, true, false, (params) => params.value.toFixed(2)),
+			generateColumn('placedAt.ctcBase', 'Base', 70, null, true, false, (params) => params.value.toFixed(2))
 		]),
-		generateColumn('placedAt.offer', 'Offer', 80, null, false, false),
+		generateColumn('placedAt.offer', 'Offer', 75, null, false, false),
 		generateColumn('placedAt.profileType', 'Profile', 100, null, true, true),
 		generateColumn(
 			'placedAt.location',
@@ -232,8 +232,8 @@ const StudentTable = () => {
 		...(user.role === 'admin' || user.role === 'placementCoordinator' ? [actionsColumn] : []),
 		generateColumn('role', 'Role', 110, 'left', false, false, user.role === 'admin' ? roleDropdownRenderer : roleFormatter),
 		generateColumn('name', 'Name', 130, 'left'),
-		generateColumn('rollNo', 'Roll No', 100),
-		generateColumn('batch', 'Batch', 90, null, false, false),
+		generateColumn('rollNo', 'Roll No', 95),
+		generateColumn('batch', 'Batch', 70, null, false, false),
 		generateColumn('email', 'Email', 225),
 		placementColumn,
 		...(user.role === 'admin' || user.role === 'placementCoordinator' ? academicColumn : [])
@@ -241,17 +241,28 @@ const StudentTable = () => {
 
 	return (
 		<>
-			<AgGridTable rowData={students} columnDefinitions={columnDefinitions} fetchData={fetchData} />
-			{selectedStudent &&
-				modelRenderer(
-					isModalOpen,
-					closeModal,
-					onConfirmVerifyStudent,
-					`Are you sure you want to ${selectedStudent.isVerified ? 'unverify' : 'verify'} ${selectedStudent.name}?`,
-					selectedStudent.isVerified ? 'Unverify' : 'Verify'
-				)}
-			{selectedStudentDelete &&
-				modelRenderer(isModalOpen, closeModal, onConfirmDeleteStudent, `Are you sure you want to delete ${selectedStudentDelete.name}?`, 'Delete')}
+			<div className="students-container">
+				<div className="students-left"></div>
+				<div className="students-right">
+					<AgGridTable rowData={students} columnDefinitions={columnDefinitions} fetchData={fetchData} />
+					{selectedStudent &&
+						modelRenderer(
+							isModalOpen,
+							closeModal,
+							onConfirmVerifyStudent,
+							`Are you sure you want to ${selectedStudent.isVerified ? 'unverify' : 'verify'} ${selectedStudent.name}?`,
+							selectedStudent.isVerified ? 'Unverify' : 'Verify'
+						)}
+					{selectedStudentDelete &&
+						modelRenderer(
+							isModalOpen,
+							closeModal,
+							onConfirmDeleteStudent,
+							`Are you sure you want to delete ${selectedStudentDelete.name}?`,
+							'Delete'
+						)}
+				</div>
+			</div>
 		</>
 	);
 };

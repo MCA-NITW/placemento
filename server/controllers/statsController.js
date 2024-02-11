@@ -29,6 +29,25 @@ const getHighestCTCStudent = (students, companies, highestCTCPlacedCompany) =>
 		companies.find((company) => company.name === highestCTCPlacedCompany && company.selectedStudentsRollNo.includes(student.rollNo))
 	);
 
+const getTopLocations = (companies) => {
+	const locations = companies.reduce((acc, company) => {
+		const companyLocations = company.locations;
+		companyLocations.forEach((location) => {
+			if (acc.has(location)) {
+				acc.set(location, acc.get(location) + 1);
+			} else {
+				acc.set(location, 1);
+			}
+		});
+		return acc;
+	}, new Map());
+
+	const sortedLocations = Array.from(locations.entries()).sort((a, b) => b[1] - a[1]);
+	const topLocations = sortedLocations.map(([location, count]) => ({ location, count }));
+
+	return topLocations;
+};
+
 exports.getCTCStats = async (req, res) => {
 	try {
 		const students = await User.find();
@@ -76,6 +95,7 @@ exports.getCompanyStats = async (req, res) => {
 		const totalFTEs = filterCompanies.filter((company) => company.typeOfOffer === 'FTE').length;
 		const total6MFTEs = filterCompanies.filter((company) => company.typeOfOffer === '6M+FTE').length;
 		const totalInterns = filterCompanies.filter((company) => company.typeOfOffer === 'Intern').length;
+		const topLocations = getTopLocations(filterCompanies);
 
 		logger.info('Company Stats fetched successfully');
 
@@ -91,7 +111,8 @@ exports.getCompanyStats = async (req, res) => {
 			totalPPOs,
 			totalFTEs,
 			total6MFTEs,
-			totalInterns
+			totalInterns,
+			topLocations
 		});
 	} catch (error) {
 		logger.error(error.message);

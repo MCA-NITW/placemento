@@ -21,8 +21,8 @@ const AgGridTable = ({ rowData, columnDefinitions, fetchData }) => {
 		<AgGridReact
 			rowData={rowData}
 			columnDefs={columnDefinitions}
-			rowHeight={40}
-			headerHeight={40}
+			rowHeight={30}
+			headerHeight={30}
 			rowSelection="multiple"
 			dataTypeDefinitions={dataTypeDefinitions}
 			onGridReady={fetchData}
