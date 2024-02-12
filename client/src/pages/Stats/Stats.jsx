@@ -101,6 +101,18 @@ const Stats = () => {
 						<StatsSectionItem left="Total Software Role Companies:" right={companyStats.totalSoftwareCompanies} />
 						<StatsSectionItem left="Total Analyst Role Companies:" right={companyStats.totalAnalystCompanies} />
 						<StatsSectionItem left="Total Other Roles Companies:" right={companyStats.totalOthersCompanies} />
+						<StatsSectionItem
+							left="Top Locations:"
+							right={
+								<>
+									{companyStats.topLocations.slice(0, 3).map((location, index) => (
+										<div key={index} className="stats-section-item-right-header">
+											{location.location} <span>({location.count})</span>
+										</div>
+									))}
+								</>
+							}
+						/>
 					</div>
 
 					<div className="stats-section">

@@ -1,15 +1,49 @@
+.students-container {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: calc(100% - 61px);
+	gap: 10px;
+}
+
+.students-left,
+.students-right {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	border-radius: 1rem;
+	background: var(--color-bg-variant);
+	box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.5);
+	height: 100%;
+	overflow-y: auto;
+	align-items: center;
+	padding: 10px;
+	border: 1px solid var(--color-bg);
+}
+
+.students-left {
+	width: 20%;
+	gap: 20px;
+}
+
+.students-right {
+	width: 100%;
+	padding: 10px;
+}
+
 .verify-button {
 	background-color: transparent;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 100%;
+	height: calc(100% - 2px);
 	aspect-ratio: 1/1;
 	border-radius: 5px;
 	cursor: pointer;
 	margin: 1px 0;
 	transition: all 0.3s ease-in-out;
-	font-size: 1.25rem;
 }
 
 .verify-button.verified {
@@ -35,8 +69,8 @@
 	align-items: center;
 	justify-content: center;
 	width: 100%;
-	margin: 0.5rem 0;
-	height: calc(1.5rem + 2px);
+	height: calc(100% - 6px);
+	margin: 2.5px 0;
 	border-radius: 5px;
 	background: transparent;
 	color: var(--color-white);
@@ -68,4 +102,71 @@
 
 .render-dropdown option:hover {
 	background-color: var(--color-bg);
+}
+
+.students-filter {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	align-items: center;
+	justify-content: flex-start;
+	width: 100%;
+	height: 100%;
+	overflow-y: auto;
+}
+
+.students-filter h3 {
+	font-size: 1.5rem;
+	position: sticky;
+	top: 0;
+	background: var(--color-bg);
+	padding: 10px;
+	width: 100%;
+	text-align: center;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+.students-filter__item {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	width: 100%;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+	border-radius: 0.5rem;
+	padding: 10px;
+	background: var(--color-bg);
+}
+
+.students-filter__item__label {
+	font-size: 1.1rem;
+	align-self: center;
+}
+
+.students-filter__item__values {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-around;
+	flex-wrap: wrap;
+	transition: all 0.3s ease-in-out;
+}
+
+.students-filter__item__value {
+	padding: 5px;
+	gap: 5px;
+	width: 100%;
+	border-radius: 0.5rem;
+	border: 1px solid var(--color-bg);
+	background: var(--color-bg-variant);
+	cursor: pointer;
+	text-align: center;
+	transition: all 0.3s ease-in-out;
+}
+
+.students-filter__item__value:hover {
+	border: 1px solid var(--color-primary);
+}
+
+.students-filter__item__value.active {
+	border: 1px solid var(--color-primary);
 }

@@ -76,13 +76,11 @@
 .experience-container {
 	display: flex;
 	flex-direction: row;
-	width: 100%;
-	border-radius: 1rem;
-	overflow-y: auto;
-	gap: 10px;
 	align-items: center;
+	justify-content: center;
+	width: 100%;
 	height: 100%;
-	padding: 10px;
+	gap: 10px;
 }
 
 .experience-left,
@@ -92,23 +90,21 @@
 	gap: 10px;
 	border-radius: 1rem;
 	background: var(--color-bg-variant);
-	box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-	border: 5px solid var(--color-bg);
+	box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.5);
 	height: 100%;
 	overflow-y: auto;
-	padding: 10px;
+	padding: 20px;
 	align-items: center;
+	border: 1px solid var(--color-bg);
 }
 
-.experience-left,
-.experience-right {
+.experience-left {
 	width: 20%;
 	gap: 20px;
 }
 
 .experience-mid {
 	width: 100%;
-	background: var(--color-bg);
 }
 
 .experience-item {
@@ -118,15 +114,16 @@
 	padding: 10px;
 	border-radius: 1rem;
 	background: var(--color-bg-variant);
-	border: 5px solid var(--color-bg);
 	width: 100%;
-	box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+	border: 1px solid var(--color-bg);
 }
 
 .experience-header {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	color: var(--color-primary);
 }
 
 .experience-header h3 {

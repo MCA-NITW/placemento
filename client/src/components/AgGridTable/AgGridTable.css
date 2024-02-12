@@ -1,8 +1,8 @@
 .ag-theme-quartz {
 	width: 100%;
-	margin-top: 20px;
-	height: 60vh;
 	filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.4));
+	border: 10px solid var(--color-bg);
+	border-radius: 1rem;
 
 	--ag-foreground-color: var(--color-white);
 	--ag-background-color: transparent;
@@ -11,7 +11,7 @@
 	--ag-odd-row-background-color: var(--color-bg);
 	--ag-borders: 3px solid;
 	--ag-border-color: var(--color-primary);
-	--ag-wrapper-border-radius: 1rem;
+	--ag-wrapper-border-radius: 0.5rem;
 	--ag-header-cell-hover-background-color: var(--color-bg-variant);
 	--ag-header-cell-moving-background-color: var(--color-primary-variant);
 	--ag-font-family: cursive;
@@ -25,7 +25,7 @@
 	--ag-row-hover-color: var(--color-primary-variant);
 	--ag-cell-horizontal-border: 1px dotted var(--color-primary);
 	--ag-header-column-resize-handle-color: var(--color-bg);
-	--ag-cell-horizontal-padding: 10px;
+	--ag-cell-horizontal-padding: 7.5px;
 }
 
 .ag-header-cell,
@@ -33,13 +33,4 @@
 	border-right: 1px solid var(--ag-border-color);
 	align-items: center;
 	justify-content: center;
-}
-
-.ag-header-group-cell-with-group {
-	font-size: 16px;
-	font-weight: 600;
-}
-
-.ag-header-cell {
-	font-size: 15px;
 }
