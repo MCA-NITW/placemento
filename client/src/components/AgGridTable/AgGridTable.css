@@ -1,6 +1,8 @@
 .ag-theme-quartz {
 	width: 100%;
 	filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.4));
+	border: 10px solid var(--color-bg);
+	border-radius: 1rem;
 
 	--ag-foreground-color: var(--color-white);
 	--ag-background-color: transparent;
