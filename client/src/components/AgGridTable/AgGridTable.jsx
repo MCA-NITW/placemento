@@ -37,7 +37,9 @@ const AgGridTable = ({ rowData, columnDefinitions, fetchData, isExternalFilterPr
 AgGridTable.propTypes = {
 	rowData: propTypes.array.isRequired,
 	columnDefinitions: propTypes.array.isRequired,
-	fetchData: propTypes.func.isRequired
+	fetchData: propTypes.func.isRequired,
+	isExternalFilterPresent: propTypes.func,
+	doesExternalFilterPass: propTypes.func
 };
 
 export default AgGridTable;

@@ -85,7 +85,7 @@ exports.getViewCompanyById = async (req, res) => {
 // View All Companies
 exports.getViewCompany = async (req, res) => {
 	try {
-		const companies = await Company.find();
+		const companies = await Company.find().sort({ dateOfOffer: 1 });
 		logger.info('All companies viewed');
 		res.json(companies);
 	} catch (error) {
