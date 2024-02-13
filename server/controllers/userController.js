@@ -17,7 +17,7 @@ exports.viewAllUsers = async (req, res) => {
 						backlogs: 0,
 						totalGapInAcademics: 0
 					})
-				: await User.find().select({ password: 0 });
+				: await User.find().select({ password: 0 }).sort({ rollNo: 1 });
 		if (!users) {
 			return res.status(404).json({ message: 'No users found' });
 		}

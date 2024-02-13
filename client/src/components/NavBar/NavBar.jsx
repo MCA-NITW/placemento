@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { BiStats } from 'react-icons/bi';
 import { CgProfile } from 'react-icons/cg';
@@ -8,6 +7,7 @@ import { GoOrganization } from 'react-icons/go';
 import { PiSignOutBold } from 'react-icons/pi';
 import { RiTeamFill } from 'react-icons/ri';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { checkToken } from '../../api/tokenCheckApi';
 import Modal from '../Modal/Modal';
 import classes from './Navbar.module.css';
 
@@ -19,21 +19,17 @@ const NavBar = () => {
 
 	useEffect(() => {
 		if (token) {
-			const headers = {
-				Authorization: `Bearer ${token}`
-			};
-			axios
-				.get('http://localhost:5000/token-check', { headers })
-				.then(() => {
-					setIsAuthenticated(true);
-				})
-				.catch((error) => {
-					console.log(error);
-					setIsAuthenticated(false);
+			try {
+				checkToken().then((response) => {
+					if (response.data.isAuthenticated) setIsAuthenticated(true);
+					else setIsAuthenticated(false);
 				});
-		} else {
-			setIsAuthenticated(false);
-		}
+			} catch (error) {
+				localStorage.removeItem('token');
+				console.error('Error checking token:', error);
+				setIsAuthenticated(false);
+			}
+		} else setIsAuthenticated(false);
 	}, [token]);
 
 	useEffect(() => {

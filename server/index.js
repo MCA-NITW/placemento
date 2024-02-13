@@ -44,7 +44,11 @@ app.use('/users', userRoutes);
 app.use('/experiences', experienceRoutes);
 
 app.get('/token-check', authenticateUser, (req, res) => {
-	res.status(200).json({ message: 'Authorized' });
+	try {
+		res.status(200).json({ isAuthenticated: true });
+	} catch (error) {
+		res.status(401).json({ isAuthenticated: false });
+	}
 });
 
 app.listen(PORT, () => {
