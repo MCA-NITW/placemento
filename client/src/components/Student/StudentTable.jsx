@@ -243,6 +243,56 @@ const StudentTable = () => {
 		return isFiltered;
 	}, [isFiltered]);
 
+	const checkCTC = useCallback(
+		(data) => {
+			if (ctc.length === 0) return true;
+			const ctcValue = data.placedAt.ctc;
+			if (ctc.includes(10)) return ctcValue < 10;
+			if (ctc.includes(20)) return ctcValue >= 10 && ctcValue < 20;
+			if (ctc.includes(30)) return ctcValue >= 20 && ctcValue < 30;
+			if (ctc.includes(31)) return ctcValue >= 30;
+		},
+		[ctc]
+	);
+
+	const checkBase = useCallback(
+		(data) => {
+			if (base.length === 0) return true;
+			const baseValue = data.placedAt.ctcBase;
+			if (base.includes(5)) return baseValue < 5;
+			if (base.includes(10)) return baseValue >= 5 && baseValue < 10;
+			if (base.includes(15)) return baseValue >= 10 && baseValue < 15;
+			if (base.includes(16)) return baseValue >= 15;
+		},
+		[base]
+	);
+
+	const checkOverAllCgpa = useCallback(
+		(data) => {
+			if (overAllcgpa.length === 0) return true;
+			const minCgpa = Math.min(data.pg.cgpa, data.ug.cgpa, data.hsc.cgpa, data.ssc.cgpa);
+			if (overAllcgpa.includes(6.5)) return minCgpa < 6.5;
+			if (overAllcgpa.includes(7)) return minCgpa >= 6.5 && minCgpa < 7;
+			if (overAllcgpa.includes(7.5)) return minCgpa >= 7 && minCgpa < 7.5;
+			if (overAllcgpa.includes(8)) return minCgpa >= 7.5 && minCgpa < 8;
+			if (overAllcgpa.includes(9)) return minCgpa >= 8;
+		},
+		[overAllcgpa]
+	);
+
+	const checkPgCgpa = useCallback(
+		(data) => {
+			if (pgcgpa.length === 0) return true;
+			const pgCgpaValue = data.pg.cgpa;
+			if (pgcgpa.includes(6.5)) return pgCgpaValue < 6.5;
+			if (pgcgpa.includes(7)) return pgCgpaValue >= 6.5 && pgCgpaValue < 7;
+			if (pgcgpa.includes(7.5)) return pgCgpaValue >= 7 && pgCgpaValue < 7.5;
+			if (pgcgpa.includes(8)) return pgCgpaValue >= 7.5 && pgCgpaValue < 8;
+			if (pgcgpa.includes(9)) return pgCgpaValue >= 8;
+		},
+		[pgcgpa]
+	);
+
 	const doesExternalFilterPass = useCallback(
 		(node) => {
 			if (!node.data) return true;
@@ -250,39 +300,6 @@ const StudentTable = () => {
 			const { data } = node;
 
 			const checkIncludes = (value, data) => value.length === 0 || value.includes(data);
-			const checkCTC = () => {
-				if (ctc.length === 0) return true;
-				if (ctc.includes(10)) return data.placedAt.ctc < 10;
-				if (ctc.includes(20)) return data.placedAt.ctc >= 10 && data.placedAt.ctc < 20;
-				if (ctc.includes(30)) return data.placedAt.ctc >= 20 && data.placedAt.ctc < 30;
-				if (ctc.includes(31)) return data.placedAt.ctc >= 30;
-			};
-
-			const checkBase = () => {
-				if (base.length === 0) return true;
-				if (base.includes(5)) return data.placedAt.ctcBase < 5;
-				if (base.includes(10)) return data.placedAt.ctcBase >= 5 && data.placedAt.ctcBase < 10;
-				if (base.includes(15)) return data.placedAt.ctcBase >= 10 && data.placedAt.ctcBase < 15;
-				if (base.includes(16)) return data.placedAt.ctcBase >= 15;
-			};
-
-			const checkOverAllCgpa = () => {
-				if (overAllcgpa.length === 0) return true;
-				if (overAllcgpa.includes(6.5)) return Math.min(data.pg.cgpa, data.ug.cgpa, data.hsc.cgpa, data.ssc.cgpa) < 6.5;
-				if (overAllcgpa.includes(7)) return Math.min(data.pg.cgpa, data.ug.cgpa, data.hsc.cgpa, data.ssc.cgpa) >= 6.5;
-				if (overAllcgpa.includes(7.5)) return Math.min(data.pg.cgpa, data.ug.cgpa, data.hsc.cgpa, data.ssc.cgpa) >= 7;
-				if (overAllcgpa.includes(8)) return Math.min(data.pg.cgpa, data.ug.cgpa, data.hsc.cgpa, data.ssc.cgpa) >= 7.5;
-				if (overAllcgpa.includes(9)) return Math.min(data.pg.cgpa, data.ug.cgpa, data.hsc.cgpa, data.ssc.cgpa) >= 8;
-			};
-
-			const checkPgCgpa = () => {
-				if (pgcgpa.length === 0) return true;
-				if (pgcgpa.includes(6.5)) return data.pg.cgpa < 6.5;
-				if (pgcgpa.includes(7)) return data.pg.cgpa >= 6.5 && data.pg.cgpa < 7;
-				if (pgcgpa.includes(7.5)) return data.pg.cgpa >= 7 && data.pg.cgpa < 7.5;
-				if (pgcgpa.includes(8)) return data.pg.cgpa >= 7.5 && data.pg.cgpa < 8;
-				if (pgcgpa.includes(9)) return data.pg.cgpa >= 8;
-			};
 
 			return (
 				checkIncludes(role, data.role) &&
@@ -290,15 +307,15 @@ const StudentTable = () => {
 				checkIncludes(batch, data.batch) &&
 				checkIncludes(placement, data.placed ? 'placed' : 'notPlaced') &&
 				checkIncludes(location, data.placedAt?.location) &&
-				checkCTC() &&
-				checkBase() &&
+				checkCTC(data) &&
+				checkBase(data) &&
 				checkIncludes(gap, data.totalGapInAcademics) &&
 				checkIncludes(backlogs, data.backlogs) &&
-				checkOverAllCgpa() &&
-				checkPgCgpa()
+				checkOverAllCgpa(data) &&
+				checkPgCgpa(data)
 			);
 		},
-		[role, verification, batch, placement, location, ctc, base, gap, backlogs, pgcgpa, overAllcgpa]
+		[role, verification, batch, placement, location, gap, backlogs, checkCTC, checkBase, checkOverAllCgpa, checkPgCgpa]
 	);
 
 	const optionClickHandler = (head, value) => {
