@@ -23,8 +23,8 @@ export const getAuthToken = async () => {
 	return token;
 };
 
-export const checkAuthAction = () => {
-	const token = getAuthToken();
+export const checkAuthAction = async () => {
+	const token = await getAuthToken();
 	if (!token) return redirect('/auth?mode=signin');
 	return null;
 };
