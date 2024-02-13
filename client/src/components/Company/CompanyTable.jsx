@@ -158,59 +158,59 @@ const CompanyTable = () => {
 	};
 
 	const [isFiltered, setIsFiltered] = useState(false);
-	const [Status, setStatus] = useState([]);
-	const [ProfileCategory, setProfileCategory] = useState([]);
-	const [Shortlists, setShortlists] = useState([]);
-	const [Selects, setSelects] = useState([]);
-	const [CTC, setCTC] = useState([]);
-	const [Base, setBase] = useState([]);
-	const [Locations, setLocations] = useState([]);
-	const [Offer, setOffer] = useState([]);
+	const [status, setStatus] = useState([]);
+	const [profileCategory, setProfileCategory] = useState([]);
+	const [shortlists, setShortlists] = useState([]);
+	const [selects, setSelects] = useState([]);
+	const [ctc, setCtc] = useState([]);
+	const [base, setBase] = useState([]);
+	const [locations, setLocations] = useState([]);
+	const [offer, setOffer] = useState([]);
 
 	const isExternalFilterPresent = useCallback(() => {
 		return isFiltered;
 	}, [isFiltered]);
 
-	const checkStatus = useCallback((data) => Status.length === 0 || Status.includes(data.status.toLowerCase()), [Status]);
+	const checkStatus = useCallback((data) => status.length === 0 || status.includes(data.status.toLowerCase()), [status]);
 
-	const checkOffer = useCallback((data) => Offer.length === 0 || Offer.includes(data.typeOfOffer), [Offer]);
+	const checkOffer = useCallback((data) => offer.length === 0 || offer.includes(data.typeOfOffer), [offer]);
 
 	const checkProfileCategory = useCallback(
-		(data) => ProfileCategory.length === 0 || ProfileCategory.includes(data.profileCategory),
-		[ProfileCategory]
+		(data) => profileCategory.length === 0 || profileCategory.includes(data.profileCategory),
+		[profileCategory]
 	);
 
 	const checkShortlists = useCallback(
-		(data) => Shortlists.length === 0 || Shortlists.includes(data.interviewShortlist) || (Shortlists.includes(4) && data.interviewShortlist >= 4),
-		[Shortlists]
+		(data) => shortlists.length === 0 || shortlists.includes(data.interviewShortlist) || (shortlists.includes(4) && data.interviewShortlist >= 4),
+		[shortlists]
 	);
 
 	const checkSelects = useCallback(
-		(data) => Selects.length === 0 || Selects.includes(data.selectedStudents) || (Selects.includes(4) && data.selectedStudents >= 4),
-		[Selects]
+		(data) => selects.length === 0 || selects.includes(data.selectedStudents) || (selects.includes(4) && data.selectedStudents >= 4),
+		[selects]
 	);
 
 	const checkCTC = useCallback(
 		(data) =>
-			CTC.length === 0 ||
-			CTC.some((val) => (val === 31 ? data.ctc >= val : data.ctc < val)) ||
-			(CTC.includes(10) && data.ctc < 10) ||
-			(CTC.includes(20) && data.ctc >= 10 && data.ctc < 20) ||
-			(CTC.includes(30) && data.ctc >= 20 && data.ctc < 30),
-		[CTC]
+			ctc.length === 0 ||
+			ctc.some((val) => (val === 31 ? data.ctc >= val : data.ctc < val)) ||
+			(ctc.includes(10) && data.ctc < 10) ||
+			(ctc.includes(20) && data.ctc >= 10 && data.ctc < 20) ||
+			(ctc.includes(30) && data.ctc >= 20 && data.ctc < 30),
+		[ctc]
 	);
 
 	const checkBase = useCallback(
 		(data) =>
-			Base.length === 0 ||
-			Base.some((val) => (val === 16 ? data.ctcBase >= val : data.ctcBase < val)) ||
-			(Base.includes(5) && data.ctcBase < 5) ||
-			(Base.includes(10) && data.ctcBase >= 5 && data.ctcBase < 10) ||
-			(Base.includes(15) && data.ctcBase >= 10 && data.ctcBase < 15),
-		[Base]
+			base.length === 0 ||
+			base.some((val) => (val === 16 ? data.ctcBase >= val : data.ctcBase < val)) ||
+			(base.includes(5) && data.ctcBase < 5) ||
+			(base.includes(10) && data.ctcBase >= 5 && data.ctcBase < 10) ||
+			(base.includes(15) && data.ctcBase >= 10 && data.ctcBase < 15),
+		[base]
 	);
 
-	const checkLocations = useCallback((data) => Locations.length === 0 || Locations.some((value) => data.locations.includes(value)), [Locations]);
+	const checkLocations = useCallback((data) => locations.length === 0 || locations.some((value) => data.locations.includes(value)), [locations]);
 
 	const doesExternalFilterPass = useCallback(
 		(node) => {
@@ -243,7 +243,7 @@ const CompanyTable = () => {
 			'Profile Category': setProfileCategory,
 			Shortlists: setShortlists,
 			Selects: setSelects,
-			CTC: setCTC,
+			CTC: setCtc,
 			Base: setBase,
 			Locations: setLocations
 		};
