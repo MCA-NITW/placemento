@@ -2,7 +2,7 @@ import PropType from 'prop-types';
 import ReactDOM from 'react-dom';
 import classes from './Modal.module.css';
 
-const Modal = ({ isOpen, onClose, onConfirm, message, buttonTitle, HasInput = null }) => {
+const Modal = ({ isOpen, onClose, onConfirm, message, buttonTitle, HasInput = null, rootid = 'modal-root' }) => {
 	if (!isOpen) return null;
 	return ReactDOM.createPortal(
 		<div className={classes.overlay}>
@@ -19,7 +19,7 @@ const Modal = ({ isOpen, onClose, onConfirm, message, buttonTitle, HasInput = nu
 				</div>
 			</div>
 		</div>,
-		document.getElementById('modal-root')
+		document.getElementById(rootid)
 	);
 };
 
@@ -29,7 +29,8 @@ Modal.propTypes = {
 	onConfirm: PropType.func.isRequired,
 	message: PropType.string.isRequired,
 	buttonTitle: PropType.string.isRequired,
-	HasInput: PropType.func || null
+	HasInput: PropType.func,
+	rootid: PropType.string
 };
 
 export default Modal;

@@ -3,23 +3,32 @@ import { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { toast } from 'react-toastify';
 import { deleteExperience } from '../../api/experienceApi';
+import Modal from '../../components/Modal/Modal';
 import ToastContent from '../../components/ToastContent/ToastContent';
 import ExperienceForm from './ExperienceForm';
 
 const ExperienceView = ({ closeExperienceViewModal, experienceViewModalData, user }) => {
 	const [initialData, setInitialData] = useState({});
 	const [showupdateExperienceModal, setShowupdateExperienceModal] = useState(false);
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [experienceToDelete, setExperienceToDelete] = useState({});
 
-	const handleDeleteButtonClick = async (experience) => {
+	const onConfirmDelete = async () => {
 		try {
-			const id = experience._id;
+			const id = experienceToDelete._id;
 			await deleteExperience(id);
 			toast.success(<ToastContent res="success" messages={[`Experience deleted successfully.`]} />);
 			closeExperienceViewModal(true);
+			setIsModalOpen(false);
 		} catch (error) {
 			console.error('Error deleting experience:', error);
 			toast.error(<ToastContent res="Error" messages={error.response.data.errors} />);
 		}
+	};
+
+	const handleDeleteButtonClick = () => {
+		setIsModalOpen(true);
+		setExperienceToDelete(experienceViewModalData);
 	};
 
 	const handleEditButtonClick = (experience) => {
@@ -49,7 +58,7 @@ const ExperienceView = ({ closeExperienceViewModal, experienceViewModalData, use
 							<h3 className="experience-student-details">
 								{experienceViewModalData.studentDetails.name} ({experienceViewModalData.studentDetails.batch})
 							</h3>
-							<div>{experienceViewModalData.postDate}</div>
+							<div>{experienceViewModalData.createdAt}</div>
 						</div>
 						<h3 className="experience-Title">{experienceViewModalData.companyName}</h3>
 						<div className="experience-content">{experienceViewModalData.content}</div>
@@ -87,6 +96,14 @@ const ExperienceView = ({ closeExperienceViewModal, experienceViewModalData, use
 				</div>
 			</div>
 			{updateExperienceModal()}
+			<Modal
+				isOpen={isModalOpen}
+				onClose={() => setIsModalOpen(false)}
+				onConfirm={onConfirmDelete}
+				message="Are you sure you want to delete this Experience?"
+				buttonTitle="Delete"
+				rootid="experience-view-modal"
+			/>
 		</>
 	);
 };

@@ -30,18 +30,18 @@ const Experience = () => {
 			const response = await getAllExperience();
 			const tagss = [];
 			response.data.experiences.forEach((experience) => {
-				const postDate = new Date(experience.postDate);
-				const formattedDate = postDate.toLocaleDateString('en-In', {
+				const createdAt = new Date(experience.createdAt);
+				const formattedDate = createdAt.toLocaleDateString('en-In', {
 					year: 'numeric',
 					month: 'short',
 					day: 'numeric'
 				});
-				const formattedTime = postDate.toLocaleTimeString('en-In', {
+				const formattedTime = createdAt.toLocaleTimeString('en-In', {
 					hour: 'numeric',
 					minute: 'numeric',
 					hour12: true
 				});
-				experience.postDate = `${formattedTime} (${formattedDate})`;
+				experience.createdAt = `${formattedTime} (${formattedDate})`;
 				experience.tags.forEach((tag) => {
 					const existingTag = tagss.find((t) => t.tag === tag);
 					if (existingTag) {
@@ -151,7 +151,7 @@ const Experience = () => {
 									<h3 className="experience-student-details">
 										{experience.studentDetails.name} ({experience.studentDetails.batch})
 									</h3>
-									<div>{experience.postDate}</div>
+									<div>{experience.createdAt}</div>
 								</div>
 								<button
 									className="experience-Title"

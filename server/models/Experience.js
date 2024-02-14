@@ -10,8 +10,6 @@ const experienceSchema = new mongoose.Schema(
 		},
 		content: { type: String, required: true },
 		Comments: { type: [String], default: [] },
-		postDate: { type: Date, default: Date.now },
-		editDate: { type: Date, default: Date.now },
 		tags: { type: [String], default: [] }
 	},
 	{ timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } }

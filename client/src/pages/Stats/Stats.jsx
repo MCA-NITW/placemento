@@ -106,7 +106,7 @@ const Stats = () => {
 							right={
 								<>
 									{companyStats.topLocations.slice(0, 3).map((location) => (
-										<div key={location} className="stats-section-item-right-header">
+										<div key={location.location} className="stats-section-item-right-header">
 											{location.location} <span>({location.count})</span>
 										</div>
 									))}
