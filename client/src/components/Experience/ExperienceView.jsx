@@ -3,8 +3,8 @@ import { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { toast } from 'react-toastify';
 import { deleteExperience } from '../../api/experienceApi';
-import Modal from '../../components/Modal/Modal';
-import ToastContent from '../../components/ToastContent/ToastContent';
+import Modal from '../Modal/Modal';
+import ToastContent from '../ToastContent/ToastContent';
 import ExperienceForm from './ExperienceForm';
 
 const ExperienceView = ({ closeExperienceViewModal, experienceViewModalData, user }) => {

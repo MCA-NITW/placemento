@@ -2,7 +2,7 @@ import propTypes from 'prop-types';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { addExperience, updateExperience } from '../../api/experienceApi';
-import ToastContent from '../../components/ToastContent/ToastContent';
+import ToastContent from '../ToastContent/ToastContent';
 
 const ExperienceForm = ({ closeExperienceAddModal, initialData, isAdd }) => {
 	const [companyName, setCompanyName] = useState(isAdd ? '' : initialData.companyName);

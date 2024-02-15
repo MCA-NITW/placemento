@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import './StudentFilters.css';
+import Filter from '../Filter/Filter';
 
 const StudentFilters = ({ optionClickHandler, role }) => {
 	const roleOptions = [
@@ -82,44 +82,28 @@ const StudentFilters = ({ optionClickHandler, role }) => {
 		{ label: 'More than 8', value: 9 }
 	];
 
-	const optionsRenderer = (head, options) => {
-		return (
-			<div className="students-filter__item">
-				<div className="students-filter__item__label">{head}</div>
-				<div className="students-filter__item__values">
-					{options.map((option) => (
-						<button
-							key={option.value}
-							id={`${head.toLowerCase()}-${option.value}`}
-							className="students-filter__item__value"
-							onClick={() => optionClickHandler(head, option.value)}
-						>
-							{option.label}
-						</button>
-					))}
-				</div>
-			</div>
-		);
+	const allOptions = {
+		Role: roleOptions,
+		Batch: batchOptions,
+		Placement: placedOptions,
+		Location: locationOptions,
+		CTC: ctcOptions,
+		Base: baseOptions
 	};
+
+	const adminOptions = {
+		Verification: verifyOptions,
+		Gap: gapOptions,
+		Backlogs: backlogsOptions,
+		'PG CGPA': pgcgpaOptions,
+		'Overall CGPA': overAllcgpaOptions
+	};
+
 	return (
-		<div className="students-filter">
-			<h3>Filters</h3>
-			{optionsRenderer('Role', roleOptions)}
-			{optionsRenderer('Batch', batchOptions)}
-			{optionsRenderer('Placement', placedOptions)}
-			{optionsRenderer('Location', locationOptions)}
-			{optionsRenderer('CTC', ctcOptions)}
-			{optionsRenderer('Base', baseOptions)}
-			{(role === 'admin' || role === 'placementCoordinator') && (
-				<>
-					{optionsRenderer('Verification', verifyOptions)}
-					{optionsRenderer('Gap', gapOptions)}
-					{optionsRenderer('Backlogs', backlogsOptions)}
-					{optionsRenderer('PG CGPA', pgcgpaOptions)}
-					{optionsRenderer('Overall CGPA', overAllcgpaOptions)}
-				</>
-			)}
-		</div>
+		<Filter
+			Allptions={role === 'admin' || role === 'placementCoordinator' ? { ...allOptions, ...adminOptions } : allOptions}
+			optionClickHandler={optionClickHandler}
+		/>
 	);
 };
 

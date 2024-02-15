@@ -6,6 +6,7 @@ import { addCompany, deleteCompany, getCompanies, getCompany, updateCompany } fr
 import getUser from '../../utils/user.js';
 import AgGridTable from '../AgGridTable/AgGridTable.jsx';
 import Modal from '../Modal/Modal.jsx';
+import Structure from '../Structure/Structure.jsx';
 import ToastContent from '../ToastContent/ToastContent.jsx';
 import CompanyFilters from './CompanyFilters';
 import CompanyForm from './CompanyForm';
@@ -259,17 +260,18 @@ const CompanyTable = () => {
 	};
 
 	return (
-		<div className="companies-container">
-			{renderCompanyForm()}
-			<div className="companies-left">
-				{(user.role === 'admin' || user.role === 'placementCoordinator') && (
-					<button className="btn btn-primary" onClick={handleAddCompanyClick}>
-						Add Company
-					</button>
-				)}
-				<CompanyFilters optionClickHandler={optionClickHandler} />
-			</div>
-			<div className="companies-right">
+		<Structure
+			LeftCompnonet={
+				<>
+					{(user.role === 'admin' || user.role === 'placementCoordinator') && (
+						<button className="btn btn-primary" onClick={handleAddCompanyClick}>
+							Add Company
+						</button>
+					)}
+					<CompanyFilters optionClickHandler={optionClickHandler} />
+				</>
+			}
+			RightComponent={
 				<AgGridTable
 					rowData={companies}
 					columnDefinitions={columnDefinitions}
@@ -277,15 +279,20 @@ const CompanyTable = () => {
 					isExternalFilterPresent={isExternalFilterPresent}
 					doesExternalFilterPass={doesExternalFilterPass}
 				/>
-				<Modal
-					isOpen={isModalOpen}
-					onClose={() => setIsModalOpen(false)}
-					onConfirm={onConfirmDelete}
-					message="Are you sure you want to delete this company?"
-					buttonTitle="Delete"
-				/>
-			</div>
-		</div>
+			}
+			ContainerComponent={
+				<>
+					{renderCompanyForm()}
+					<Modal
+						isOpen={isModalOpen}
+						onClose={() => setIsModalOpen(false)}
+						onConfirm={onConfirmDelete}
+						message="Are you sure you want to delete this company?"
+						buttonTitle="Delete"
+					/>
+				</>
+			}
+		/>
 	);
 };
 

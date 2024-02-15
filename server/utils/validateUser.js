@@ -24,8 +24,7 @@ const validateFields = (user) => {
 
 	validationRules.forEach((rule) => {
 		const fieldPath = rule.field.split('.');
-		let value = user;
-		value = fieldPath.reduce((acc, field) => acc?.[field], user);
+		let value = fieldPath.reduce((acc, field) => acc?.[field], user);
 
 		if (
 			value === undefined ||

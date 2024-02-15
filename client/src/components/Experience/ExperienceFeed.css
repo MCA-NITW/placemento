@@ -73,40 +73,6 @@
 	margin-top: 10px;
 }
 
-.experience-container {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
-	width: 100%;
-	height: calc(100% - 61px);
-	gap: 10px;
-}
-
-.experience-left,
-.experience-mid {
-	display: flex;
-	flex-direction: column;
-	gap: 10px;
-	border-radius: 1rem;
-	background: var(--color-bg-variant);
-	box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.5);
-	height: 100%;
-	overflow-y: auto;
-	padding: 20px;
-	align-items: center;
-	border: 1px solid var(--color-bg);
-}
-
-.experience-left {
-	width: 20%;
-	gap: 20px;
-}
-
-.experience-mid {
-	width: 100%;
-}
-
 .experience-item {
 	display: flex;
 	flex-direction: column;
