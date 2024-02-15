@@ -137,7 +137,7 @@ exports.updateRole = async (req, res) => {
 			return res.status(400).json({ message: 'Invalid user ID' });
 		}
 		console.log(req.body.role);
-		if (req.body.role !== 'admin' && req.body.role !== 'student' && req.body.role !== 'placementCoordinator') {
+		if (!['admin', 'student', 'placementCoordinator'].includes(req.body.role)) {
 			return res.status(400).json({ message: 'Invalid role' });
 		}
 		if (req.params.id === req.user.id) {

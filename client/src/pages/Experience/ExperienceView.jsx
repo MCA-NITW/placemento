@@ -26,9 +26,9 @@ const ExperienceView = ({ closeExperienceViewModal, experienceViewModalData, use
 		}
 	};
 
-	const handleDeleteButtonClick = () => {
+	const handleDeleteButtonClick = (experience) => {
 		setIsModalOpen(true);
-		setExperienceToDelete(experienceViewModalData);
+		setExperienceToDelete(experience);
 	};
 
 	const handleEditButtonClick = (experience) => {
