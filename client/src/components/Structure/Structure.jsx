@@ -1,4 +1,5 @@
 import './Structure.css';
+import propTypes from 'prop-types';
 
 const Structure = ({ LeftCompnonet, RightComponent, ContainerComponent }) => {
 	return (
@@ -8,6 +9,12 @@ const Structure = ({ LeftCompnonet, RightComponent, ContainerComponent }) => {
 			<div className="structure-right">{RightComponent}</div>
 		</div>
 	);
+};
+
+Structure.propTypes = {
+	LeftCompnonet: propTypes.element.isRequired,
+	RightComponent: propTypes.element.isRequired,
+	ContainerComponent: propTypes.element.isRequired
 };
 
 export default Structure;
