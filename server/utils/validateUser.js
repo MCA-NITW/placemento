@@ -1,45 +1,39 @@
 const validateFields = (user) => {
 	const errorMessages = [];
-	if (!user.name) errorMessages.push('Name is required.');
-	if (!user.email.endsWith('@student.nitw.ac.in')) errorMessages.push('Enter a valid NITW email.');
-	if (user.password.length < 6 || !/[a-z]/.test(user.password) || !/[A-Z]/.test(user.password) || !/\d/.test(user.password))
-		errorMessages.push('Password must be atleast 6 characters long and contain atleast one uppercase, one lowercase and one numeric character.');
-	if (!user.rollNo.match(/^\d{2}MCF1R\d{2,}$/)) errorMessages.push('Enter a valid roll number. (Eg: 21MCF1R01)');
-	if (
-		user.pg.cgpa < 0 ||
-		user.pg.cgpa > 10 ||
-		user.ug.cgpa < 0 ||
-		user.ug.cgpa > 10 ||
-		user.hsc.cgpa < 0 ||
-		user.hsc.cgpa > 10 ||
-		user.ssc.cgpa < 0 ||
-		user.ssc.cgpa > 10 ||
-		user.pg.cgpa == null ||
-		user.ug.cgpa == null ||
-		user.hsc.cgpa == null ||
-		user.ssc.cgpa == null
-	)
-		errorMessages.push('All CGPA fields must be between 0 and 10.');
-	if (
-		user.pg.percentage < 0 ||
-		user.pg.percentage > 100 ||
-		user.ug.percentage < 0 ||
-		user.ug.percentage > 100 ||
-		user.hsc.percentage < 0 ||
-		user.hsc.percentage > 100 ||
-		user.ssc.percentage < 0 ||
-		user.ssc.percentage > 100 ||
-		user.pg.percentage == null ||
-		user.ug.percentage == null ||
-		user.hsc.percentage == null ||
-		user.ssc.percentage == null
-	)
-		errorMessages.push('All percentage fields must be between 0 and 100.');
 
-	if (user.totalGapInAcademics < 0 || user.totalGapInAcademics == null || user.totalGapInAcademics > 10)
-		errorMessages.push('Total gap in academics must be greater than or equal to 0.');
+	const validationRules = [
+		{ field: 'name', message: 'Name is required.' },
+		{ field: 'email', message: 'Enter a valid NITW email.', regex: /@student\.nitw\.ac\.in$/ },
+		{ field: 'password', message: 'Password must be at least 6 characters long and contain at least one uppercase, one lowercase, and one numeric character.', regex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/ },
+		{ field: 'rollNo', message: 'Enter a valid roll number. (Eg: 21MCF1R01)', regex: /^\d{2}MCF1R\d{2,}$/ },
+		{ field: 'pg.cgpa', message: 'PG CGPA field must be between 0 and 10.', min: 0, max: 10 },
+		{ field: 'ug.cgpa', message: 'UG CGPA field must be between 0 and 10.', min: 0, max: 10 },
+		{ field: 'hsc.cgpa', message: '10th CGPA field must be between 0 and 10.', min: 0, max: 10 },
+		{ field: 'ssc.cgpa', message: '12th CGPA field must be between 0 and 10.', min: 0, max: 10 },
+		{ field: 'pg.percentage', message: 'PG percentage field must be between 0 and 100.', min: 0, max: 100 },
+		{ field: 'ug.percentage', message: 'UG percentage field must be between 0 and 100.', min: 0, max: 100 },
+		{ field: 'hsc.percentage', message: '10th percentage field must be between 0 and 100.', min: 0, max: 100 },
+		{ field: 'ssc.percentage', message: '12th percentage field must be between 0 and 100.', min: 0, max: 100 },
+		{ field: 'totalGapInAcademics', message: 'Total gap in academics must be greater than or equal to 0.', min: 0, max: 10 },
+		{ field: 'backlogs', message: 'Backlogs must be greater than or equal to 0.', min: 0, max: 10 },
+	];
 
-	if (user.backlogs < 0 || user.backlogs == null || user.backlogs > 10) errorMessages.push('Backlogs must be greater than or equal to 0.');
+	validationRules.forEach(rule => {
+		const fieldPath = rule.field.split('.');
+		let value = user;
+		for (const field of fieldPath) {
+			if (value && value.hasOwnProperty(field)) {
+				value = value[field];
+			} else {
+				value = undefined;
+				break;
+			}
+		}
+
+		if (value === undefined || (rule.regex && !rule.regex.test(value)) || (rule.min !== undefined && value < rule.min) || (rule.max !== undefined && value > rule.max)) {
+			errorMessages.push(rule.message);
+		}
+	});
 
 	return errorMessages;
 };
