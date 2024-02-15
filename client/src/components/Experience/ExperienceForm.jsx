@@ -22,40 +22,38 @@ const ExperienceForm = ({ closeExperienceAddModal, initialData, isAdd }) => {
 	};
 
 	return (
-		<div className="modal" id="experience-modal">
-			<div className="modal-dialog">
-				<form className="experience-form" onSubmit={handleAddExperience}>
-					<div className="experience-form-group">
-						<label htmlFor="companyName">Company Name</label>
-						<input
-							type="text"
-							className="form-control"
-							id="companyName"
-							name="companyName"
-							value={companyName}
-							onChange={(e) => setCompanyName(e.target.value)}
-						/>
-					</div>
-					<div className="experience-form-group">
-						<label htmlFor="content">Content</label>
-						<textarea className="form-control" id="content" name="content" value={content} onChange={(e) => setContent(e.target.value)} />
-					</div>
-					<div className="modal-buttons">
-						<button type="submit" className="btn btn-primary">
-							{isAdd ? 'Add' : 'Update'}
-						</button>
-						<button
-							type="button"
-							className="btn btn-primary"
-							onClick={() => {
-								closeExperienceAddModal(false);
-							}}
-						>
-							Close
-						</button>
-					</div>
-				</form>
-			</div>
+		<div className="overlay" id="experience-modal">
+			<form className="experience-form" onSubmit={handleAddExperience}>
+				<div className="experience-form-group">
+					<label htmlFor="companyName">Company Name</label>
+					<input
+						type="text"
+						className="form-control"
+						id="companyName"
+						name="companyName"
+						value={companyName}
+						onChange={(e) => setCompanyName(e.target.value)}
+					/>
+				</div>
+				<div className="experience-form-group">
+					<label htmlFor="content">Content</label>
+					<textarea className="form-control" id="content" name="content" value={content} onChange={(e) => setContent(e.target.value)} />
+				</div>
+				<div className="modal-buttons">
+					<button type="submit" className="btn btn-primary">
+						{isAdd ? 'Add' : 'Update'}
+					</button>
+					<button
+						type="button"
+						className="btn btn-primary"
+						onClick={() => {
+							closeExperienceAddModal(false);
+						}}
+					>
+						Close
+					</button>
+				</div>
+			</form>
 		</div>
 	);
 };

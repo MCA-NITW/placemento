@@ -5,7 +5,7 @@ import classes from './Modal.module.css';
 const Modal = ({ isOpen, onClose, onConfirm, message, buttonTitle, HasInput = null, rootid = 'modal-root' }) => {
 	if (!isOpen) return null;
 	return ReactDOM.createPortal(
-		<div className={classes.overlay}>
+		<div className="overlay">
 			<div className={classes.modal}>
 				<p>{message}</p>
 				{HasInput && <HasInput />}

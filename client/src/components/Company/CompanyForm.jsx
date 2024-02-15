@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import ToastContent from '../ToastContent/ToastContent';
 import './CompanyForm.css';
@@ -55,13 +55,16 @@ const getDefaultFormData = (initialData) => {
 const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 	const [formData, setFormData] = useState(getDefaultFormData(initialData));
 
-	const handleChange = (field, value) => {
+	const handleChange = useCallback((field, value) => {
 		setFormData((prevData) => ({ ...prevData, [field]: value }));
-	};
+	}, []);
 
-	const handleDropdownChange = (field, value) => {
-		handleChange(field, value === '' ? [] : value.split(',').map((i) => i.trim()));
-	};
+	const handleDropdownChange = useCallback(
+		(field, value) => {
+			handleChange(field, value === '' ? [] : value.split(',').map((i) => i.trim()));
+		},
+		[handleChange]
+	);
 
 	const processCutoff = (value) => ({
 		cgpa: value <= 10 ? value : 0,
@@ -133,73 +136,80 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 		</div>
 	);
 
-	const statusOptions = [
-		{ label: 'Ongoing', value: 'ongoing' },
-		{ label: 'Completed', value: 'completed' },
-		{ label: 'Cancelled', value: 'cancelled' }
-	];
+	const statusOptions = useMemo(
+		() => [
+			{ label: 'Ongoing', value: 'ongoing' },
+			{ label: 'Completed', value: 'completed' },
+			{ label: 'Cancelled', value: 'cancelled' }
+		],
+		[]
+	);
 
-	const profileCategoryOptions = [
-		{ label: 'Software', value: 'Software' },
-		{ label: 'Analyst', value: 'Analyst' },
-		{ label: 'Others', value: 'Others' }
-	];
+	const profileCategoryOptions = useMemo(
+		() => [
+			{ label: 'Software', value: 'Software' },
+			{ label: 'Analyst', value: 'Analyst' },
+			{ label: 'Others', value: 'Others' }
+		],
+		[]
+	);
 
-	const offerOptions = [
-		{ label: 'PPO', value: 'PPO' },
-		{ label: 'FTE', value: 'FTE' },
-		{ label: '6M+FTE', value: '6M+FTE' },
-		{ label: 'Intern', value: 'Intern' }
-	];
+	const offerOptions = useMemo(
+		() => [
+			{ label: 'PPO', value: 'PPO' },
+			{ label: 'FTE', value: 'FTE' },
+			{ label: '6M+FTE', value: '6M+FTE' },
+			{ label: 'Intern', value: 'Intern' }
+		],
+		[]
+	);
 
 	return (
-		<div className="modal" id="companyFormModal">
-			<div className="modal-dialog">
-				<form className="company-form" onSubmit={handleSubmit}>
-					{formInputGroupRenderer('Company Name', 'name', 'text', formData.name)}
-					{formDropdownGroupRenderer('Status', 'status', statusOptions, formData.status)}
+		<div className="overlay" id="companyFormModal">
+			<form className="company-form" onSubmit={handleSubmit}>
+				{formInputGroupRenderer('Company Name', 'name', 'text', formData.name)}
+				{formDropdownGroupRenderer('Status', 'status', statusOptions, formData.status)}
 
+				<div className="input-group">
+					{formInputGroupRenderer('Interview/Intern Shortlists', 'interviewShortlist', 'number', formData.interviewShortlist)}
+					{formInputGroupRenderer('Date of Offer', 'dateOfOffer', 'date', formData.dateOfOffer)}
+				</div>
+
+				{formTextAreaGroupRenderer('Selected Students Roll No', 'selectedStudentsRollNo', formData.selectedStudentsRollNo)}
+				{formTextAreaGroupRenderer('Locations', 'locations', formData.locations)}
+
+				<div className="input-group-out">
 					<div className="input-group">
-						{formInputGroupRenderer('Interview/Intern Shortlists', 'interviewShortlist', 'number', formData.interviewShortlist)}
-						{formInputGroupRenderer('Date of Offer', 'dateOfOffer', 'date', formData.dateOfOffer)}
+						{formInputGroupRenderer('Cutoff PG', 'cutoff_pg', 'number', formData.cutoff_pg)}
+						{formInputGroupRenderer('Cutoff UG', 'cutoff_ug', 'number', formData.cutoff_ug)}
 					</div>
-
-					{formTextAreaGroupRenderer('Selected Students Roll No', 'selectedStudentsRollNo', formData.selectedStudentsRollNo)}
-					{formTextAreaGroupRenderer('Locations', 'locations', formData.locations)}
-
-					<div className="input-group-out">
-						<div className="input-group">
-							{formInputGroupRenderer('Cutoff PG', 'cutoff_pg', 'number', formData.cutoff_pg)}
-							{formInputGroupRenderer('Cutoff UG', 'cutoff_ug', 'number', formData.cutoff_ug)}
-						</div>
-						<div className="input-group">
-							{formInputGroupRenderer('Cutoff 12', 'cutoff_12', 'number', formData.cutoff_12)}
-							{formInputGroupRenderer('Cutoff 10', 'cutoff_10', 'number', formData.cutoff_10)}
-						</div>
-					</div>
-
-					{formDropdownGroupRenderer('Offer', 'typeOfOffer', offerOptions, formData.typeOfOffer)}
 					<div className="input-group">
-						{formInputGroupRenderer('Profile', 'profile', 'text', formData.profile)}
-						{formDropdownGroupRenderer('Profile Category', 'profileCategory', profileCategoryOptions, formData.profileCategory)}
+						{formInputGroupRenderer('Cutoff 12', 'cutoff_12', 'number', formData.cutoff_12)}
+						{formInputGroupRenderer('Cutoff 10', 'cutoff_10', 'number', formData.cutoff_10)}
 					</div>
+				</div>
 
-					<div className="input-group">
-						{formInputGroupRenderer('CTC', 'ctc', 'number', formData.ctc)}
-						{formInputGroupRenderer('CTC Base', 'ctcBase', 'number', formData.ctcBase)}
-						{formInputGroupRenderer('Bond', 'bond', 'number', formData.bond)}
-					</div>
+				{formDropdownGroupRenderer('Offer', 'typeOfOffer', offerOptions, formData.typeOfOffer)}
+				<div className="input-group">
+					{formInputGroupRenderer('Profile', 'profile', 'text', formData.profile)}
+					{formDropdownGroupRenderer('Profile Category', 'profileCategory', profileCategoryOptions, formData.profileCategory)}
+				</div>
 
-					<div className="company-form__buttons">
-						<button type="submit" className="btn btn-primary">
-							{isAdd ? 'Add' : 'Update'}
-						</button>
-						<button type="button" className="btn btn-primary" onClick={() => handleFormClose(false)}>
-							Cancel
-						</button>
-					</div>
-				</form>
-			</div>
+				<div className="input-group">
+					{formInputGroupRenderer('CTC', 'ctc', 'number', formData.ctc)}
+					{formInputGroupRenderer('CTC Base', 'ctcBase', 'number', formData.ctcBase)}
+					{formInputGroupRenderer('Bond', 'bond', 'number', formData.bond)}
+				</div>
+
+				<div className="company-form__buttons">
+					<button type="submit" className="btn btn-primary">
+						{isAdd ? 'Add' : 'Update'}
+					</button>
+					<button type="button" className="btn btn-primary" onClick={() => handleFormClose(false)}>
+						Cancel
+					</button>
+				</div>
+			</form>
 		</div>
 	);
 };
