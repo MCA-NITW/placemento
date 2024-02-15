@@ -1,4 +1,4 @@
-.companies-filter {
+.filter {
 	display: flex;
 	flex-direction: column;
 	gap: 10px;
@@ -9,7 +9,7 @@
 	overflow-y: auto;
 }
 
-.companies-filter h3 {
+.filter h3 {
 	font-size: 1.5rem;
 	position: sticky;
 	top: 0;
@@ -19,7 +19,8 @@
 	text-align: center;
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }
-.companies-filter__item {
+
+.filter__item {
 	display: flex;
 	flex-direction: column;
 	gap: 10px;
@@ -30,12 +31,12 @@
 	background: var(--color-bg);
 }
 
-.companies-filter__item__label {
+.filter__item__label {
 	font-size: 1.1rem;
 	align-self: center;
 }
 
-.companies-filter__item__values {
+.filter__item__values {
 	width: 100%;
 	display: flex;
 	flex-direction: row;
@@ -45,7 +46,7 @@
 	transition: all 0.3s ease-in-out;
 }
 
-.companies-filter__item__value {
+.filter__item__value {
 	padding: 5px;
 	gap: 5px;
 	width: 100%;
@@ -58,10 +59,10 @@
 	transition: all 0.3s ease-in-out;
 }
 
-.companies-filter__item__value:hover {
+.filter__item__value:hover {
 	border: 1px solid var(--color-primary);
 }
 
-.companies-filter__item__value.active {
+.filter__item__value.active {
 	border: 1px solid var(--color-primary);
 }

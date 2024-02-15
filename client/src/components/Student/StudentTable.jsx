@@ -14,6 +14,7 @@ import {
 import getUser from '../../utils/user.js';
 import AgGridTable from '../AgGridTable/AgGridTable.jsx';
 import Modal from '../Modal/Modal.jsx';
+import Structure from '../Structure/Structure.jsx';
 import ToastContent from '../ToastContent/ToastContent.jsx';
 import StudentFilters from './StudentFilters.jsx';
 import './StudentTable.css';
@@ -348,9 +349,9 @@ const StudentTable = () => {
 	};
 
 	return (
-		<div className="students-container">
-			<div className="students-left">{user.role && <StudentFilters optionClickHandler={optionClickHandler} role={user.role} />}</div>
-			<div className="students-right">
+		<Structure
+			LeftCompnonet={user.role && <StudentFilters optionClickHandler={optionClickHandler} role={user.role} />}
+			RightComponent={
 				<AgGridTable
 					rowData={students}
 					columnDefinitions={columnDefinitions}
@@ -358,11 +359,13 @@ const StudentTable = () => {
 					doesExternalFilterPass={doesExternalFilterPass}
 					isExternalFilterPresent={isExternalFilterPresent}
 				/>
-				{selectedStudent && (
+			}
+			ContainerComponent={
+				selectedStudent && (
 					<Modal isOpen={isModalOpen} onClose={() => closeModal()} onConfirm={() => onConfirmClick()} message={message} buttonTitle={buttonTitle} />
-				)}
-			</div>
-		</div>
+				)
+			}
+		/>
 	);
 };
 

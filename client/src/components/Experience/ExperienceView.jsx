@@ -3,8 +3,8 @@ import { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { toast } from 'react-toastify';
 import { deleteExperience } from '../../api/experienceApi';
-import Modal from '../../components/Modal/Modal';
-import ToastContent from '../../components/ToastContent/ToastContent';
+import Modal from '../Modal/Modal';
+import ToastContent from '../ToastContent/ToastContent';
 import ExperienceForm from './ExperienceForm';
 
 const ExperienceView = ({ closeExperienceViewModal, experienceViewModalData, user }) => {
@@ -51,47 +51,45 @@ const ExperienceView = ({ closeExperienceViewModal, experienceViewModalData, use
 
 	return (
 		<>
-			<div className="modal" id="experience-view-modal">
-				<div className="view-modal-dialog">
-					<div className="experience-view">
-						<div className="experience-header">
-							<h3 className="experience-student-details">
-								{experienceViewModalData.studentDetails.name} ({experienceViewModalData.studentDetails.batch})
-							</h3>
-							<div>{experienceViewModalData.createdAt}</div>
-						</div>
-						<h3 className="experience-Title">{experienceViewModalData.companyName}</h3>
-						<div className="experience-content">{experienceViewModalData.content}</div>
-						<div className="experience-view-tags">
-							{experienceViewModalData.tags.map((tag) => (
-								<div key={tag} className="experience-view-tag">
-									#{tag}
-								</div>
-							))}
-						</div>
-						<div className="experience-comments">
-							{experienceViewModalData.Comments.map((comment) => (
-								<div key={comment._id} className="experience-comment">
-									{comment.content}
-								</div>
-							))}
-						</div>
-						<div className="modal-buttons">
-							{user.rollNo === experienceViewModalData.studentDetails.rollNo && (
-								<>
-									<button type="button" className="btn btn-primary" onClick={() => handleEditButtonClick(experienceViewModalData)}>
-										Edit
-									</button>
-									<button type="button" className="btn btn-danger" onClick={() => handleDeleteButtonClick(experienceViewModalData)}>
-										Delete
-									</button>
-								</>
-							)}
+			<div className="overlay" id="experience-view-modal">
+				<div className="experience-view">
+					<div className="experience-header">
+						<h3 className="experience-student-details">
+							{experienceViewModalData.studentDetails.name} ({experienceViewModalData.studentDetails.batch})
+						</h3>
+						<div>{experienceViewModalData.createdAt}</div>
+					</div>
+					<h3 className="experience-Title">{experienceViewModalData.companyName}</h3>
+					<div className="experience-content">{experienceViewModalData.content}</div>
+					<div className="experience-view-tags">
+						{experienceViewModalData.tags.map((tag) => (
+							<div key={tag} className="experience-view-tag">
+								#{tag}
+							</div>
+						))}
+					</div>
+					<div className="experience-comments">
+						{experienceViewModalData.Comments.map((comment) => (
+							<div key={comment._id} className="experience-comment">
+								{comment.content}
+							</div>
+						))}
+					</div>
+					<div className="modal-buttons">
+						{user.rollNo === experienceViewModalData.studentDetails.rollNo && (
+							<>
+								<button type="button" className="btn btn-primary" onClick={() => handleEditButtonClick(experienceViewModalData)}>
+									Edit
+								</button>
+								<button type="button" className="btn btn-danger" onClick={() => handleDeleteButtonClick(experienceViewModalData)}>
+									Delete
+								</button>
+							</>
+						)}
 
-							<button type="button" className="btn btn-primary" onClick={() => closeExperienceViewModal(false)}>
-								Close
-							</button>
-						</div>
+						<button type="button" className="btn btn-primary" onClick={() => closeExperienceViewModal(false)}>
+							Close
+						</button>
 					</div>
 				</div>
 			</div>

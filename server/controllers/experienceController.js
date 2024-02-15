@@ -24,8 +24,6 @@ exports.postAddExperience = async (req, res) => {
 			},
 			content: req.body.content,
 			Comments: [],
-			postDate: new Date(),
-			editDate: new Date(),
 			tags: [req.body.companyName, req.user.batch]
 		};
 		const experience = new Experience(newExperience);
@@ -41,7 +39,7 @@ exports.postAddExperience = async (req, res) => {
 // Get All Experience
 exports.getAllExperience = async (req, res) => {
 	try {
-		const experiences = await Experience.find().sort({ postDate: -1 });
+		const experiences = await Experience.find().sort({ createdAt: -1 });
 		res.status(200).json({ experiences });
 	} catch (error) {
 		logger.error(error);
@@ -52,7 +50,7 @@ exports.getAllExperience = async (req, res) => {
 // Get Experience By Tag
 exports.getExperienceByTag = async (req, res) => {
 	try {
-		const experiences = await Experience.find({ tags: req.params.tag }).sort({ postDate: -1 });
+		const experiences = await Experience.find({ tags: req.params.tag }).sort({ createdAt: -1 });
 		res.status(200).json({ experiences });
 	} catch (error) {
 		logger.error(error);
@@ -63,7 +61,7 @@ exports.getExperienceByTag = async (req, res) => {
 // Get Experience By User
 exports.getExperienceByUser = async (req, res) => {
 	try {
-		const experiences = await Experience.find({ 'studentDetails.studentId': req.params.userId }).sort({ postDate: -1 });
+		const experiences = await Experience.find({ 'studentDetails.studentId': req.params.userId }).sort({ createdAt: -1 });
 		res.status(200).json({ experiences });
 	} catch (error) {
 		logger.error(error);
@@ -104,7 +102,6 @@ exports.updateExperience = async (req, res) => {
 		}
 		experience.companyName = req.body.companyName;
 		experience.content = req.body.content;
-		experience.editDate = new Date();
 		experience.tags = [req.body.companyName, req.user.batch];
 		const savedExperience = await experience.save();
 		logger.info(`Experience updated: ${savedExperience.companyName}`);

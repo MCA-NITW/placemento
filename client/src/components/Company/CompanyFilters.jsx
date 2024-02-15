@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
-import './CompanyFilters.css';
+import Filter from '../Filter/Filter';
+
 const CompanyFilters = ({ optionClickHandler }) => {
 	const statusOptions = [
 		{ label: 'Completed', value: 'completed' },
@@ -62,39 +63,18 @@ const CompanyFilters = ({ optionClickHandler }) => {
 		{ label: 'Other', value: 'Other' }
 	];
 
-	const optionsRenderer = (head, options) => {
-		return (
-			<div className="companies-filter__item">
-				<div className="companies-filter__item__label">{head}</div>
-				<div className="companies-filter__item__values">
-					{options.map((option) => (
-						<button
-							key={option.value}
-							id={`${head.toLowerCase()}-${option.value}`}
-							className="companies-filter__item__value"
-							onClick={() => optionClickHandler(head, option.value)}
-						>
-							{option.label}
-						</button>
-					))}
-				</div>
-			</div>
-		);
+	const allOptions = {
+		Status: statusOptions,
+		Offer: offerOptions,
+		'Profile Category': profileCategoryOptions,
+		Shortlists: shortlistOptions,
+		Selects: selectOptions,
+		CTC: ctcOptions,
+		Base: baseOptions,
+		Locations: locationOptions
 	};
 
-	return (
-		<div className="companies-filter">
-			<h3>Filters</h3>
-			{optionsRenderer('Status', statusOptions)}
-			{optionsRenderer('Offer', offerOptions)}
-			{optionsRenderer('Profile Category', profileCategoryOptions)}
-			{optionsRenderer('Shortlists', shortlistOptions)}
-			{optionsRenderer('Selects', selectOptions)}
-			{optionsRenderer('CTC', ctcOptions)}
-			{optionsRenderer('Base', baseOptions)}
-			{optionsRenderer('Locations', locationOptions)}
-		</div>
-	);
+	return <Filter Allptions={allOptions} optionClickHandler={optionClickHandler} />;
 };
 
 CompanyFilters.propTypes = {
