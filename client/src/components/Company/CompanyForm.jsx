@@ -12,24 +12,44 @@ const formatDate = (date) => {
 };
 
 const getDefaultFormData = (initialData) => {
-	return {
-		name: initialData?.name || '',
-		status: initialData?.status || '',
-		interviewShortlist: initialData?.interviewShortlist || 0,
-		selectedStudentsRollNo: initialData?.selectedStudentsRollNo || [],
-		dateOfOffer: formatDate(new Date(initialData?.dateOfOffer || new Date())),
-		locations: initialData?.locations || [],
-		cutoff_pg: initialData?.cutoffs?.pg?.cgpa || initialData?.cutoffs?.pg?.percentage || 0,
-		cutoff_ug: initialData?.cutoffs?.ug?.cgpa || initialData?.cutoffs?.ug?.percentage || 0,
-		cutoff_12: initialData?.cutoffs?.twelth?.cgpa || initialData?.cutoffs?.twelth?.percentage || 0,
-		cutoff_10: initialData?.cutoffs?.tenth?.cgpa || initialData?.cutoffs?.tenth?.percentage || 0,
-		typeOfOffer: initialData?.typeOfOffer || '',
-		profile: initialData?.profile || '',
-		profileCategory: initialData?.profileCategory || '',
-		ctc: initialData?.ctc || 0,
-		ctcBase: initialData?.ctcBreakup?.base || 0,
-		bond: initialData?.bond || 0
+	const formData = {
+		name: '',
+		status: '',
+		interviewShortlist: 0,
+		selectedStudentsRollNo: [],
+		dateOfOffer: formatDate(new Date()),
+		locations: [],
+		cutoff_pg: 0,
+		cutoff_ug: 0,
+		cutoff_12: 0,
+		cutoff_10: 0,
+		typeOfOffer: '',
+		profile: '',
+		profileCategory: '',
+		ctc: 0,
+		ctcBase: 0,
+		bond: 0
 	};
+
+	if (initialData) {
+		formData.name = initialData.name;
+		formData.status = initialData.status;
+		formData.interviewShortlist = initialData.interviewShortlist;
+		formData.selectedStudentsRollNo = initialData.selectedStudentsRollNo;
+		formData.dateOfOffer = formatDate(new Date(initialData.dateOfOffer));
+		formData.locations = initialData.locations;
+		formData.cutoff_pg = initialData.cutoffs?.pg?.cgpa || initialData.cutoffs?.pg?.percentage;
+		formData.cutoff_ug = initialData.cutoffs?.ug?.cgpa || initialData.cutoffs?.ug?.percentage;
+		formData.cutoff_12 = initialData.cutoffs?.twelth?.cgpa || initialData.cutoffs?.twelth?.percentage;
+		formData.cutoff_10 = initialData.cutoffs?.tenth?.cgpa || initialData.cutoffs?.tenth?.percentage;
+		formData.typeOfOffer = initialData.typeOfOffer;
+		formData.profile = initialData.profile;
+		formData.profileCategory = initialData.profileCategory;
+		formData.ctc = initialData.ctc;
+		formData.ctcBase = initialData.ctcBreakup.base;
+		formData.bond = initialData.bond;
+	}
+	return formData;
 };
 
 const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
