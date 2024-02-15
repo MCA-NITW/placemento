@@ -15,64 +15,69 @@ const Experience = () => {
 	const [experienceViewModalData, setExperienceViewModalData] = useState({});
 	const [user, setUser] = useState({});
 	const [tags, setTags] = useState([]);
-	const [activeTag, setActiveTag] = useState('All'); // Add activeTag state
+	const [activeTag, setActiveTag] = useState('All');
 
-	useEffect(() => {
 		const fetchUser = async () => {
 			const user = await getUser();
 			setUser(user);
 		};
-		fetchUser();
-	}, []);
-
-	const fetchData = async () => {
-		try {
-			const response = await getAllExperience();
-			const tagss = [];
-			response.data.experiences.forEach((experience) => {
-				const createdAt = new Date(experience.createdAt);
-				const formattedDate = createdAt.toLocaleDateString('en-In', {
-					year: 'numeric',
-					month: 'short',
-					day: 'numeric'
-				});
-				const formattedTime = createdAt.toLocaleTimeString('en-In', {
-					hour: 'numeric',
-					minute: 'numeric',
-					hour12: true
-				});
-				experience.createdAt = `${formattedTime} (${formattedDate})`;
-				experience.tags.forEach((tag) => {
-					const existingTag = tagss.find((t) => t.tag === tag);
-					if (existingTag) {
-						existingTag.count++;
-					} else {
-						tagss.push({ tag, count: 1 });
-					}
-				});
+		
+		const formatCreatedAt = (createdAt) => {
+			const formattedDate = createdAt.toLocaleDateString('en-In', {
+				year: 'numeric',
+				month: 'short',
+				day: 'numeric'
 			});
-			tagss.sort((a, b) => b.count - a.count);
-			setTags(tagss);
-			setExperiences(response.data.experiences);
-			setAllExperiences(response.data.experiences);
-		} catch (error) {
-			console.error('Error fetching data:', error);
-		}
-	};
+			const formattedTime = createdAt.toLocaleTimeString('en-In', {
+				hour: 'numeric',
+				minute: 'numeric',
+				hour12: true
+			});
+			return `${formattedTime} (${formattedDate})`;
+		};
+		
+		const updateTags = (tags, experience) => {
+			experience.tags.forEach((tag) => {
+				const existingTag = tags.find((t) => t.tag === tag);
+				if (existingTag) {
+					existingTag.count++;
+				} else {
+					tags.push({ tag, count: 1 });
+				}
+			});
+		};
+		
+		const fetchData = useCallback(async () => {
+			try {
+				const response = await getAllExperience();
+				const tags = [];
+				response.data.experiences.forEach((experience) => {
+					experience.createdAt = formatCreatedAt(new Date(experience.createdAt));
+					updateTags(tags, experience);
+				});
+				tags.sort((a, b) => b.count - a.count);
+				setTags(tags);
+				setExperiences(response.data.experiences);
+				setAllExperiences(response.data.experiences);
+			} catch (error) {
+				console.error('Error fetching data:', error);
+			}
+		}, []);
 
-	useEffect(() => {
-		fetchData();
-	}, []);
+		useEffect(() => {
+			fetchUser();
+			fetchData();
+		}, [fetchData]);
 
 	const closeExperienceAddModal = useCallback((fetch) => {
 		setShowAddExperienceModal(false);
 		if (fetch) fetchData();
-	}, []);
+	}, [fetchData]);
 
 	const closeExperienceViewModal = useCallback((fetch) => {
 		setShowExperienceViewModal(false);
 		if (fetch) fetchData();
-	}, []);
+	}, [fetchData]);
 
 	const addExperienceModal = () => {
 		if (!showAddExperienceModal) return null;
