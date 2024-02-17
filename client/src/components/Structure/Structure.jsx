@@ -1,5 +1,5 @@
-import './Structure.css';
 import propTypes from 'prop-types';
+import './Structure.css';
 
 const Structure = ({ LeftCompnonet, RightComponent, ContainerComponent }) => {
 	return (
