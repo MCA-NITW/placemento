@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import NavBar from './components/NavBar/NavBar';
+import NotFound from './components/NotFound/NotFound';
 import Authentication from './pages/Auth/Authentication';
 import Companies from './pages/Companies/Companies';
 import Experience from './pages/Experience/Experience';
@@ -16,22 +17,7 @@ const App = () => {
 	const router = createBrowserRouter([
 		{
 			path: '/',
-			element: (
-				<>
-					<NavBar />
-					<ToastContainer
-						position="bottom-right"
-						autoClose={2500}
-						hideProgressBar={false}
-						newestOnTop={false}
-						closeOnClick
-						rtl={false}
-						pauseOnFocusLoss
-						draggable
-						pauseOnHover
-					/>
-				</>
-			),
+			element: <NavBar />,
 			id: 'root',
 			loader: getAuthToken,
 			children: [
@@ -72,10 +58,29 @@ const App = () => {
 					element: <Authentication />
 				}
 			]
+		},
+		{
+			path: '*',
+			element: <NotFound />
 		}
 	]);
 
-	return <RouterProvider router={router} className="App" />;
+	return (
+		<>
+			<RouterProvider router={router} className="App" />
+			<ToastContainer
+				position="bottom-right"
+				autoClose={2500}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+			/>
+		</>
+	);
 };
 
 export default App;
