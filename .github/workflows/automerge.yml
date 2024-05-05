@@ -4,6 +4,9 @@ on:
   pull_request:
     branches:
       - 'renovate/*'
+  pull_request_target:
+    branches:
+      - 'renovate/*'
 
 jobs:
   merge_and_delete:
