@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Merge and Delete Renovate Branch
         if: ${{ github.event.inputs.mergeNow == 'true' || github.event_name == 'schedule' }}
