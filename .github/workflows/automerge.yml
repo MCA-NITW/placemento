@@ -1,9 +1,6 @@
 name: Auto Merge and Delete Branch
 
 on:
-  pull_request_target:
-    branches:
-      - 'renovate/*'
   workflow_dispatch:  # Allows manual triggering of the workflow
 
 jobs:
@@ -15,9 +12,14 @@ jobs:
         uses: actions/checkout@v2
         
       - name: Merge PR to main
-        run: git merge --no-ff ${{ github.event.pull_request.head.ref }} -m "Auto-merge pull request"
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "sg85207@gmail.com"
+          git fetch origin
+          git checkout main
+          git merge --no-ff ${{ github.event.inputs.branch }} -m "Auto-merge pull request"
         
       - name: Push changes
         run: |
           git push origin main
-          git push origin --delete ${{ github.event.pull_request.head.ref }}
+          git push origin --delete ${{ github.event.inputs.branch }}
