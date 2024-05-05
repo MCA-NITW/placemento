@@ -1,9 +1,6 @@
 name: Auto Merge and Delete Branch
 
 on:
-  pull_request:
-    branches:
-      - 'renovate/*'
   pull_request_target:
     branches:
       - 'renovate/*'
