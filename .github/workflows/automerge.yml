@@ -1,6 +1,12 @@
 name: Auto Merge and Delete Branch
 
 on:
+  pull_request:
+    branches:
+      - main
+  pull_request_target:
+    branches:
+      - main
   workflow_dispatch:  # Allows manual triggering of the workflow
 
 jobs:
@@ -11,15 +17,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         
-      - name: Merge PR to main
+      - name: Check if branch starts with renovate/
         run: |
-          git config user.name "GitHub Actions"
-          git config user.email "sg85207@gmail.com"
-          git fetch origin
-          git checkout main
-          git merge --no-ff ${{ github.event.inputs.branch }} -m "Auto-merge pull request"
-        
-      - name: Push changes
-        run: |
-          git push origin main
-          git push origin --delete ${{ github.event.inputs.branch }}
+          if [[ ${{ github.event.pull_request.head.ref }} == renovate/* ]]; then
+            git config user.name "GitHub Actions"
+            git config user.email "sg85207@gmail.com"
+            git fetch origin
+            git checkout main
+            git merge --no-ff ${{ github.event.pull_request.head.ref }} -m "Auto-merge pull request"
+            git push origin main
+            git push origin --delete ${{ github.event.pull_request.head.ref }}
+          else
+            echo "Not a renovate/ branch, skipping auto merge."
+          fi
