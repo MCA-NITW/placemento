@@ -7,7 +7,7 @@
 		"@testing-library/react": "^16.0.0",
 		"@testing-library/user-event": "^14.0.0",
 		"ag-grid-community": "^32.0.2",
-		"ag-grid-react": "^31.0.1",
+		"ag-grid-react": "^32.0.0",
 		"axios": "^1.6.5",
 		"jwt-decode": "^4.0.0",
 		"postcss": "^8.4.33",
