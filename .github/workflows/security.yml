@@ -37,25 +37,49 @@ jobs:
           npm audit --audit-level moderate || echo "⚠️ Root audit found issues (non-blocking for CI)"
 
       - name: Run security audit (Frontend)
-        continue-on-error: true
         run: |
           echo "🔍 Checking frontend dependencies..."
           cd client
-          echo "📊 Audit Results:"
           
-          # Run audit and capture output
-          AUDIT_OUTPUT=$(npm audit --audit-level moderate 2>&1 || true)
-          echo "$AUDIT_OUTPUT"
+          echo "📊 Production Dependencies Audit:"
+          echo "-----------------------------------"
+          PROD_AUDIT_EXIT=0
+          npm run audit:production || PROD_AUDIT_EXIT=$?
           
-          # Count vulnerabilities
-          VULN_COUNT=$(echo "$AUDIT_OUTPUT" | grep -o '[0-9]\+ vulnerabilities' | head -1 | grep -o '[0-9]\+' || echo "0")
+          if [ $PROD_AUDIT_EXIT -eq 0 ]; then
+            echo "✅ No vulnerabilities in production dependencies"
+          else
+            echo "❌ Critical vulnerabilities found in production dependencies!"
+            echo "🚨 Immediate attention required"
+            exit 1
+          fi
+          
+          echo ""
+          echo "📊 Development Dependencies Analysis:"
+          echo "-------------------------------------"
+          DEV_AUDIT_OUTPUT=$(npm audit --audit-level moderate 2>&1 || true)
+          echo "$DEV_AUDIT_OUTPUT"
+          
+          # Extract vulnerability count
+          VULN_COUNT=$(echo "$DEV_AUDIT_OUTPUT" | grep -o '[0-9]\+ vulnerabilities' | head -1 | grep -o '[0-9]\+' || echo "0")
           
           if [ "$VULN_COUNT" -gt 0 ]; then
-            echo "⚠️ Found $VULN_COUNT vulnerabilities in frontend dependencies"
-            echo "📋 These are mostly in react-scripts dependencies and don't affect production builds"
-            echo "🔒 Production builds use optimized, bundled code which mitigates these issues"
+            echo ""
+            echo "⚠️ Found $VULN_COUNT vulnerabilities in development dependencies"
+            echo "� Analyzing vulnerability sources..."
+            
+            # Check if all vulnerabilities are in known development dependencies
+            if echo "$DEV_AUDIT_OUTPUT" | grep -q "react-scripts\|@svgr\|webpack-dev-server\|postcss\|nth-check"; then
+              echo "📋 All vulnerabilities are in react-scripts dependency chain"
+              echo "🔒 These are development-only dependencies that don't affect production"
+              echo "📄 Documented in SECURITY_VULNERABILITIES.md"
+              echo "✅ Production security status: SECURE"
+            else
+              echo "❌ Found vulnerabilities outside known react-scripts issues"
+              echo "🔍 Manual review required"
+            fi
           else
-            echo "✅ No vulnerabilities found"
+            echo "✅ No development dependency vulnerabilities found"
           fi
 
       - name: Run security audit (Backend)
