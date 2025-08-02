@@ -97,7 +97,9 @@ body {
 	margin: 6rem 1rem 1rem 1rem;
 	border-radius: 1rem;
 	padding: 1rem;
-	height: calc(100vh - 7rem);
+	height: calc(100vh - 8rem); /* Exact full screen height minus navbar and margins */
+	max-height: calc(100vh - 8rem); /* Prevent exceeding screen height */
+	min-height: calc(100vh - 8rem); /* Ensure minimum full screen height */
 	background: var(--color-bg-variant);
 	opacity: 0.7;
 	filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.4));
