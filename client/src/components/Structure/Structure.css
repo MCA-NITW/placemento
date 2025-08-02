@@ -18,11 +18,16 @@
 	background: var(--color-bg-variant);
 	box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.5);
 	height: 100%;
+	/* Main scrolling container - only one scrollbar here */
 	overflow-y: auto;
+	overflow-x: hidden;
 	align-items: center;
 	padding: 10px;
 	border: 1px solid var(--color-bg);
 	transition: all 0.3s ease;
+	/* Custom scrollbar styling */
+	scrollbar-width: thin;
+	scrollbar-color: var(--color-primary) transparent;
 }
 
 .structure-left:hover,

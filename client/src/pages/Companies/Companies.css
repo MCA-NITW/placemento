@@ -1,90 +1,15 @@
-/* Companies Page - Refactored with Utility Classes */
+/* Companies Page - Minimal Custom CSS (Most styling from utilities.css) */
 
-.companies-container {
-  /* Using page-container utility */
-  position: relative;
-  background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-bg-variant) 100%);
-}
-
-.companies-header {
-  /* Using page-header utility */
-  text-align: center;
-  margin-bottom: 2rem;
-  position: relative;
-}
-
-.companies-title {
-  /* Using page-title utility */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 700;
-  margin-bottom: 1rem;
-  color: var(--color-primary);
-  position: relative;
-}
-
-.companies-title .title-icon {
-  /* Using title-icon utility */
-  font-size: 1.2em;
-  display: inline-block;
-}
-
-.companies-title .title-underline {
-  /* Using title-underline-sm utility for shorter underline */
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-primary-variant));
-  border-radius: 2px;
-  animation: expandUnderlineSmall 1s ease-out 0.8s forwards;
-}
-
-.companies-subtitle {
-  /* Using page-subtitle utility */
-  font-size: 1.1rem;
-  color: var(--color-white);
-  opacity: 0.8;
-  margin-bottom: 1.5rem;
-  font-weight: 300;
-  transform: translateY(0);
-  transition: all 0.6s ease;
-}
-
-/* Animation states */
-.companies-subtitle.animate-fadeInUp {
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeInUp 0.6s ease-out 0.3s forwards;
-}
-
-.companies-content {
-  width: 100%;
-  position: relative;
-}
-
-/* Content animations */
-.companies-content.animate-fadeInUp {
-  opacity: 0;
-  transform: translateY(30px);
-  animation: fadeInUp 0.6s ease-out 0.5s forwards;
-}
-
-/* Responsive Design */
+/* Companies-specific responsive adjustments */
 @media (max-width: 768px) {
   .companies-title {
-    font-size: 2rem;
-    flex-direction: column;
-    gap: 0.5rem;
+    font-size: 2rem !important;
+    flex-direction: column !important;
+    gap: 0.5rem !important;
   }
   
   .companies-subtitle {
-    font-size: 1rem;
-    padding: 0 1rem;
+    font-size: 1rem !important;
+    padding: 0 1rem !important;
   }
 }

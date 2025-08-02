@@ -18,19 +18,21 @@ const AgGridTable = ({ rowData, columnDefinitions, fetchData, isExternalFilterPr
 	}, []);
 
 	return (
-		<AgGridReact
-			rowData={rowData}
-			columnDefs={columnDefinitions}
-			rowHeight={30}
-			headerHeight={30}
-			rowSelection="multiple"
-			dataTypeDefinitions={dataTypeDefinitions}
-			onGridReady={fetchData}
-			suppressClickEdit={true}
-			className="ag-theme-quartz"
-			isExternalFilterPresent={isExternalFilterPresent}
-			doesExternalFilterPass={doesExternalFilterPass}
-		/>
+		<div className="ag-grid-wrapper">
+			<AgGridReact
+				rowData={rowData}
+				columnDefs={columnDefinitions}
+				rowHeight={30}
+				headerHeight={30}
+				rowSelection="multiple"
+				dataTypeDefinitions={dataTypeDefinitions}
+				onGridReady={fetchData}
+				suppressClickEdit={true}
+				className="ag-theme-quartz"
+				isExternalFilterPresent={isExternalFilterPresent}
+				doesExternalFilterPass={doesExternalFilterPass}
+			/>
+		</div>
 	);
 };
 
