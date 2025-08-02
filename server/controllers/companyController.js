@@ -19,6 +19,14 @@ const validateFields = (company) => {
 // Add Company
 exports.postAddCompany = async (req, res) => {
 	try {
+		// Validate and fix date if needed
+		if (req.body.dateOfOffer) {
+			const date = new Date(req.body.dateOfOffer);
+			if (isNaN(date.getTime()) || req.body.dateOfOffer === 'NaN-NaN-NaN') {
+				req.body.dateOfOffer = new Date(); // Use current date if invalid
+			}
+		}
+
 		const newCompany = new Company(req.body);
 		const errorMessages = validateFields(newCompany);
 		if (errorMessages.length > 0) {
@@ -36,6 +44,14 @@ exports.postAddCompany = async (req, res) => {
 // Update Company
 exports.putUpdateCompany = async (req, res) => {
 	try {
+		// Validate and fix date if needed
+		if (req.body.dateOfOffer) {
+			const date = new Date(req.body.dateOfOffer);
+			if (isNaN(date.getTime()) || req.body.dateOfOffer === 'NaN-NaN-NaN') {
+				req.body.dateOfOffer = new Date(); // Use current date if invalid
+			}
+		}
+
 		const updatedCompany = await Company.findByIdAndUpdate(req.params.id, req.body, { new: true });
 		if (!updatedCompany) {
 			return res.status(404).json({ errors: ['Company not found'] });

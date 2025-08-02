@@ -261,7 +261,7 @@ const CompanyTable = () => {
 
 	return (
 		<Structure
-			LeftCompnonet={
+			LeftComponent={
 				<>
 					{(user.role === 'admin' || user.role === 'placementCoordinator') && (
 						<button className="btn btn-primary" onClick={handleAddCompanyClick}>

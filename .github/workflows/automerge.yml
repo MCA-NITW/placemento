@@ -2,7 +2,7 @@ name: Merge and Delete Renovate Branch
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # Runs daily at midnight
+    - cron: '0 0 * * *' # Runs daily at midnight
   workflow_dispatch:
     inputs:
       mergeNow:
@@ -18,13 +18,38 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup GitHub CLI
+        run: |
+          # Ensure gh is authenticated
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+
       - name: Merge and Delete Renovate Branch
         if: ${{ github.event.inputs.mergeNow == 'true' || github.event_name == 'schedule' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Get all open pull requests
-          PR_LIST=$(gh pr list --json state:open --jq '.[] | select(.head.ref | startswith("renovate/")) | .number')
+          # Get all open pull requests from Renovate
+          PR_LIST=$(gh pr list --state open --json number,headRefName,statusCheckRollup --jq '.[] | select(.headRefName | startswith("renovate/")) | select(.statusCheckRollup | length == 0 or (.statusCheckRollup | all(.state == "SUCCESS"))) | .number')
 
-          # Loop through each pull request and merge it
+          # Loop through each pull request and merge it only if CI passes
           for PR in $PR_LIST; do
-            gh pr merge --auto $PR --delete-branch
+            echo "Processing PR #$PR"
+            
+            # Check if PR is ready for merge (all checks pass)
+            STATUS=$(gh pr view $PR --json statusCheckRollup --jq '.statusCheckRollup | if length == 0 then "ready" else (if all(.state == "SUCCESS") then "ready" else "not_ready" end)')
+            
+            if [ "$STATUS" = "ready" ]; then
+              echo "✅ PR #$PR is ready for merge"
+              gh pr merge $PR --auto --squash --delete-branch
+            else
+              echo "⏳ PR #$PR is not ready for merge (CI checks pending/failed)"
+            fi
           done
+
+      - name: Clean up stale branches
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Clean up merged renovate branches that weren't auto-deleted
+          git fetch --prune
+          git branch -r --merged origin/main | grep "origin/renovate/" | sed 's/origin\///' | xargs -r git push origin --delete

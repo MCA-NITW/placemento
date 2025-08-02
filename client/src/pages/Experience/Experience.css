@@ -1,0 +1,28 @@
+/* Experience Page - Minimal Custom CSS (Most styling from utilities.css) */
+
+/* Page-specific customizations only */
+.experience-content.animate-fadeInUp {
+	opacity: 0;
+	transform: translateY(30px);
+	animation: fadeInUp 0.6s ease-out 0.5s forwards;
+}
+
+.experience-subtitle.animate-fadeInUp {
+	opacity: 0;
+	transform: translateY(20px);
+	animation: fadeInUp 0.6s ease-out 0.3s forwards;
+}
+
+/* Experience-specific responsive adjustments */
+@media (max-width: 768px) {
+	.experience-title {
+		font-size: 2rem !important;
+		flex-direction: column !important;
+		gap: 0.5rem !important;
+	}
+
+	.experience-subtitle {
+		font-size: 1rem !important;
+		padding: 0 1rem !important;
+	}
+}

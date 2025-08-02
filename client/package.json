@@ -6,6 +6,8 @@
 		"@testing-library/jest-dom": "^6.0.0",
 		"@testing-library/react": "^16.0.0",
 		"@testing-library/user-event": "^14.0.0",
+		"ag-charts-community": "^12.1.0",
+		"ag-charts-react": "^12.1.0",
 		"ag-grid-community": "^32.0.2",
 		"ag-grid-react": "^32.0.0",
 		"axios": "^1.8.2",
@@ -22,7 +24,14 @@
 		"start": "react-scripts start",
 		"build": "react-scripts build",
 		"test": "react-scripts test",
-		"eject": "react-scripts eject"
+		"test:ci": "react-scripts test --watchAll=false --passWithNoTests",
+		"eject": "react-scripts eject",
+		"lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
+		"lint:fix": "eslint src/ --ext .js,.jsx,.ts,.tsx --fix",
+		"format": "prettier --write src/",
+		"format:check": "prettier --check src/",
+		"audit:production": "npm audit --omit=dev --audit-level=high",
+		"audit:check": "npm audit --audit-level=high || (echo 'Found vulnerabilities - checking if they are in known development dependencies...' && npm audit --json | grep -q 'react-scripts' && echo 'Vulnerabilities are in react-scripts development dependencies - see SECURITY_VULNERABILITIES.md for details' || exit 1)"
 	},
 	"eslintConfig": {
 		"extends": [

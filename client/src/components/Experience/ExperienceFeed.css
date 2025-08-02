@@ -155,14 +155,201 @@
 	background: var(--color-bg-variant);
 	color: var(--color-white);
 	cursor: pointer;
+	transition: all 0.3s ease;
+	position: relative;
+	overflow: hidden;
+}
+
+.experience-tag-all::before,
+.experience-tag::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: -100%;
+	width: 100%;
+	height: 100%;
+	background: linear-gradient(90deg, transparent, rgba(255, 204, 102, 0.2), transparent);
+	transition: left 0.5s;
+}
+
+.experience-tag-all:hover::before,
+.experience-tag:hover::before {
+	left: 100%;
 }
 
 .experience-tag-all:hover,
 .experience-tag:hover {
 	color: var(--color-primary);
+	transform: scale(1.05);
+	box-shadow: 0 5px 15px rgba(255, 204, 102, 0.3);
 }
 
 .experience-tag.active,
 .experience-tag-all.active {
 	color: var(--color-primary);
+	background: rgba(255, 204, 102, 0.2);
+	transform: scale(1.02);
+	animation: pulse 0.5s ease;
+}
+
+/* Enhanced Experience Form Styles */
+.experience-form h2 {
+	color: var(--color-primary);
+	margin-bottom: 1.5rem;
+	font-size: 1.5rem;
+}
+
+.form-row {
+	display: flex;
+	gap: 1rem;
+	flex-wrap: wrap;
+}
+
+.form-row .experience-form-group {
+	flex: 1;
+	min-width: 200px;
+}
+
+/* Rating Component */
+.rating-container {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.star-button {
+	background: none;
+	border: none;
+	font-size: 1.5rem;
+	color: #ddd;
+	cursor: pointer;
+	transition: color 0.2s ease;
+}
+
+.star-button.active {
+	color: #ffd700;
+}
+
+.star-button:hover {
+	color: #ffd700;
+}
+
+.rating-text {
+	margin-left: 0.5rem;
+	color: var(--color-light);
+	font-size: 0.9rem;
+}
+
+/* Tags Container */
+.tags-container {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	margin-top: 0.5rem;
+}
+
+.tag-button {
+	background: var(--color-bg-variant);
+	border: 1px solid var(--color-primary-variant);
+	color: var(--color-light);
+	padding: 0.4rem 0.8rem;
+	border-radius: 1rem;
+	font-size: 0.8rem;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.tag-button:hover {
+	background: var(--color-primary-variant);
+	color: var(--color-bg);
+}
+
+.tag-button.active {
+	background: var(--color-primary);
+	color: var(--color-bg);
+	border-color: var(--color-primary);
+}
+
+/* Enhanced Experience Form Modal Buttons */
+.experience-form .modal-buttons {
+	display: flex;
+	gap: 1rem;
+	justify-content: center;
+	margin-top: 1.5rem;
+}
+
+.btn-secondary {
+	background: var(--color-bg-variant);
+	color: var(--color-light);
+	border: 1px solid var(--color-primary-variant);
+}
+
+.btn-secondary:hover {
+	background: var(--color-primary-variant);
+	color: var(--color-bg);
+}
+
+/* Form Control Enhancements */
+.experience-form .form-control {
+	background: var(--color-bg);
+	border: 1px solid var(--color-primary-variant);
+	color: var(--color-white);
+	border-radius: 0.5rem;
+	padding: 0.75rem;
+	font-size: 0.9rem;
+	transition: border-color 0.2s ease;
+}
+
+.experience-form .form-control:focus {
+	outline: none;
+	border-color: var(--color-primary);
+	box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
+}
+
+.experience-form textarea.form-control {
+	resize: vertical;
+	min-height: 100px;
+}
+
+.experience-form select.form-control {
+	cursor: pointer;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+	.experience-form {
+		max-width: 95vw;
+		padding: 15px;
+	}
+
+	.form-row {
+		flex-direction: column;
+	}
+
+	.tags-container {
+		gap: 0.3rem;
+	}
+
+	.tag-button {
+		font-size: 0.75rem;
+		padding: 0.3rem 0.6rem;
+	}
+
+	.experience-form .modal-buttons {
+		flex-direction: column;
+	}
+}
+
+@media screen and (max-width: 480px) {
+	.experience-form h2 {
+		font-size: 1.3rem;
+	}
+
+	.star-button {
+		font-size: 1.3rem;
+	}
+
+	.rating-text {
+		font-size: 0.8rem;
+	}
 }

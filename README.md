@@ -13,10 +13,13 @@ stack, it streamlines placement activities, student data management, and company
 - 📊 **Student Dashboard** - Comprehensive profile management and placement status tracking
 - 🏢 **Company Management** - Detailed company profiles and job posting system
 - 📈 **Analytics & Statistics** - Visual insights into placement trends and data
-- 👥 **User Authentication** - Secure login system with role-based access control
+- 👥 **User Authentication** - Secure JWT-based login with email OTP verification
 - 📧 **Email Notifications** - Automated updates for placement activities
 - 📱 **Responsive Design** - Optimized for desktop and mobile devices
 - 🔍 **Advanced Filtering** - Powerful search and filter capabilities using AG Grid
+- 💼 **Experience Sharing** - Students can share interview experiences with ratings and tips
+- 👨‍💻 **Team Information** - Comprehensive developer team profiles and project details
+- 🔒 **Role-based Access** - Admin and student roles with appropriate permissions
 
 ## 🏗️ Architecture
 
@@ -36,8 +39,13 @@ Placemento/
 │   ├── 📁 models/           # MongoDB data models
 │   ├── 📁 routes/           # API route definitions
 │   ├── 📁 utils/            # Backend utilities
+│   ├── 📄 seedDatabase.js   # Sample data seeder
+│   ├── 📄 testStats.js      # API testing script
 │   └── 📄 index.js          # Server entry point
 ├── 📄 package.json           # Root package configuration
+├── 📄 DEVELOPMENT.md         # Development guide
+├── 📄 setup.bat             # Windows setup script
+├── 📄 setup.sh              # Unix setup script
 └── 📄 README.md             # Project documentation
 ```
 
@@ -64,7 +72,7 @@ Ensure you have the following installed:
 2. **Install dependencies**
 
    ```bash
-   npm run fb-install
+   npm run install-deps
    ```
 
    This command will install dependencies for both frontend and backend.
@@ -98,14 +106,57 @@ Ensure you have the following installed:
 
 ## 🛠️ Available Scripts
 
-| Command                  | Description                                         |
-| ------------------------ | --------------------------------------------------- |
-| `npm run start`          | Starts both frontend and backend concurrently       |
-| `npm run frontend-start` | Starts only the React development server            |
-| `npm run backend-start`  | Starts only the Node.js server                      |
-| `npm run fb-install`     | Installs dependencies for both frontend and backend |
-| `npm run frontend-build` | Creates production build of React app               |
-| `npm run format`         | Formats code using Prettier                         |
+| Command                    | Description                                         |
+| -------------------------- | --------------------------------------------------- |
+| `npm run start`            | Starts both frontend and backend concurrently       |
+| `npm run frontend-start`   | Starts only the React development server            |
+| `npm run backend-start`    | Starts only the Node.js server                      |
+| `npm run install-deps`     | Installs dependencies for both frontend and backend |
+| `npm run frontend-install` | Installs dependencies for frontend only             |
+| `npm run backend-install`  | Installs dependencies for backend only              |
+| `npm run frontend-build`   | Creates production build of React app               |
+| `npm run format`           | Formats code using Prettier                         |
+| `npm run dev`              | Development mode with hot reload                    |
+
+## 📸 Screenshots & Demo
+
+### 🏠 Homepage
+
+Modern landing page with live statistics and beautiful animations.
+
+### 📊 Stats Dashboard
+
+Interactive charts and visualizations using AG Charts for comprehensive placement analytics.
+
+### 👥 Student Management
+
+Advanced AG Grid tables with filtering, sorting, and search capabilities for managing student data.
+
+### 🏢 Company Portal
+
+Comprehensive company management system with detailed profiles and job postings.
+
+### 💼 Experience Sharing
+
+Platform for students to share interview experiences with ratings and helpful tips.
+
+## 🎯 Recent Updates & Features
+
+### ✨ Latest Enhancements
+
+- **Enhanced Statistics Page**: Beautiful charts and visual representations using AG Charts
+- **Full Page Optimization**: Improved vertical layout and space utilization
+- **Modern UI Components**: Glassmorphism design with smooth animations
+- **Responsive Design**: Perfect display across all device sizes
+- **Performance Optimization**: Faster loading and better user experience
+
+### 🔄 Current Version: v1.0.0
+
+- Complete placement management system
+- Interactive data visualization
+- Advanced filtering and search
+- Email notification system
+- Role-based access control
 
 ## 🤝 Contributing
 
@@ -209,4 +260,4 @@ This project is licensed under the **GPL-3.0 License**. See the [LICENSE](LICENS
 
 ---
 
-**Made with ❤️ by MCA Students of NIT Warangal**
+### Made with ❤️ by MCA Students of NIT Warangal

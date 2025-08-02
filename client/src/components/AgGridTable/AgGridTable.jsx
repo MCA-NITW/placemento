@@ -1,7 +1,7 @@
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import { AgGridReact } from 'ag-grid-react';
-import propTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { useMemo } from 'react';
 import './AgGridTable.css';
 
@@ -18,28 +18,30 @@ const AgGridTable = ({ rowData, columnDefinitions, fetchData, isExternalFilterPr
 	}, []);
 
 	return (
-		<AgGridReact
-			rowData={rowData}
-			columnDefs={columnDefinitions}
-			rowHeight={30}
-			headerHeight={30}
-			rowSelection="multiple"
-			dataTypeDefinitions={dataTypeDefinitions}
-			onGridReady={fetchData}
-			suppressClickEdit={true}
-			className="ag-theme-quartz"
-			isExternalFilterPresent={isExternalFilterPresent}
-			doesExternalFilterPass={doesExternalFilterPass}
-		/>
+		<div className="ag-grid-wrapper">
+			<AgGridReact
+				rowData={rowData}
+				columnDefs={columnDefinitions}
+				rowHeight={30}
+				headerHeight={30}
+				rowSelection="multiple"
+				dataTypeDefinitions={dataTypeDefinitions}
+				onGridReady={fetchData}
+				suppressClickEdit={true}
+				className="ag-theme-quartz"
+				isExternalFilterPresent={isExternalFilterPresent}
+				doesExternalFilterPass={doesExternalFilterPass}
+			/>
+		</div>
 	);
 };
 
 AgGridTable.propTypes = {
-	rowData: propTypes.array.isRequired,
-	columnDefinitions: propTypes.array.isRequired,
-	fetchData: propTypes.func.isRequired,
-	isExternalFilterPresent: propTypes.func,
-	doesExternalFilterPass: propTypes.func
+	rowData: PropTypes.array.isRequired,
+	columnDefinitions: PropTypes.array.isRequired,
+	fetchData: PropTypes.func.isRequired,
+	isExternalFilterPresent: PropTypes.func,
+	doesExternalFilterPass: PropTypes.func
 };
 
 export default AgGridTable;

@@ -1,4 +1,4 @@
-import propTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import classes from './auth.module.css';
 
@@ -15,7 +15,7 @@ const FormFooter = ({ mode }) => {
 };
 
 FormFooter.propTypes = {
-	mode: propTypes.string.isRequired
+	mode: PropTypes.string.isRequired
 };
 
 export default FormFooter;

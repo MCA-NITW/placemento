@@ -127,7 +127,7 @@ const ExperienceFeed = () => {
 
 	return (
 		<Structure
-			LeftCompnonet={
+			LeftComponent={
 				<>
 					<button
 						className="btn btn-primary"

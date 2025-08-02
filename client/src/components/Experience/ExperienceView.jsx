@@ -1,4 +1,4 @@
-import propTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { toast } from 'react-toastify';
@@ -107,9 +107,9 @@ const ExperienceView = ({ closeExperienceViewModal, experienceViewModalData, use
 };
 
 ExperienceView.propTypes = {
-	closeExperienceViewModal: propTypes.func.isRequired,
-	experienceViewModalData: propTypes.object.isRequired,
-	user: propTypes.object.isRequired
+	closeExperienceViewModal: PropTypes.func.isRequired,
+	experienceViewModalData: PropTypes.object.isRequired,
+	user: PropTypes.object.isRequired
 };
 
 export default ExperienceView;

@@ -1,0 +1,15 @@
+/* Students Page - Minimal Custom CSS (Most styling from utilities.css) */
+
+/* Students-specific responsive adjustments */
+@media (max-width: 768px) {
+	.students-title {
+		font-size: 2rem !important;
+		flex-direction: column !important;
+		gap: 0.5rem !important;
+	}
+
+	.students-subtitle {
+		font-size: 1rem !important;
+		padding: 0 1rem !important;
+	}
+}

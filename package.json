@@ -3,23 +3,25 @@
 	"version": "1.0.0",
 	"description": "MCA Placement Portal",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"format": "prettier --write .",
+		"dev": "concurrently \"npm run server\" \"npm run client\"",
+		"server": "cd server && npm run dev",
+		"client": "cd client && npm start",
+		"build": "cd client && npm run build",
+		"start": "concurrently \"npm run backend-start\" \"npm run frontend-start\"",
+		"backend-start": "cd server && npm start",
 		"frontend-start": "cd client && npm start",
 		"frontend-build": "cd client && npm run build",
-		"frontend-install": "cd client && npm install",
-		"backend-start": "cd server && npm start",
+		"install-deps": "concurrently \"npm install\" \"npm run backend-install\" \"npm run frontend-install\"",
 		"backend-install": "cd server && npm install",
-		"start": "concurrently \"npm run backend-start\" \"npm run frontend-start\"",
-		"fb-install": "concurrently \"npm install\" \"npm run backend-install\" \"npm run frontend-install\""
+		"frontend-install": "cd client && npm install",
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"format": "prettier --write ."
 	},
 	"author": "Sagar Gupta",
 	"license": "GPL-3.0",
 	"devDependencies": {
+		"concurrently": "^9.2.0",
 		"prettier": "^3.1.1",
 		"prettier-plugin-organize-imports": "^4.0.0"
-	},
-	"dependencies": {
-		"concurrently": "^9.0.0"
 	}
 }

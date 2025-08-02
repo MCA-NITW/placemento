@@ -1,7 +1,7 @@
-import propTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import './Filter.css';
 
-const Filter = ({ Allptions, optionClickHandler }) => {
+const Filter = ({ allOptions, optionClickHandler }) => {
 	const optionsRenderer = (head, options) => {
 		return (
 			<div className="filter__item">
@@ -24,14 +24,14 @@ const Filter = ({ Allptions, optionClickHandler }) => {
 	return (
 		<div className="filter">
 			<h3>Filters</h3>
-			{Object.keys(Allptions).map((key) => optionsRenderer(key, Allptions[key]))}
+			{Object.keys(allOptions).map((key) => optionsRenderer(key, allOptions[key]))}
 		</div>
 	);
 };
 
 Filter.propTypes = {
-	Allptions: propTypes.object.isRequired,
-	optionClickHandler: propTypes.func.isRequired
+	allOptions: PropTypes.object.isRequired,
+	optionClickHandler: PropTypes.func.isRequired
 };
 
 export default Filter;
