@@ -1,166 +1,212 @@
-# Placemento
+# Placemento 🎓
 
-This is a project for the MCA students of NIT Warangal College. This project is a web-based application that is used to manage the placement
-activities of the Batch. This project is developed using the MERN (MongoDB, Express, React, Node) stack. This project is developed by the students of
-MCA 2021-2024 batch of NIT Warangal College.
+[![License: GPL-3.0](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![React](https://img.shields.io/badge/React-18.2.0-61DAFB?logo=react)](https://reactjs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-20+-339933?logo=node.js)](https://nodejs.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?logo=mongodb)](https://www.mongodb.com/)
 
-## File Structure
+**Placemento** is a comprehensive web-based placement management system designed specifically for MCA students at NIT Warangal. Built with the MERN
+stack, it streamlines placement activities, student data management, and company interactions for the entire batch.
 
-The file structure of the project is as follows:
+## ✨ Features
 
-```bash
-Placemento
-├── client
-│   ├── public
-│   └── src
-│       ├── api
-│       ├── components
-│       ├── pages
-│       ├── utils
-│       ├── App.jsx
-│       ├── index.js
-│       └── ...
-├── server
-│   ├── controllers
-│   ├── middleware
-│   ├── models
-│   ├── routes
-│   ├── utils
-│   ├── index.js
-│   └── ...
-├── .gitignore
-├── package.json
-└── ...
+- 📊 **Student Dashboard** - Comprehensive profile management and placement status tracking
+- 🏢 **Company Management** - Detailed company profiles and job posting system
+- 📈 **Analytics & Statistics** - Visual insights into placement trends and data
+- 👥 **User Authentication** - Secure login system with role-based access control
+- 📧 **Email Notifications** - Automated updates for placement activities
+- 📱 **Responsive Design** - Optimized for desktop and mobile devices
+- 🔍 **Advanced Filtering** - Powerful search and filter capabilities using AG Grid
+
+## 🏗️ Architecture
+
+```
+Placemento/
+├── 📁 client/                 # React frontend application
+│   ├── 📁 public/            # Static assets
+│   └── 📁 src/
+│       ├── 📁 api/           # API service layer
+│       ├── 📁 components/    # Reusable React components
+│       ├── 📁 pages/         # Main application pages
+│       ├── 📁 utils/         # Utility functions
+│       └── 📄 App.jsx        # Main App component
+├── 📁 server/                 # Node.js backend application
+│   ├── 📁 controllers/       # Route controllers
+│   ├── 📁 middleware/        # Custom middleware
+│   ├── 📁 models/           # MongoDB data models
+│   ├── 📁 routes/           # API route definitions
+│   ├── 📁 utils/            # Backend utilities
+│   └── 📄 index.js          # Server entry point
+├── 📄 package.json           # Root package configuration
+└── 📄 README.md             # Project documentation
 ```
 
-## Installation
-
-To get started, follow these instructions to install the project on your local machine.
+## 🚀 Quick Start
 
 ### Prerequisites
 
-Make sure you have the following installed on your machine:
+Ensure you have the following installed:
 
-- Node.js (v20.0.0 or higher)
-- npm (v10.0.0 or higher)
+- **Node.js** v20.0.0 or higher
+- **npm** v10.0.0 or higher
+- **MongoDB** (local installation or MongoDB Atlas account)
+- **Git** for version control
 
-### Steps
+### Installation
 
-1. Creating your branch:
-
-   I. For Organization Members:
-
-   - **Branch Creation:** As an organization member, when working on a new feature or task, you should create a new branch from the "develop" branch.
-     The branch name should be in the format `feature-` where `<description>` represents a short description of the task or feature you are working
-     on. For example, if you are adding a login feature, the branch name could be `feature-login`.
-   - **Code Implementation:** Implement the necessary changes and new features on your created branch. Make sure to adhere to the organization's
-     coding standards and best practices.
-   - **Code Testing:** Thoroughly test your changes on the branch to ensure that they work as expected and do not introduce any bugs or issues.
-   - **Code Review:** If required by the organization's development process, request a code review from your peers to ensure code quality and
-     adherence to project guidelines.
-   - **Pull Request Creation:** Once you are confident that your code is complete and tested, create a pull request to merge your changes from the
-     `feature-*` branch into the `develop` branch. Clearly explain the purpose and scope of the changes in the pull request description.
-
-   II. For External Contributors:
-
-   - **Forking the Repository:** If you are an external contributor, you should fork the repository to your GitHub account. This will create a copy of
-     the repository under your account, which you can use to make changes and submit pull requests.
-
-   - **Branch Creation:** After forking the repository, create a new branch from the `develop` branch. The branch name should be in the format
-     `feature-` where `<description>` represents a short description of the task or feature you are working on. For example, if you are adding a login
-     feature, the branch name could be `feature-login`.
-
-   - **Code Implementation:** Implement the necessary changes and new features on your created branch. Make sure to adhere to the organization's
-     coding standards and best practices.
-
-   - **Code Testing:** Thoroughly test your changes on the branch to ensure that they work as expected and do not introduce any bugs or issues.
-
-   - **Code Review:** If required by the organization's development process, request a code review from your peers to ensure code quality and
-     adherence to project guidelines.
-
-   - **Pull Request Creation:** Once you are confident that your code is complete and tested, create a pull request to merge your changes from the
-     `feature-*` branch into the `develop` branch. Clearly explain the purpose and scope of the changes in the pull request description.
-
-2. Clone the repository:
+1. **Clone the repository**
 
    ```bash
    git clone https://github.com/MCA-NITW/placemento.git
-   ```
-
-3. Navigate to the project directory:
-
-   ```bash
    cd placemento
    ```
 
-4. Install the project dependencies:
+2. **Install dependencies**
 
    ```bash
-   npm install
    npm run fb-install
    ```
 
-5. Start the development server:
+   This command will install dependencies for both frontend and backend.
+
+3. **Environment Setup**
+
+   Create `.env` files in the server directory with the following variables:
 
    ```bash
-   npm run dev
+   # server/.env
+   PORT=5000
+   MONGODB_URI=your_mongodb_connection_string
+   JWT_SECRET=your_jwt_secret_key
+   EMAIL_HOST=your_email_host
+   EMAIL_PORT=587
+   EMAIL_USER=your_email_username
+   EMAIL_PASS=your_email_password
    ```
 
-6. Open the application in your browser:
+4. **Start the development servers**
 
    ```bash
-   http://localhost:3000
+   npm run start
    ```
 
-   The application should now be running in your browser.
+   This will start both the backend server (port 5000) and frontend development server (port 3000).
 
-## Contributing
+5. **Access the application**
 
-If you would like to contribute to the project, please read the [CONTRIBUTING.md](CONTRIBUTING.md) file for more information.
+   Open your browser and navigate to `http://localhost:3000`
 
-## License
+## 🛠️ Available Scripts
 
-This project is licensed under the [MIT License](LICENSE).
+| Command                  | Description                                         |
+| ------------------------ | --------------------------------------------------- |
+| `npm run start`          | Starts both frontend and backend concurrently       |
+| `npm run frontend-start` | Starts only the React development server            |
+| `npm run backend-start`  | Starts only the Node.js server                      |
+| `npm run fb-install`     | Installs dependencies for both frontend and backend |
+| `npm run frontend-build` | Creates production build of React app               |
+| `npm run format`         | Formats code using Prettier                         |
 
-## Contact
+## 🤝 Contributing
 
-If you have any questions or need further assistance, please feel free to contact us.
+We welcome contributions from the community! Here's how you can get involved:
 
-## Project Status
+### For Organization Members
 
-The project is currently under development. The initial version of the project is expected to be released soon.
+1. **Create a feature branch** from `main`:
 
-## Project Team
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
 
-The project team consists of the following members:
+2. **Make your changes** following our coding standards
 
-- [Sagar Gupta](https://github.com/Sagargupta16 'Sagar Gupta')
-- [Sachin Gupta](https://github.com/sachin-gupta99 'Sachin Gupta')
+3. **Test thoroughly** to ensure everything works as expected
 
-## Acknowledgements
+4. **Submit a pull request** with a clear description of your changes
 
-We would like to thank the following individuals and organizations for their contributions to the project:
+### For External Contributors
 
-- [NIT Warangal College](https://www.nitw.ac.in/ 'NIT Warangal College')
-- [MCA 2021-2024 Batch](https://www.nitw.ac.in/department/mca 'MCA 2021-2024 Batch')
+1. **Fork the repository** to your GitHub account
 
-## References
+2. **Clone your fork** and create a feature branch:
 
-- [MERN Stack](https://www.mongodb.com/mern-stack 'MERN Stack')
-- [React](https://reactjs.org/ 'React')
-- [Node.js](https://nodejs.org/ 'Node.js')
-- [Express](https://expressjs.com/ 'Express')
-- [MongoDB](https://www.mongodb.com/ 'MongoDB')
-- [AG Grid](https://www.ag-grid.com/ 'AG Grid')
-- [AG Charts](https://www.ag-grid.com/ag-charts-overview/ 'AG Charts')
-- [React-Router](https://reactrouter.com/ 'React-Router')
-- [Axios](https://axios-http.com/ 'Axios')
-- [JWT](https://jwt.io/ 'JWT')
-- [Bcrypt](https://www.npmjs.com/package/bcrypt 'Bcrypt')
-- [Mongoose](https://mongoosejs.com/ 'Mongoose')
-- [Nodemailer](https://nodemailer.com/ 'Nodemailer')
-- [Dotenv](https://www.npmjs.com/package/dotenv 'Dotenv')
-- [Cors](https://www.npmjs.com/package/cors 'Cors')
-- [Nodemon](https://www.npmjs.com/package/nodemon 'Nodemon')
-- [Concurrently](https://www.npmjs.com/package/concurrently 'Concurrently')
-- [Prettier](https://prettier.io/ 'Prettier')
+   ```bash
+   git clone https://github.com/your-username/placemento.git
+   cd placemento
+   git checkout -b feature/your-feature-name
+   ```
+
+3. **Make your changes** and test them
+
+4. **Submit a pull request** from your fork to our main repository
+
+### Coding Standards
+
+- Use **Prettier** for code formatting: `npm run format`
+- Follow **React best practices** for frontend development
+- Write **clear commit messages**
+- Add **comments** for complex logic
+- Ensure **responsive design** for all UI components
+
+## 🔧 Tech Stack
+
+### Frontend
+
+- **React 18.2** - Modern UI library with hooks
+- **React Router** - Client-side routing
+- **AG Grid** - Advanced data grid with filtering and sorting
+- **React Toastify** - User-friendly notifications
+- **Axios** - HTTP client for API calls
+- **React Icons** - Comprehensive icon library
+
+### Backend
+
+- **Node.js** - JavaScript runtime environment
+- **Express.js** - Web application framework
+- **MongoDB** with **Mongoose** - Database and ODM
+- **JWT** - Authentication and authorization
+- **Bcrypt** - Password hashing
+- **Nodemailer** - Email service integration
+- **Winston** - Logging framework
+- **Express Rate Limit** - API rate limiting
+
+### Development Tools
+
+- **Nodemon** - Development server auto-restart
+- **Concurrently** - Run multiple commands simultaneously
+- **Prettier** - Code formatting
+- **React Scripts** - Build toolchain for React
+
+## 📄 License
+
+This project is licensed under the **GPL-3.0 License**. See the [LICENSE](LICENSE) file for details.
+
+## 📞 Contact & Support
+
+- **Project Repository**: [MCA-NITW/placemento](https://github.com/MCA-NITW/placemento)
+- **Issues & Bug Reports**: [GitHub Issues](https://github.com/MCA-NITW/placemento/issues)
+- **Institution**: [NIT Warangal - MCA Department](https://www.nitw.ac.in/department/mca)
+
+## 👥 Development Team
+
+- **[Sagar Gupta](https://github.com/Sagargupta16)** - Lead Developer
+- **[Sachin Gupta](https://github.com/sachin-gupta99)** - Full Stack Developer
+
+## 🏫 Acknowledgments
+
+- **NIT Warangal College** - For providing the academic environment and support
+- **MCA Department** - For guidance and project requirements
+- **Open Source Community** - For the amazing tools and libraries that made this project possible
+
+## 🔗 Useful Resources
+
+- [MERN Stack Guide](https://www.mongodb.com/mern-stack)
+- [React Documentation](https://reactjs.org/docs)
+- [Node.js Documentation](https://nodejs.org/docs)
+- [MongoDB Atlas](https://www.mongodb.com/atlas)
+- [AG Grid Documentation](https://www.ag-grid.com/documentation)
+
+---
+
+**Made with ❤️ by MCA Students of NIT Warangal**
