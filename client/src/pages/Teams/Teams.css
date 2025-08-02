@@ -1,0 +1,381 @@
+/* Teams Page Styles */
+.teams-content {
+	display: flex;
+	flex-direction: column;
+	gap: 3rem;
+	margin-top: 2rem;
+}
+
+/* Project Stats Section */
+.project-stats {
+	background: var(--color-bg-variant);
+	padding: 2rem;
+	border-radius: 1rem;
+	border: 1px solid var(--color-primary-variant);
+}
+
+.project-stats h2 {
+	color: var(--color-primary);
+	margin-bottom: 1.5rem;
+	text-align: center;
+}
+
+.stats-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 1.5rem;
+}
+
+.stat-card {
+	background: var(--color-bg);
+	padding: 1.5rem;
+	border-radius: 0.5rem;
+	text-align: center;
+	border: 1px solid var(--color-primary);
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.stat-number {
+	font-size: 2.5rem;
+	font-weight: bold;
+	color: var(--color-primary);
+	margin-bottom: 0.5rem;
+}
+
+.stat-label {
+	color: var(--color-light);
+	font-size: 1rem;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+/* Team Members Section */
+.team-members {
+	background: var(--color-bg-variant);
+	padding: 2rem;
+	border-radius: 1rem;
+	border: 1px solid var(--color-primary-variant);
+}
+
+.team-members h2 {
+	color: var(--color-primary);
+	margin-bottom: 2rem;
+	text-align: center;
+}
+
+.members-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+	gap: 2rem;
+}
+
+.member-card {
+	background: var(--color-bg);
+	border-radius: 1rem;
+	padding: 2rem;
+	border: 1px solid var(--color-primary);
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.member-card:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.member-image {
+	text-align: center;
+	margin-bottom: 1.5rem;
+}
+
+.placeholder-image {
+	width: 120px;
+	height: 120px;
+	border-radius: 50%;
+	background: linear-gradient(45deg, var(--color-primary), var(--color-primary-variant));
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 2.5rem;
+	font-weight: bold;
+	color: var(--color-bg);
+	margin: 0 auto;
+	border: 3px solid var(--color-primary);
+}
+
+.member-info h3 {
+	color: var(--color-primary);
+	margin-bottom: 0.5rem;
+	text-align: center;
+	font-size: 1.4rem;
+}
+
+.member-role {
+	color: var(--color-primary-variant);
+	text-align: center;
+	font-weight: 600;
+	margin-bottom: 0.5rem;
+	font-size: 1.1rem;
+}
+
+.member-email {
+	color: var(--color-light);
+	text-align: center;
+	margin-bottom: 1.5rem;
+	font-size: 0.9rem;
+}
+
+.member-links {
+	display: flex;
+	gap: 1rem;
+	justify-content: center;
+	margin-bottom: 1.5rem;
+}
+
+.link-button {
+	background: var(--color-primary);
+	color: var(--color-bg);
+	padding: 0.5rem 1rem;
+	border-radius: 0.5rem;
+	text-decoration: none;
+	font-weight: 500;
+	transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.link-button:hover {
+	background: var(--color-primary-variant);
+	transform: translateY(-2px);
+}
+
+.member-skills,
+.member-contributions {
+	margin-bottom: 1.5rem;
+}
+
+.member-skills h4,
+.member-contributions h4 {
+	color: var(--color-primary);
+	margin-bottom: 0.75rem;
+	font-size: 1rem;
+}
+
+.skills-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+
+.skill-tag {
+	background: var(--color-primary-variant);
+	color: var(--color-bg);
+	padding: 0.3rem 0.7rem;
+	border-radius: 1rem;
+	font-size: 0.8rem;
+	font-weight: 500;
+}
+
+.member-contributions ul {
+	list-style-type: none;
+	padding: 0;
+}
+
+.member-contributions li {
+	color: var(--color-light);
+	margin-bottom: 0.4rem;
+	position: relative;
+	padding-left: 1.2rem;
+}
+
+.member-contributions li::before {
+	content: '▸';
+	color: var(--color-primary);
+	font-weight: bold;
+	position: absolute;
+	left: 0;
+}
+
+/* Technology Stack Section */
+.tech-stack {
+	background: var(--color-bg-variant);
+	padding: 2rem;
+	border-radius: 1rem;
+	border: 1px solid var(--color-primary-variant);
+}
+
+.tech-stack h2 {
+	color: var(--color-primary);
+	margin-bottom: 2rem;
+	text-align: center;
+}
+
+.tech-categories {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	gap: 2rem;
+}
+
+.tech-category {
+	background: var(--color-bg);
+	padding: 1.5rem;
+	border-radius: 0.5rem;
+	border: 1px solid var(--color-primary);
+}
+
+.tech-category h3 {
+	color: var(--color-primary);
+	margin-bottom: 1rem;
+	text-align: center;
+}
+
+.tech-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+
+.tech-item {
+	background: var(--color-primary-variant);
+	color: var(--color-bg);
+	padding: 0.4rem 0.8rem;
+	border-radius: 0.5rem;
+	font-size: 0.85rem;
+	font-weight: 500;
+}
+
+/* Project Timeline Section */
+.project-timeline {
+	background: var(--color-bg-variant);
+	padding: 2rem;
+	border-radius: 1rem;
+	border: 1px solid var(--color-primary-variant);
+}
+
+.project-timeline h2 {
+	color: var(--color-primary);
+	margin-bottom: 2rem;
+	text-align: center;
+}
+
+.timeline {
+	position: relative;
+	max-width: 800px;
+	margin: 0 auto;
+}
+
+.timeline::before {
+	content: '';
+	position: absolute;
+	left: 20px;
+	top: 0;
+	bottom: 0;
+	width: 2px;
+	background: var(--color-primary);
+}
+
+.timeline-item {
+	position: relative;
+	margin-bottom: 2rem;
+	padding-left: 60px;
+}
+
+.timeline-marker {
+	position: absolute;
+	left: 12px;
+	top: 8px;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background: var(--color-primary);
+	border: 3px solid var(--color-bg);
+}
+
+.timeline-content {
+	background: var(--color-bg);
+	padding: 1.5rem;
+	border-radius: 0.5rem;
+	border: 1px solid var(--color-primary);
+	position: relative;
+}
+
+.timeline-content::before {
+	content: '';
+	position: absolute;
+	left: -10px;
+	top: 15px;
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 8px 8px 8px 0;
+	border-color: transparent var(--color-primary) transparent transparent;
+}
+
+.timeline-content h4 {
+	color: var(--color-primary);
+	margin-bottom: 0.5rem;
+	font-size: 1.1rem;
+}
+
+.timeline-content p {
+	color: var(--color-light);
+	line-height: 1.6;
+	margin: 0;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+	.members-grid {
+		grid-template-columns: 1fr;
+	}
+	
+	.tech-categories {
+		grid-template-columns: 1fr;
+	}
+	
+	.stats-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+	
+	.timeline-item {
+		padding-left: 40px;
+	}
+	
+	.timeline::before {
+		left: 15px;
+	}
+	
+	.timeline-marker {
+		left: 7px;
+	}
+	
+	.timeline-content::before {
+		left: -6px;
+		border-width: 6px 6px 6px 0;
+	}
+}
+
+@media screen and (max-width: 480px) {
+	.teams-content {
+		gap: 2rem;
+	}
+	
+	.member-card,
+	.project-stats,
+	.tech-stack,
+	.project-timeline {
+		padding: 1.5rem;
+	}
+	
+	.stats-grid {
+		grid-template-columns: 1fr;
+	}
+	
+	.placeholder-image {
+		width: 100px;
+		height: 100px;
+		font-size: 2rem;
+	}
+}
