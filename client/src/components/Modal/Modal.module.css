@@ -9,12 +9,26 @@
 	justify-content: center;
 	align-items: center;
 	box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+	animation: scaleIn 0.3s ease-out;
+	position: relative;
+	overflow: hidden;
+}
+
+.modal::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 3px;
+	background: linear-gradient(90deg, var(--color-primary), var(--color-primary-variant));
 }
 
 .modal p {
 	font-size: 16px;
 	text-align: center;
 	margin-bottom: 10px;
+	animation: fadeInUp 0.4s ease-out 0.1s both;
 }
 
 .modal__buttons {
@@ -24,4 +38,5 @@
 	justify-content: space-around;
 	align-items: center;
 	gap: 10px;
+	animation: fadeInUp 0.4s ease-out 0.2s both;
 }

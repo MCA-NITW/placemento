@@ -11,6 +11,12 @@
 	backdrop-filter: blur(10px);
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 	gap: 1rem;
+	animation: fadeInUp 0.8s ease-out;
+}
+
+.stats:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 }
 
 .stats-section {
@@ -24,6 +30,18 @@
 	backdrop-filter: blur(10px);
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 	gap: 0.5rem;
+	animation: fadeInLeft 0.8s ease-out;
+	animation-fill-mode: both;
+}
+
+.stats-section:nth-child(even) {
+	animation: fadeInRight 0.8s ease-out;
+	animation-fill-mode: both;
+}
+
+.stats-section:hover {
+	transform: scale(1.02);
+	box-shadow: 0 15px 25px rgba(255, 204, 102, 0.2);
 }
 
 .stats-section h2 {
@@ -32,6 +50,13 @@
 	color: var(--color-primary);
 	width: 100%;
 	text-align: center;
+	animation: fadeInDown 0.6s ease-out 0.3s both;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.stats-section h2:hover {
+	transform: scale(1.05);
+	text-shadow: 0 0 15px var(--color-primary);
 }
 
 .stats-section-item {

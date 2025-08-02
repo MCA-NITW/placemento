@@ -71,10 +71,15 @@
 	transition: var(--transition);
 	border: 1px solid transparent;
 	outline: none;
+	position: relative;
 }
 
-.auth-form__item input:focus {
+.auth-form__item input:focus,
+.input-container input:focus {
 	border-color: var(--color-primary-variant);
+	transform: scale(1.02);
+	box-shadow: 0 0 15px rgba(255, 204, 102, 0.3);
+	animation: glow 0.5s ease;
 }
 
 .auth-form form .btn {

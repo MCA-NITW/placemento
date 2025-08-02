@@ -1,3 +1,5 @@
+@import './animations.css';
+
 * {
 	margin: 0;
 	padding: 0;
@@ -89,6 +91,13 @@ html {
 	align-items: center;
 	justify-content: flex-start;
 	overflow-y: scroll;
+	animation: fadeInUp 0.8s ease-out;
+}
+
+.container:hover {
+	opacity: 1;
+	transform: translateY(-2px);
+	filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
 }
 
 .container h1 {
@@ -96,6 +105,14 @@ html {
 	font-weight: 600;
 	margin-bottom: 20px;
 	color: var(--color-primary);
+	animation: fadeInDown 0.8s ease-out;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+	transition: all 0.3s ease;
+}
+
+.container h1:hover {
+	transform: scale(1.05);
+	text-shadow: 0 0 20px var(--color-primary);
 }
 
 .btn {
@@ -109,6 +126,36 @@ html {
 	border-radius: 0.5rem;
 	cursor: pointer;
 	transition: var(--transition);
+	position: relative;
+	overflow: hidden;
+	transform: perspective(1px) translateZ(0);
+}
+
+.btn::before {
+	content: '';
+	position: absolute;
+	z-index: -1;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+	transform: translateX(-100%);
+	transition: transform 0.6s;
+}
+
+.btn:hover::before {
+	transform: translateX(100%);
+}
+
+.btn:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.btn:active {
+	transform: translateY(0);
+	animation: pulse 0.3s ease;
 }
 
 .btn-primary {

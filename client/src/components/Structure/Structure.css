@@ -6,6 +6,7 @@
 	width: 100%;
 	height: calc(100% - 61px);
 	gap: 10px;
+	animation: fadeIn 0.8s ease-out;
 }
 
 .structure-left,
@@ -21,14 +22,23 @@
 	align-items: center;
 	padding: 10px;
 	border: 1px solid var(--color-bg);
+	transition: all 0.3s ease;
+}
+
+.structure-left:hover,
+.structure-right:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
 }
 
 .structure-left {
 	width: 20%;
 	gap: 20px;
+	animation: slideInFromLeft 0.8s ease-out;
 }
 
 .structure-right {
 	width: 100%;
 	padding: 10px;
+	animation: slideInFromRight 0.8s ease-out;
 }

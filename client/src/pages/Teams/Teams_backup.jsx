@@ -1,7 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Teams.css';
 
 const Teams = () => {
+	// State for handling collapsible contributions
+	const [expandedContributions, setExpandedContributions] = useState({});
+
+	// Toggle function for contributions
+	const toggleContributions = (memberId) => {
+		setExpandedContributions(prev => ({
+			...prev,
+			[memberId]: !prev[memberId]
+		}));
+	};
 
 	// Team members data - Real contributors to the project
 	const teamMembers = [
@@ -124,65 +134,42 @@ const Teams = () => {
 					</div>
 
 					{/* Team member cards with animations */}
-					<div className="members-grid">
+					<div className="team-grid">
 						{teamMembers.map((member, index) => (
 							<div 
 								key={member.id} 
-								className={`member-card animate-slideInUp animate-delay-${700 + (index * 100)}`}
+								className={`team-card animate-slideInUp animate-delay-${700 + (index * 100)}`}
 							>
-								<div className="member-header">
-									<div className="member-avatar">
+								<div className="member-avatar">
+									<div className="avatar-placeholder">
 										{member.name.split(' ').map(n => n[0]).join('')}
 									</div>
-									<div className="member-info">
-										<h3>{member.name}</h3>
-										<p className="member-role">{member.role}</p>
-										<p className="member-id">ID: {member.id}</p>
+									<div className="member-status online"></div>
+								</div>
+								<div className="member-info">
+									<h3 className="member-name">{member.name}</h3>
+									<p className="member-role">{member.role}</p>
+									<p className="member-motto">"{member.motto}"</p>
+									<div className="member-stats">
+										<span className="commits-badge">
+											{member.commits} commits
+										</span>
 									</div>
 								</div>
-								
-								<div className="member-details">
-									<p>"{member.motto}"</p>
+								<div className="member-skills">
+									{member.skills.slice(0, 3).map((skill, idx) => (
+										<span key={idx} className="skill-tag">{skill}</span>
+									))}
+									{member.skills.length > 3 && (
+										<span className="skill-tag more">+{member.skills.length - 3}</span>
+									)}
 								</div>
-
-								<div className="member-stats">
-									<div className="stat-item">
-										<span className="stat-number">{member.commits}</span>
-										<span className="stat-label">Commits</span>
-									</div>
-									<div className="stat-item">
-										<span className="stat-number">{member.skills.length}</span>
-										<span className="stat-label">Skills</span>
-									</div>
-								</div>
-
-								<div className="skills-section">
-									<h4>Skills</h4>
-									<div className="skills-list">
-										{member.skills.map((skill) => (
-											<span key={skill} className="skill-tag">{skill}</span>
-										))}
-									</div>
-								</div>
-
-								<div className="contributions-section">
-									<h4>Key Contributions</h4>
-									<ul className="contributions-list">
-										{member.projectContributions.slice(0, 3).map((contribution) => (
-											<li key={contribution.substring(0, 20)}>{contribution}</li>
-										))}
-									</ul>
-								</div>
-
-								<div className="member-contact">
-									<a href={member.github} className="contact-link" target="_blank" rel="noopener noreferrer">
+								<div className="member-actions">
+									<a href={member.github} className="action-btn github" target="_blank" rel="noopener noreferrer">
 										GitHub
 									</a>
-									<a href={member.linkedin} className="contact-link" target="_blank" rel="noopener noreferrer">
+									<a href={member.linkedin} className="action-btn linkedin" target="_blank" rel="noopener noreferrer">
 										LinkedIn
-									</a>
-									<a href={`mailto:${member.email}`} className="contact-link">
-										Email
 									</a>
 								</div>
 							</div>
@@ -205,15 +192,15 @@ const Teams = () => {
 								className={`tech-category animate-slideInUp animate-delay-${900 + (categoryIndex * 100)}`}
 							>
 								<h3 className="category-title">{category.charAt(0).toUpperCase() + category.slice(1)}</h3>
-								<div className="tech-list">
+								<div className="tech-grid">
 									{technologies.map((tech, techIndex) => (
 										<div 
 											key={tech.name} 
 											className={`tech-item animate-scaleIn animate-delay-${1000 + (categoryIndex * 100) + (techIndex * 50)}`}
 										>
-											<span className="icon">{tech.icon}</span>
-											<span className="name">{tech.name}</span>
-											<span className="version">{tech.version}</span>
+											<span className="tech-icon">{tech.icon}</span>
+											<span className="tech-name">{tech.name}</span>
+											<span className="tech-version">{tech.version}</span>
 										</div>
 									))}
 								</div>
@@ -266,7 +253,7 @@ const Teams = () => {
 								className={`highlight-card animate-slideInUp animate-delay-${1300 + (index * 100)}`}
 							>
 								<div className="highlight-icon">{highlight.icon}</div>
-								<h3>{highlight.title}</h3>
+								<h4>{highlight.title}</h4>
 								<p>{highlight.description}</p>
 							</div>
 						))}

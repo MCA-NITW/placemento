@@ -50,6 +50,25 @@
 	color: var(--color-white);
 	background: var(--color-bg-variant);
 	cursor: pointer;
+	position: relative;
+	overflow: hidden;
+}
+
+.nav__list a::before,
+.nav__list button::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: -100%;
+	width: 100%;
+	height: 100%;
+	background: linear-gradient(90deg, transparent, rgba(255, 204, 102, 0.2), transparent);
+	transition: left 0.5s;
+}
+
+.nav__list a:hover::before,
+.nav__list button:hover::before {
+	left: 100%;
 }
 
 .nav__list a[aria-label]:hover::after,
@@ -68,6 +87,13 @@
 	background-size: 5px 5px;
 	color: var(--color-primary);
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+	transform: translateY(-3px) scale(1.05);
+}
+
+.nav__list a:active,
+.nav__list button:active {
+	transform: translateY(0) scale(0.95);
+	animation: pulse 0.3s ease;
 }
 
 .nav__list .active {
