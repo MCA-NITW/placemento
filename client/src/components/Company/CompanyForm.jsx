@@ -74,10 +74,30 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData, isAdd }) => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
+		// Validate and format date
+		let dateOfOffer = formData.dateOfOffer;
+		if (dateOfOffer) {
+			// If it's already in YYYY-MM-DD format, use it directly
+			// Otherwise, try to format it
+			const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+			if (!dateRegex.test(dateOfOffer)) {
+				const date = new Date(dateOfOffer);
+				if (isNaN(date.getTime())) {
+					// Invalid date, use current date
+					dateOfOffer = formatDate(new Date());
+				} else {
+					dateOfOffer = formatDate(date);
+				}
+			}
+		} else {
+			// If no date provided, use current date
+			dateOfOffer = formatDate(new Date());
+		}
+
 		const newCompany = {
 			...formData,
 			selected: formData.selectedStudentsRollNo.length,
-			dateOfOffer: formatDate(new Date(formData.dateOfOffer)),
+			dateOfOffer: dateOfOffer,
 			cutoffs: {
 				pg: processCutoff(formData.cutoff_pg),
 				ug: processCutoff(formData.cutoff_ug),
