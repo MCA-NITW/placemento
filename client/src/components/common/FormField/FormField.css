@@ -1,0 +1,139 @@
+/* Form Field Styles */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+}
+
+.form-field__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.form-field__required {
+  color: red;
+  font-size: 14px;
+}
+
+.form-field__input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: var(--color-bg-variant);
+  border-radius: 5px;
+  border: 1px solid transparent;
+  transition: border-color 0.3s ease;
+}
+
+.form-field__input-container:focus-within {
+  border-color: var(--color-primary);
+}
+
+.form-field__input,
+.form-field__select,
+.form-field__textarea {
+  flex: 1;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: transparent;
+  color: var(--color-white);
+  font-size: 14px;
+  outline: none;
+  width: 100%;
+}
+
+.form-field__input::placeholder,
+.form-field__textarea::placeholder {
+  color: var(--color-light);
+  opacity: 0.7;
+}
+
+.form-field__select {
+  cursor: pointer;
+}
+
+.form-field__select option {
+  background-color: var(--color-bg);
+  color: var(--color-white);
+}
+
+.form-field__textarea {
+  resize: vertical;
+  min-height: 30px;
+  font-family: inherit;
+}
+
+.form-field__prefix,
+.form-field__suffix {
+  padding: 0 8px;
+  color: var(--color-light);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.form-field__password-toggle {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  color: var(--color-light);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease;
+}
+
+.form-field__password-toggle:hover {
+  color: var(--color-primary);
+}
+
+.form-field__error-message {
+  color: red;
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.form-field--error .form-field__input-container {
+  border-color: red;
+}
+
+.form-field--error .form-field__input,
+.form-field--error .form-field__select,
+.form-field--error .form-field__textarea {
+  border-color: red;
+}
+
+/* Disabled state */
+.form-field__input:disabled,
+.form-field__select:disabled,
+.form-field__textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Form group styles for side-by-side fields */
+.form-group {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.form-group .form-field {
+  flex: 1;
+}
+
+/* Responsive design */
+@media screen and (max-width: 600px) {
+  .form-group {
+    flex-direction: column;
+    gap: 15px;
+  }
+}

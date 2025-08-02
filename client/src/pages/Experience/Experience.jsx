@@ -11,7 +11,7 @@ const Experience = () => {
 					<div className="title-underline"></div>
 				</h1>
 				<p className="experience-subtitle animate-fadeInUp animate-delay-300">
-					Share your placement journey and learn from others' experiences
+					Share and explore placement experiences, tips, and interview insights
 				</p>
 			</div>
 			
