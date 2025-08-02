@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { addExperience, updateExperience } from '../../api/experienceApi';
-import ToastContent from '../ToastContent/ToastContent';
 import getUser from '../../utils/user';
+import ToastContent from '../ToastContent/ToastContent';
 
 const ExperienceForm = ({ closeExperienceAddModal, initialData, isAdd }) => {
 	const [formData, setFormData] = useState({
@@ -22,13 +22,13 @@ const ExperienceForm = ({ closeExperienceAddModal, initialData, isAdd }) => {
 
 		try {
 			const user = await getUser();
-			
+
 			const experienceData = {
 				...formData,
 				tags: formData.tags
 					.split(',')
-					.map(tag => tag.trim())
-					.filter(tag => tag.length > 0) || ['General'],
+					.map((tag) => tag.trim())
+					.filter((tag) => tag.length > 0) || ['General'],
 				studentDetails: {
 					rollNo: user.rollNo,
 					name: user.name,
@@ -42,21 +42,11 @@ const ExperienceForm = ({ closeExperienceAddModal, initialData, isAdd }) => {
 				await updateExperience(initialData._id, experienceData);
 			}
 
-			toast.success(
-				<ToastContent 
-					res="Success" 
-					messages={[`Experience ${isAdd ? 'added' : 'updated'} successfully!`]} 
-				/>
-			);
+			toast.success(<ToastContent res="Success" messages={[`Experience ${isAdd ? 'added' : 'updated'} successfully!`]} />);
 			closeExperienceAddModal(true);
 		} catch (error) {
 			console.error('Error submitting experience:', error);
-			toast.error(
-				<ToastContent 
-					res="Error" 
-					messages={error.response?.data?.errors || ['Failed to submit experience']} 
-				/>
-			);
+			toast.error(<ToastContent res="Error" messages={error.response?.data?.errors || ['Failed to submit experience']} />);
 		} finally {
 			setLoading(false);
 		}
@@ -91,56 +81,65 @@ const ExperienceForm = ({ closeExperienceAddModal, initialData, isAdd }) => {
 	};
 
 	return (
-		<div style={{ 
-			position: 'fixed', 
-			top: 0, 
-			left: 0, 
-			width: '100%', 
-			height: '100%', 
-			backgroundColor: 'rgba(0, 0, 0, 0.8)', 
-			display: 'flex', 
-			justifyContent: 'center', 
-			alignItems: 'center',
-			zIndex: 1000,
-			fontFamily: "'Comic Sans MS', 'Comic Sans', cursive"
-		}}>
-			<form onSubmit={handleSubmit} style={{ 
-				background: 'var(--color-bg-variant)', 
-				padding: '2rem', 
-				borderRadius: '1rem',
-				minWidth: '500px',
-				maxWidth: '600px',
-				maxHeight: '90vh',
-				overflowY: 'auto',
-				boxShadow: '0 0 20px rgba(0, 0, 0, 0.6)',
-				border: '1px solid var(--color-bg-variant-2)',
-				opacity: '0.95',
-				transition: 'all 0.4s ease-in-out'
-			}}>
-				<div style={{ 
-					textAlign: 'center', 
-					marginBottom: '2rem', 
-					borderBottom: '2px solid var(--color-primary-variant)', 
-					paddingBottom: '1rem' 
-				}}>
-					<h2 style={{ 
-						margin: 0, 
-						color: 'var(--color-primary)', 
-						fontSize: '2rem', 
-						fontWeight: '600',
-						fontFamily: "'Comic Sans MS', 'Comic Sans', cursive",
-						textShadow: '0 0 10px rgba(255, 204, 102, 0.3)'
-					}}>
+		<div
+			style={{
+				position: 'fixed',
+				top: 0,
+				left: 0,
+				width: '100%',
+				height: '100%',
+				backgroundColor: 'rgba(0, 0, 0, 0.8)',
+				display: 'flex',
+				justifyContent: 'center',
+				alignItems: 'center',
+				zIndex: 1000,
+				fontFamily: "'Comic Sans MS', 'Comic Sans', cursive"
+			}}
+		>
+			<form
+				onSubmit={handleSubmit}
+				style={{
+					background: 'var(--color-bg-variant)',
+					padding: '2rem',
+					borderRadius: '1rem',
+					minWidth: '500px',
+					maxWidth: '600px',
+					maxHeight: '90vh',
+					overflowY: 'auto',
+					boxShadow: '0 0 20px rgba(0, 0, 0, 0.6)',
+					border: '1px solid var(--color-bg-variant-2)',
+					opacity: '0.95',
+					transition: 'all 0.4s ease-in-out'
+				}}
+			>
+				<div
+					style={{
+						textAlign: 'center',
+						marginBottom: '2rem',
+						borderBottom: '2px solid var(--color-primary-variant)',
+						paddingBottom: '1rem'
+					}}
+				>
+					<h2
+						style={{
+							margin: 0,
+							color: 'var(--color-primary)',
+							fontSize: '2rem',
+							fontWeight: '600',
+							fontFamily: "'Comic Sans MS', 'Comic Sans', cursive",
+							textShadow: '0 0 10px rgba(255, 204, 102, 0.3)'
+						}}
+					>
 						{isAdd ? 'Add New Experience' : 'Edit Experience'}
 					</h2>
 				</div>
-				
+
 				<div style={formGroupStyle}>
 					<label style={labelStyle}>Company Name *</label>
 					<input
 						type="text"
 						value={formData.companyName}
-						onChange={(e) => setFormData(prev => ({ ...prev, companyName: e.target.value }))}
+						onChange={(e) => setFormData((prev) => ({ ...prev, companyName: e.target.value }))}
 						placeholder="Enter company name"
 						required
 						style={inputStyle}
@@ -161,7 +160,7 @@ const ExperienceForm = ({ closeExperienceAddModal, initialData, isAdd }) => {
 					<label style={labelStyle}>Experience Content *</label>
 					<textarea
 						value={formData.content}
-						onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
+						onChange={(e) => setFormData((prev) => ({ ...prev, content: e.target.value }))}
 						placeholder="Share your detailed experience..."
 						required
 						rows={6}
@@ -184,7 +183,7 @@ const ExperienceForm = ({ closeExperienceAddModal, initialData, isAdd }) => {
 					<input
 						type="text"
 						value={formData.tags}
-						onChange={(e) => setFormData(prev => ({ ...prev, tags: e.target.value }))}
+						onChange={(e) => setFormData((prev) => ({ ...prev, tags: e.target.value }))}
 						placeholder="Enter tags separated by commas (e.g., Technical, HR, Final Round)"
 						style={inputStyle}
 						onFocus={(e) => {
@@ -205,7 +204,7 @@ const ExperienceForm = ({ closeExperienceAddModal, initialData, isAdd }) => {
 						<label style={labelStyle}>Overall Rating *</label>
 						<select
 							value={formData.rating}
-							onChange={(e) => setFormData(prev => ({ ...prev, rating: parseInt(e.target.value) }))}
+							onChange={(e) => setFormData((prev) => ({ ...prev, rating: parseInt(e.target.value) }))}
 							required
 							style={inputStyle}
 							onFocus={(e) => {
@@ -231,7 +230,7 @@ const ExperienceForm = ({ closeExperienceAddModal, initialData, isAdd }) => {
 						<label style={labelStyle}>Difficulty Level *</label>
 						<select
 							value={formData.difficulty}
-							onChange={(e) => setFormData(prev => ({ ...prev, difficulty: e.target.value }))}
+							onChange={(e) => setFormData((prev) => ({ ...prev, difficulty: e.target.value }))}
 							required
 							style={inputStyle}
 							onFocus={(e) => {
@@ -256,7 +255,7 @@ const ExperienceForm = ({ closeExperienceAddModal, initialData, isAdd }) => {
 					<label style={labelStyle}>Interview Process</label>
 					<textarea
 						value={formData.interviewProcess}
-						onChange={(e) => setFormData(prev => ({ ...prev, interviewProcess: e.target.value }))}
+						onChange={(e) => setFormData((prev) => ({ ...prev, interviewProcess: e.target.value }))}
 						placeholder="Describe the interview process, rounds, etc."
 						rows={4}
 						style={inputStyle}
@@ -277,7 +276,7 @@ const ExperienceForm = ({ closeExperienceAddModal, initialData, isAdd }) => {
 					<label style={labelStyle}>Tips & Advice</label>
 					<textarea
 						value={formData.tips}
-						onChange={(e) => setFormData(prev => ({ ...prev, tips: e.target.value }))}
+						onChange={(e) => setFormData((prev) => ({ ...prev, tips: e.target.value }))}
 						placeholder="Share tips and advice for future candidates..."
 						rows={4}
 						style={inputStyle}
@@ -294,18 +293,20 @@ const ExperienceForm = ({ closeExperienceAddModal, initialData, isAdd }) => {
 					/>
 				</div>
 
-				<div style={{ 
-					display: 'flex', 
-					gap: '1rem', 
-					justifyContent: 'flex-end',
-					marginTop: '2rem',
-					paddingTop: '1rem',
-					borderTop: '2px solid var(--color-primary-variant)'
-				}}>
-					<button 
-						type="submit" 
+				<div
+					style={{
+						display: 'flex',
+						gap: '1rem',
+						justifyContent: 'flex-end',
+						marginTop: '2rem',
+						paddingTop: '1rem',
+						borderTop: '2px solid var(--color-primary-variant)'
+					}}
+				>
+					<button
+						type="submit"
 						disabled={loading}
-						style={{ 
+						style={{
 							padding: '1rem 2rem',
 							backgroundColor: loading ? 'var(--color-bg-variant-2)' : 'var(--color-primary)',
 							color: loading ? 'var(--color-light)' : 'var(--color-bg)',
@@ -336,13 +337,13 @@ const ExperienceForm = ({ closeExperienceAddModal, initialData, isAdd }) => {
 							}
 						}}
 					>
-						{loading ? 'Saving...' : (isAdd ? 'Add Experience' : 'Update Experience')}
+						{loading ? 'Saving...' : isAdd ? 'Add Experience' : 'Update Experience'}
 					</button>
-					<button 
-						type="button" 
+					<button
+						type="button"
 						onClick={() => closeExperienceAddModal(false)}
 						disabled={loading}
-						style={{ 
+						style={{
 							padding: '1rem 2rem',
 							backgroundColor: 'var(--color-bg-variant-2)',
 							color: 'var(--color-light)',

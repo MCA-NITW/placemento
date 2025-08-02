@@ -11,14 +11,14 @@ const getTotalCompaniesByProfileCategory = (companies, profileCategory) =>
 
 const calculateTotalPlacedStudents = (companies) =>
 	companies.reduce((acc, company) => {
-		const validRollNos = company.selectedStudentsRollNo.filter(rollNo => rollNo && rollNo.trim() !== '');
+		const validRollNos = company.selectedStudentsRollNo.filter((rollNo) => rollNo && rollNo.trim() !== '');
 		return acc + validRollNos.length;
 	}, 0);
 
 const calculateTotalPlacedStudentsCTC = (companies) =>
 	companies.reduce((acc, company) => {
-		const validRollNos = company.selectedStudentsRollNo.filter(rollNo => rollNo && rollNo.trim() !== '');
-		return acc + (validRollNos.length * (company.ctc || 0));
+		const validRollNos = company.selectedStudentsRollNo.filter((rollNo) => rollNo && rollNo.trim() !== '');
+		return acc + validRollNos.length * (company.ctc || 0);
 	}, 0);
 
 const getHighestCTC = (companies) => {
@@ -27,7 +27,7 @@ const getHighestCTC = (companies) => {
 };
 
 const getHighestCTCPlaced = (companies) => {
-	const placedCompanies = companies.filter(company => company.selectedStudentsRollNo.length > 0);
+	const placedCompanies = companies.filter((company) => company.selectedStudentsRollNo.length > 0);
 	if (placedCompanies.length === 0) return 0;
 	return Math.max(...placedCompanies.map((company) => company.ctc || 0));
 };
@@ -35,13 +35,15 @@ const getHighestCTCPlaced = (companies) => {
 const getHighestCTCCompany = (companies, highestCTC) => companies.find((company) => company.ctc === highestCTC) || null;
 
 const getHighestCTCPlacedCompany = (companies, highestCTCPlaced) =>
-	companies.find((company) => (company.selectedStudentsRollNo.length > 0 && company.ctc === highestCTCPlaced)) || null;
+	companies.find((company) => company.selectedStudentsRollNo.length > 0 && company.ctc === highestCTCPlaced) || null;
 
 const getHighestCTCStudent = (students, companies, highestCTCPlacedCompanyName) => {
 	if (!highestCTCPlacedCompanyName) return null;
-	return students.find((student) =>
-		companies.find((company) => company.name === highestCTCPlacedCompanyName && company.selectedStudentsRollNo.includes(student.rollNo))
-	) || null;
+	return (
+		students.find((student) =>
+			companies.find((company) => company.name === highestCTCPlacedCompanyName && company.selectedStudentsRollNo.includes(student.rollNo))
+		) || null
+	);
 };
 
 const getTopLocations = (companies) => {
@@ -86,11 +88,7 @@ exports.getCTCStats = async (req, res) => {
 		const highestCTCOfferedCompany = getHighestCTCCompany(filterCompanies, highestCTCOffered);
 		const highestCTCPlaced = getHighestCTCPlaced(filterCompanies);
 		const highestCTCPlacedCompany = getHighestCTCPlacedCompany(filterCompanies, highestCTCPlaced);
-		const highestCTCPlacedStudent = getHighestCTCStudent(
-			students, 
-			filterCompanies, 
-			highestCTCPlacedCompany?.name
-		);
+		const highestCTCPlacedStudent = getHighestCTCStudent(students, filterCompanies, highestCTCPlacedCompany?.name);
 		const totalPlacedStudentsCTC = calculateTotalPlacedStudentsCTC(filterCompanies);
 		const totalPlacedStudents = calculateTotalPlacedStudents(filterCompanies);
 		const avgCTC = totalPlacedStudents > 0 ? totalPlacedStudentsCTC / totalPlacedStudents : 0;

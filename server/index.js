@@ -34,7 +34,7 @@ async function connectDatabase() {
 		console.log('Connected to database:', mongoose.connection.name);
 	} catch (atlasError) {
 		console.error('❌ MongoDB Atlas connection failed:', atlasError.message);
-		
+
 		try {
 			console.log('🔄 Trying local MongoDB fallback...');
 			await mongoose.connect(localUri, mongoOptions);
@@ -43,7 +43,7 @@ async function connectDatabase() {
 		} catch (localError) {
 			console.error('❌ Local MongoDB connection also failed:', localError.message);
 			console.error('💡 Please ensure MongoDB is running or check your Atlas connection string');
-			
+
 			// Don't exit immediately, let the app try to continue
 			console.log('⚠️  Server starting without database connection...');
 		}

@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getCtcStats, getCompanyStats, getStudentStats } from '../../api/statsApi';
+import { getCompanyStats, getCtcStats, getStudentStats } from '../../api/statsApi';
 import './Home.css';
 
 const Home = () => {
@@ -15,7 +15,7 @@ const Home = () => {
 
 	useEffect(() => {
 		fetchStats();
-		
+
 		// Update time every second
 		const timeInterval = setInterval(() => {
 			setCurrentTime(new Date());
@@ -27,11 +27,7 @@ const Home = () => {
 	const fetchStats = async () => {
 		try {
 			setIsLoading(true);
-			const [studentResponse, companyResponse, ctcResponse] = await Promise.all([
-				getStudentStats(),
-				getCompanyStats(),
-				getCtcStats()
-			]);
+			const [studentResponse, companyResponse, ctcResponse] = await Promise.all([getStudentStats(), getCompanyStats(), getCtcStats()]);
 
 			setStats({
 				students: studentResponse.data || { total: 0, placed: 0, percentage: 0 },
@@ -63,26 +59,22 @@ const Home = () => {
 			{/* Hero Section with Live Clock */}
 			<div className="home-hero">
 				<div className="live-clock">
-					<div className="time-display">
-						{currentTime.toLocaleTimeString()}
-					</div>
+					<div className="time-display">{currentTime.toLocaleTimeString()}</div>
 					<div className="date-display">
-						{currentTime.toLocaleDateString('en-US', { 
-							weekday: 'long', 
-							year: 'numeric', 
-							month: 'long', 
-							day: 'numeric' 
+						{currentTime.toLocaleDateString('en-US', {
+							weekday: 'long',
+							year: 'numeric',
+							month: 'long',
+							day: 'numeric'
 						})}
 					</div>
 				</div>
-				
+
 				<div className="home-header">
 					<h1 className="home-title">
 						Welcome to <span className="highlight-text">Placemento</span>
 					</h1>
-					<p className="home-subtitle">
-						Your Ultimate Placement Management Platform
-					</p>
+					<p className="home-subtitle">Your Ultimate Placement Management Platform</p>
 				</div>
 			</div>
 
@@ -96,10 +88,7 @@ const Home = () => {
 							<h3>{isLoading ? '...' : stats.students.total}</h3>
 							<p>Total Students</p>
 							<div className="stat-progress">
-								<div 
-									className="progress-bar" 
-									style={{ width: `${stats.students.percentage}%` }}
-								></div>
+								<div className="progress-bar" style={{ width: `${stats.students.percentage}%` }}></div>
 							</div>
 							<span className="stat-percentage">{stats.students.percentage}% Placed</span>
 						</div>
@@ -123,7 +112,9 @@ const Home = () => {
 							<h3>₹{isLoading ? '...' : stats.ctc.highest}L</h3>
 							<p>Highest CTC</p>
 							<div className="ctc-details">
-								<small>Avg: ₹{stats.ctc.average}L | Med: ₹{stats.ctc.median}L</small>
+								<small>
+									Avg: ₹{stats.ctc.average}L | Med: ₹{stats.ctc.median}L
+								</small>
 							</div>
 						</div>
 					</div>
@@ -149,12 +140,7 @@ const Home = () => {
 				<h2 className="section-title">⚡ Quick Actions</h2>
 				<div className="actions-grid">
 					{quickActions.map((action, index) => (
-						<button
-							key={action.title}
-							className="action-btn"
-							onClick={() => navigate(action.path)}
-							style={{ '--action-color': action.color }}
-						>
+						<button key={action.title} className="action-btn" onClick={() => navigate(action.path)} style={{ '--action-color': action.color }}>
 							<div className="action-icon">{action.icon}</div>
 							<span>{action.title}</span>
 							<div className="action-badge">NEW</div>
@@ -162,7 +148,7 @@ const Home = () => {
 					))}
 				</div>
 			</div>
-			
+
 			{/* Enhanced Feature Cards with 3D Effects */}
 			<div className="home-features">
 				<h2 className="section-title">🌟 Platform Features</h2>
@@ -174,7 +160,7 @@ const Home = () => {
 						<p>AI-powered insights with real-time data visualization and predictive analytics</p>
 						<div className="feature-highlight pulse">AI Powered</div>
 					</div>
-					
+
 					<div className="feature-card card-3d">
 						<div className="card-glow"></div>
 						<div className="feature-icon floating">👥</div>
@@ -182,7 +168,7 @@ const Home = () => {
 						<p>Intelligent profile management with automated matching and career recommendations</p>
 						<div className="feature-highlight pulse">Smart Matching</div>
 					</div>
-					
+
 					<div className="feature-card card-3d">
 						<div className="card-glow"></div>
 						<div className="feature-icon floating">🏢</div>
@@ -190,7 +176,7 @@ const Home = () => {
 						<p>Direct integration with 500+ companies and real-time job opportunity updates</p>
 						<div className="feature-highlight pulse">500+ Partners</div>
 					</div>
-					
+
 					<div className="feature-card card-3d">
 						<div className="card-glow"></div>
 						<div className="feature-icon floating">💼</div>
@@ -198,7 +184,7 @@ const Home = () => {
 						<p>Community-driven platform with verified reviews and interview preparation tools</p>
 						<div className="feature-highlight pulse">Verified Reviews</div>
 					</div>
-					
+
 					<div className="feature-card card-3d">
 						<div className="card-glow"></div>
 						<div className="feature-icon floating">⚡</div>
@@ -206,7 +192,7 @@ const Home = () => {
 						<p>Optimized performance with instant updates and real-time notifications</p>
 						<div className="feature-highlight pulse">Real-time</div>
 					</div>
-					
+
 					<div className="feature-card card-3d">
 						<div className="card-glow"></div>
 						<div className="feature-icon floating">🎯</div>
@@ -216,14 +202,14 @@ const Home = () => {
 					</div>
 				</div>
 			</div>
-			
+
 			{/* Success Stories Ticker */}
 			<div className="success-ticker">
 				<div className="ticker-content">
 					<span>🎉 Rahul got placed at Google • 💰 Priya secured 15L CTC • 🚀 Amit joined Microsoft • 🌟 Sneha got dream job at Amazon • </span>
 				</div>
 			</div>
-			
+
 			{/* Call to Action with Particle Effect */}
 			<div className="home-cta">
 				<div className="particles">
@@ -235,20 +221,12 @@ const Home = () => {
 				</div>
 				<div className="cta-content">
 					<h3>🚀 Ready to Launch Your Career?</h3>
-					<p className="cta-text">
-						Join 10,000+ students who transformed their careers with Placemento
-					</p>
+					<p className="cta-text">Join 10,000+ students who transformed their careers with Placemento</p>
 					<div className="cta-buttons">
-						<button 
-							className="btn btn-primary cta-primary glow-btn"
-							onClick={() => navigate('/students')}
-						>
+						<button className="btn btn-primary cta-primary glow-btn" onClick={() => navigate('/students')}>
 							🚀 Get Started Now
 						</button>
-						<button 
-							className="btn btn-secondary cta-secondary"
-							onClick={() => navigate('/stats')}
-						>
+						<button className="btn btn-secondary cta-secondary" onClick={() => navigate('/stats')}>
 							📊 View Live Stats
 						</button>
 					</div>

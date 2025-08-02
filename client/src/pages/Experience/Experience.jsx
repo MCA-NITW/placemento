@@ -10,11 +10,9 @@ const Experience = () => {
 					Experience
 					<div className="title-underline"></div>
 				</h1>
-				<p className="page-subtitle animate-fadeInUp animate-delay-300">
-					Share and explore placement experiences, tips, and interview insights
-				</p>
+				<p className="page-subtitle animate-fadeInUp animate-delay-300">Share and explore placement experiences, tips, and interview insights</p>
 			</div>
-			
+
 			<div className="page-content animate-fadeInUp animate-delay-500">
 				<ExperienceFeed />
 			</div>

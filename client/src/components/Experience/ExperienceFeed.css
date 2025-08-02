@@ -321,20 +321,20 @@
 		max-width: 95vw;
 		padding: 15px;
 	}
-	
+
 	.form-row {
 		flex-direction: column;
 	}
-	
+
 	.tags-container {
 		gap: 0.3rem;
 	}
-	
+
 	.tag-button {
 		font-size: 0.75rem;
 		padding: 0.3rem 0.6rem;
 	}
-	
+
 	.experience-form .modal-buttons {
 		flex-direction: column;
 	}
@@ -344,11 +344,11 @@
 	.experience-form h2 {
 		font-size: 1.3rem;
 	}
-	
+
 	.star-button {
 		font-size: 1.3rem;
 	}
-	
+
 	.rating-text {
 		font-size: 0.8rem;
 	}

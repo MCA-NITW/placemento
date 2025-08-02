@@ -6,6 +6,8 @@
 		"@testing-library/jest-dom": "^6.0.0",
 		"@testing-library/react": "^16.0.0",
 		"@testing-library/user-event": "^14.0.0",
+		"ag-charts-community": "^12.1.0",
+		"ag-charts-react": "^12.1.0",
 		"ag-grid-community": "^32.0.2",
 		"ag-grid-react": "^32.0.0",
 		"axios": "^1.8.2",

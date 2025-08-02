@@ -11,8 +11,8 @@ import Profile from './pages/Profile/Profile';
 import Stats from './pages/Stats/Stats';
 import Students from './pages/Students/Students';
 import Teams from './pages/Teams/Teams';
-import { checkAuthAction, getAuthToken } from './utils/auth';
 import './utils/animations'; // Import animations for auto-initialization
+import { checkAuthAction, getAuthToken } from './utils/auth';
 
 const App = () => {
 	const router = createBrowserRouter([

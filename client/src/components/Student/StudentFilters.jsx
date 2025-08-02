@@ -23,9 +23,7 @@ const StudentFilters = ({ optionClickHandler, role }) => {
 	};
 
 	// Combine options based on user role
-	const filterOptions = (role === 'admin' || role === 'placementCoordinator') 
-		? { ...allOptions, ...adminOptions }
-		: allOptions;
+	const filterOptions = role === 'admin' || role === 'placementCoordinator' ? { ...allOptions, ...adminOptions } : allOptions;
 
 	return <Filter allOptions={filterOptions} optionClickHandler={optionClickHandler} />;
 };

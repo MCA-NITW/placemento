@@ -14,10 +14,10 @@ const experienceSchema = new mongoose.Schema(
 		rating: { type: Number, min: 1, max: 5, default: 5 },
 		interviewProcess: { type: String, default: '' },
 		tips: { type: String, default: '' },
-		difficulty: { 
-			type: String, 
-			enum: ['Easy', 'Medium', 'Hard'], 
-			default: 'Medium' 
+		difficulty: {
+			type: String,
+			enum: ['Easy', 'Medium', 'Hard'],
+			default: 'Medium'
 		},
 		likes: { type: Number, default: 0 },
 		likedBy: { type: [String], default: [] }, // Array of user IDs who liked

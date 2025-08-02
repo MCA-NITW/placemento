@@ -10,11 +10,9 @@ const Students = () => {
 					Students
 					<div className="title-underline title-underline-sm"></div>
 				</h1>
-				<p className="page-subtitle animate-fadeInUp animate-delay-300">
-					Manage and track student information and placement records
-				</p>
+				<p className="page-subtitle animate-fadeInUp animate-delay-300">Manage and track student information and placement records</p>
 			</div>
-			
+
 			<div className="page-content animate-fadeInUp animate-delay-500">
 				<StudentTable />
 			</div>

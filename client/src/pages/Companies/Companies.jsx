@@ -10,11 +10,9 @@ const Companies = () => {
 					Companies
 					<div className="title-underline title-underline-sm"></div>
 				</h1>
-				<p className="page-subtitle animate-fadeInUp animate-delay-300">
-					Explore top recruiting companies and their placement opportunities
-				</p>
+				<p className="page-subtitle animate-fadeInUp animate-delay-300">Explore top recruiting companies and their placement opportunities</p>
 			</div>
-			
+
 			<div className="page-content animate-fadeInUp animate-delay-500">
 				<CompanyTable />
 			</div>
