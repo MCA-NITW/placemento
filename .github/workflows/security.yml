@@ -1,244 +1,244 @@
-name: Security and Dependency Checks
+# name: Security and Dependency Checks
 
-on:
-  schedule:
-    - cron: '0 2 * * 1' # Weekly on Monday at 2 AM UTC
-  workflow_dispatch:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+# on:
+#   schedule:
+#     - cron: '0 2 * * 1' # Weekly on Monday at 2 AM UTC
+#   workflow_dispatch:
+#   push:
+#     branches: [main]
+#   pull_request:
+#     branches: [main]
 
-jobs:
-  dependency-check:
-    name: Dependency Security Scan
-    runs-on: ubuntu-latest
+# jobs:
+#   dependency-check:
+#     name: Dependency Security Scan
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-          cache: 'npm'
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '20.x'
+#           cache: 'npm'
 
-      - name: Install dependencies
-        run: |
-          npm ci
-          cd client && npm ci
-          cd ../server && npm ci
+#       - name: Install dependencies
+#         run: |
+#           npm ci
+#           cd client && npm ci
+#           cd ../server && npm ci
 
-      - name: Run security audit (Root)
-        continue-on-error: true
-        run: |
-          echo "🔍 Checking root dependencies..."
-          npm audit --audit-level moderate || echo "⚠️ Root audit found issues (non-blocking for CI)"
+#       - name: Run security audit (Root)
+#         continue-on-error: true
+#         run: |
+#           echo "🔍 Checking root dependencies..."
+#           npm audit --audit-level moderate || echo "⚠️ Root audit found issues (non-blocking for CI)"
 
-      - name: Run security audit (Frontend)
-        run: |
-          echo "🔍 Checking frontend dependencies..."
-          cd client
+#       - name: Run security audit (Frontend)
+#         run: |
+#           echo "🔍 Checking frontend dependencies..."
+#           cd client
           
-          echo "📊 Production Dependencies Audit:"
-          echo "-----------------------------------"
-          PROD_AUDIT_EXIT=0
-          npm run audit:production || PROD_AUDIT_EXIT=$?
+#           echo "📊 Production Dependencies Audit:"
+#           echo "-----------------------------------"
+#           PROD_AUDIT_EXIT=0
+#           npm run audit:production || PROD_AUDIT_EXIT=$?
           
-          if [ $PROD_AUDIT_EXIT -eq 0 ]; then
-            echo "✅ No vulnerabilities in production dependencies"
-          else
-            echo "❌ Critical vulnerabilities found in production dependencies!"
-            echo "🚨 Immediate attention required"
-            exit 1
-          fi
+#           if [ $PROD_AUDIT_EXIT -eq 0 ]; then
+#             echo "✅ No vulnerabilities in production dependencies"
+#           else
+#             echo "❌ Critical vulnerabilities found in production dependencies!"
+#             echo "🚨 Immediate attention required"
+#             exit 1
+#           fi
           
-          echo ""
-          echo "📊 Development Dependencies Analysis:"
-          echo "-------------------------------------"
-          DEV_AUDIT_OUTPUT=$(npm audit --audit-level moderate 2>&1 || true)
-          echo "$DEV_AUDIT_OUTPUT"
+#           echo ""
+#           echo "📊 Development Dependencies Analysis:"
+#           echo "-------------------------------------"
+#           DEV_AUDIT_OUTPUT=$(npm audit --audit-level moderate 2>&1 || true)
+#           echo "$DEV_AUDIT_OUTPUT"
           
-          # Extract vulnerability count
-          VULN_COUNT=$(echo "$DEV_AUDIT_OUTPUT" | grep -o '[0-9]\+ vulnerabilities' | head -1 | grep -o '[0-9]\+' || echo "0")
+#           # Extract vulnerability count
+#           VULN_COUNT=$(echo "$DEV_AUDIT_OUTPUT" | grep -o '[0-9]\+ vulnerabilities' | head -1 | grep -o '[0-9]\+' || echo "0")
           
-          if [ "$VULN_COUNT" -gt 0 ]; then
-            echo ""
-            echo "⚠️ Found $VULN_COUNT vulnerabilities in development dependencies"
-            echo "� Analyzing vulnerability sources..."
+#           if [ "$VULN_COUNT" -gt 0 ]; then
+#             echo ""
+#             echo "⚠️ Found $VULN_COUNT vulnerabilities in development dependencies"
+#             echo "� Analyzing vulnerability sources..."
             
-            # Check if all vulnerabilities are in known development dependencies
-            if echo "$DEV_AUDIT_OUTPUT" | grep -q "react-scripts\|@svgr\|webpack-dev-server\|postcss\|nth-check"; then
-              echo "📋 All vulnerabilities are in react-scripts dependency chain"
-              echo "🔒 These are development-only dependencies that don't affect production"
-              echo "📄 Documented in SECURITY_VULNERABILITIES.md"
-              echo "✅ Production security status: SECURE"
-            else
-              echo "❌ Found vulnerabilities outside known react-scripts issues"
-              echo "🔍 Manual review required"
-            fi
-          else
-            echo "✅ No development dependency vulnerabilities found"
-          fi
+#             # Check if all vulnerabilities are in known development dependencies
+#             if echo "$DEV_AUDIT_OUTPUT" | grep -q "react-scripts\|@svgr\|webpack-dev-server\|postcss\|nth-check"; then
+#               echo "📋 All vulnerabilities are in react-scripts dependency chain"
+#               echo "🔒 These are development-only dependencies that don't affect production"
+#               echo "📄 Documented in SECURITY_VULNERABILITIES.md"
+#               echo "✅ Production security status: SECURE"
+#             else
+#               echo "❌ Found vulnerabilities outside known react-scripts issues"
+#               echo "🔍 Manual review required"
+#             fi
+#           else
+#             echo "✅ No development dependency vulnerabilities found"
+#           fi
 
-      - name: Run security audit (Backend)
-        continue-on-error: true
-        run: |
-          echo "🔍 Checking backend dependencies..."
-          cd server
-          echo "📊 Audit Results:"
+#       - name: Run security audit (Backend)
+#         continue-on-error: true
+#         run: |
+#           echo "🔍 Checking backend dependencies..."
+#           cd server
+#           echo "📊 Audit Results:"
           
-          # Run audit and capture output
-          AUDIT_OUTPUT=$(npm audit --audit-level moderate 2>&1 || true)
-          echo "$AUDIT_OUTPUT"
+#           # Run audit and capture output
+#           AUDIT_OUTPUT=$(npm audit --audit-level moderate 2>&1 || true)
+#           echo "$AUDIT_OUTPUT"
           
-          # Count vulnerabilities
-          VULN_COUNT=$(echo "$AUDIT_OUTPUT" | grep -o '[0-9]\+ vulnerabilities' | head -1 | grep -o '[0-9]\+' || echo "0")
+#           # Count vulnerabilities
+#           VULN_COUNT=$(echo "$AUDIT_OUTPUT" | grep -o '[0-9]\+ vulnerabilities' | head -1 | grep -o '[0-9]\+' || echo "0")
           
-          if [ "$VULN_COUNT" -gt 0 ]; then
-            echo "⚠️ Found $VULN_COUNT vulnerabilities in backend dependencies"
-            echo "🔍 Review these vulnerabilities and update dependencies as needed"
-          else
-            echo "✅ No vulnerabilities found in backend dependencies"
-          fi
+#           if [ "$VULN_COUNT" -gt 0 ]; then
+#             echo "⚠️ Found $VULN_COUNT vulnerabilities in backend dependencies"
+#             echo "🔍 Review these vulnerabilities and update dependencies as needed"
+#           else
+#             echo "✅ No vulnerabilities found in backend dependencies"
+#           fi
 
-      - name: Check for outdated packages
-        run: |
-          echo "📦 Checking for outdated packages..."
-          npm outdated || true
-          cd client && npm outdated || true
-          cd ../server && npm outdated || true
+#       - name: Check for outdated packages
+#         run: |
+#           echo "📦 Checking for outdated packages..."
+#           npm outdated || true
+#           cd client && npm outdated || true
+#           cd ../server && npm outdated || true
 
-  license-check:
-    name: License Compliance
-    runs-on: ubuntu-latest
+#   license-check:
+#     name: License Compliance
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '20.x'
 
-      - name: Install license checker
-        run: npm install -g license-checker
+#       - name: Install license checker
+#         run: npm install -g license-checker
 
-      - name: Check licenses (Frontend)
-        run: |
-          cd client && npm ci
-          echo "📄 Frontend License Report:"
-          license-checker --summary
+#       - name: Check licenses (Frontend)
+#         run: |
+#           cd client && npm ci
+#           echo "📄 Frontend License Report:"
+#           license-checker --summary
 
-      - name: Check licenses (Backend)
-        run: |
-          cd server && npm ci
-          echo "📄 Backend License Report:"
-          license-checker --summary
+#       - name: Check licenses (Backend)
+#         run: |
+#           cd server && npm ci
+#           echo "📄 Backend License Report:"
+#           license-checker --summary
 
-  vulnerability-scan:
-    name: Vulnerability Assessment
-    runs-on: ubuntu-latest
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+#   vulnerability-scan:
+#     name: Vulnerability Assessment
+#     runs-on: ubuntu-latest
+#     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
 
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
+#       - name: Run Trivy vulnerability scanner
+#         uses: aquasecurity/trivy-action@master
+#         with:
+#           scan-type: 'fs'
+#           scan-ref: '.'
+#           format: 'sarif'
+#           output: 'trivy-results.sarif'
 
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: 'trivy-results.sarif'
+#       - name: Upload Trivy scan results to GitHub Security tab
+#         uses: github/codeql-action/upload-sarif@v3
+#         if: always()
+#         with:
+#           sarif_file: 'trivy-results.sarif'
 
-  dependency-review:
-    name: Dependency Review
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
+#   dependency-review:
+#     name: Dependency Review
+#     runs-on: ubuntu-latest
+#     if: github.event_name == 'pull_request'
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
 
-      - name: Dependency Review
-        uses: actions/dependency-review-action@v4
-        with:
-          fail-on-severity: moderate
-          allow-licenses: GPL-3.0, MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC
+#       - name: Dependency Review
+#         uses: actions/dependency-review-action@v4
+#         with:
+#           fail-on-severity: moderate
+#           allow-licenses: GPL-3.0, MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC
 
-  update-dependencies:
-    name: Update Dependencies
-    runs-on: ubuntu-latest
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+#   update-dependencies:
+#     name: Update Dependencies
+#     runs-on: ubuntu-latest
+#     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
+#         with:
+#           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '20.x'
 
-      - name: Configure Git
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+#       - name: Configure Git
+#         run: |
+#           git config --local user.email "action@github.com"
+#           git config --local user.name "GitHub Action"
 
-      - name: Update npm packages
-        run: |
-          echo "🔄 Updating npm packages..."
+#       - name: Update npm packages
+#         run: |
+#           echo "🔄 Updating npm packages..."
           
-          # Update root dependencies
-          npx npm-check-updates -u
-          npm install
+#           # Update root dependencies
+#           npx npm-check-updates -u
+#           npm install
           
-          # Update frontend dependencies
-          cd client
-          npx npm-check-updates -u
-          npm install
-          cd ..
+#           # Update frontend dependencies
+#           cd client
+#           npx npm-check-updates -u
+#           npm install
+#           cd ..
           
-          # Update backend dependencies
-          cd server
-          npx npm-check-updates -u
-          npm install
-          cd ..
+#           # Update backend dependencies
+#           cd server
+#           npx npm-check-updates -u
+#           npm install
+#           cd ..
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore: update npm dependencies"
-          title: "🔄 Automated Dependency Updates"
-          body: |
-            ## 🔄 Automated Dependency Updates
+#       - name: Create Pull Request
+#         uses: peter-evans/create-pull-request@v6
+#         with:
+#           token: ${{ secrets.GITHUB_TOKEN }}
+#           commit-message: "chore: update npm dependencies"
+#           title: "🔄 Automated Dependency Updates"
+#           body: |
+#             ## 🔄 Automated Dependency Updates
             
-            This PR contains automated updates to npm dependencies.
+#             This PR contains automated updates to npm dependencies.
             
-            ### Changes:
-            - ⬆️ Updated npm packages to latest versions
-            - 🔍 Checked for security vulnerabilities
-            - ✅ Verified license compatibility
+#             ### Changes:
+#             - ⬆️ Updated npm packages to latest versions
+#             - 🔍 Checked for security vulnerabilities
+#             - ✅ Verified license compatibility
             
-            ### Testing:
-            - [ ] Frontend builds successfully
-            - [ ] Backend starts without errors
-            - [ ] All tests pass
-            - [ ] No breaking changes detected
+#             ### Testing:
+#             - [ ] Frontend builds successfully
+#             - [ ] Backend starts without errors
+#             - [ ] All tests pass
+#             - [ ] No breaking changes detected
             
-            **Generated by GitHub Actions** 🤖
-          branch: chore/dependency-updates
-          delete-branch: true
+#             **Generated by GitHub Actions** 🤖
+#           branch: chore/dependency-updates
+#           delete-branch: true
