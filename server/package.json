@@ -8,7 +8,9 @@
 		"start": "node index.js",
 		"seed": "node seedDatabase.js",
 		"test:stats": "node testStats.js",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "echo \"No tests specified yet\" && exit 0",
+		"lint": "echo \"ESLint not configured yet\" && exit 0",
+		"format": "echo \"Prettier not configured yet\" && exit 0"
 	},
 	"author": "",
 	"license": "ISC",

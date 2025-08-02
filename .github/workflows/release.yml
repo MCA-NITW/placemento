@@ -183,9 +183,18 @@ jobs:
     if: success()
 
     steps:
+      - name: Get version from previous job
+        id: get_version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
+
       - name: Notify teams
         run: |
-          echo "🎉 Successfully created release ${{ steps.version.outputs.version }}"
+          echo "🎉 Successfully created release ${{ steps.get_version.outputs.version }}"
           echo "📧 Add your notification logic here (Slack, Discord, Email, etc.)"
           # Example notifications:
           # - Send Slack message to development channel
