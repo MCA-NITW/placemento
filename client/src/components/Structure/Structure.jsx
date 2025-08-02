@@ -1,20 +1,20 @@
-import propTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import './Structure.css';
 
-const Structure = ({ LeftCompnonet, RightComponent, ContainerComponent }) => {
+const Structure = ({ LeftComponent, RightComponent, ContainerComponent }) => {
 	return (
 		<div className="structure-container">
 			{ContainerComponent}
-			<div className="structure-left">{LeftCompnonet}</div>
+			<div className="structure-left">{LeftComponent}</div>
 			<div className="structure-right">{RightComponent}</div>
 		</div>
 	);
 };
 
 Structure.propTypes = {
-	LeftCompnonet: propTypes.element.isRequired,
-	RightComponent: propTypes.element.isRequired,
-	ContainerComponent: propTypes.element.isRequired
+	LeftComponent: PropTypes.element.isRequired,
+	RightComponent: PropTypes.element.isRequired,
+	ContainerComponent: PropTypes.element.isRequired
 };
 
 export default Structure;

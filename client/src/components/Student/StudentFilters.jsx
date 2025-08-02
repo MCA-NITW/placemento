@@ -27,7 +27,7 @@ const StudentFilters = ({ optionClickHandler, role }) => {
 		? { ...allOptions, ...adminOptions }
 		: allOptions;
 
-	return <Filter Allptions={filterOptions} optionClickHandler={optionClickHandler} />;
+	return <Filter allOptions={filterOptions} optionClickHandler={optionClickHandler} />;
 };
 
 StudentFilters.propTypes = {

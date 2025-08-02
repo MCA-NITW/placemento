@@ -15,7 +15,7 @@ const CompanyFilters = ({ optionClickHandler }) => {
 		Locations: OPTIONS.LOCATIONS
 	};
 
-	return <Filter Allptions={allOptions} optionClickHandler={optionClickHandler} />;
+	return <Filter allOptions={allOptions} optionClickHandler={optionClickHandler} />;
 };
 
 CompanyFilters.propTypes = {

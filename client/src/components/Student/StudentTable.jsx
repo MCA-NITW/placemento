@@ -350,7 +350,7 @@ const StudentTable = () => {
 
 	return (
 		<Structure
-			LeftCompnonet={user.role && <StudentFilters optionClickHandler={optionClickHandler} role={user.role} />}
+			LeftComponent={user.role && <StudentFilters optionClickHandler={optionClickHandler} role={user.role} />}
 			RightComponent={
 				<AgGridTable
 					rowData={students}
