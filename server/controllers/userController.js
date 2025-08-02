@@ -254,6 +254,9 @@ exports.updateCompanyLocation = async (req, res) => {
 		if (!user) {
 			return res.status(404).json({ message: 'User not found' });
 		}
+		if (typeof req.body.location !== "string" || req.body.location === null) {
+			return res.status(400).json({ message: 'Invalid location value' });
+		}
 		const updatedUser = await User.findByIdAndUpdate(
 			req.params.id,
 			{
