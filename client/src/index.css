@@ -1,4 +1,5 @@
 @import './animations.css';
+@import './styles/utilities.css';
 
 * {
 	margin: 0;

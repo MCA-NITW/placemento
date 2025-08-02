@@ -1,20 +1,33 @@
+/* Authentication Forms - Refactored with Utility Classes */
+
 .auth-form {
 	width: 60%;
 	max-width: 500px;
+	margin: 0 auto;
+	/* Using utility class styles directly */
+	background: var(--color-bg-variant);
+	border-radius: 1rem;
+	padding: 2rem;
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+	transition: var(--transition);
+	animation: fadeInUp 0.8s ease-out;
+	border: 1px solid var(--color-primary);
+	/* Form container styles */
 	display: flex;
 	flex-direction: column;
+	gap: 1rem;
 	align-items: center;
 	justify-content: center;
-	border-radius: 0.5rem;
-	padding: 1rem 2rem;
-	background: var(--color-bg);
-	box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
-	transition: var(--transition);
 }
 
 .auth-form h1 {
+	/* Section header styles */
 	font-size: 2rem;
+	font-weight: 600;
 	color: var(--color-primary);
+	text-align: center;
+	margin-bottom: 1.5rem;
+	text-shadow: 0 0 10px rgba(255, 204, 102, 0.3);
 }
 
 .auth-form form {
@@ -33,12 +46,12 @@
 }
 
 .auth-form__head2 h2 {
-	font-size: 1.5rem;
+	font-size: 1.2rem;
 	color: var(--color-primary-variant);
+	margin-bottom: 1rem;
 }
 
 .auth-form__head2 p {
-	font-size: 1rem;
 	color: var(--color-light);
 }
 

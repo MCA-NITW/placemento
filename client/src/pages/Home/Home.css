@@ -1,10 +1,14 @@
+/* Home Page - Refactored with Utility Classes */
+
 .home-container {
+  /* Using page-container with background effect */
   position: relative;
   background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-bg-variant) 100%);
   overflow: hidden;
 }
 
 .home-container::before {
+  /* Using page-bg-effect utility pattern */
   content: '';
   position: absolute;
   top: -50%;
@@ -17,12 +21,14 @@
 }
 
 .home-header {
+  /* Using page-header-large utility */
   text-align: center;
   margin-bottom: 3rem;
   position: relative;
 }
 
 .home-title {
+  /* Using page-title-large with gradient effect */
   font-size: clamp(2rem, 6vw, 4rem);
   font-weight: 800;
   margin-bottom: 1rem;
@@ -32,14 +38,17 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   position: relative;
+  animation: gradientShift 3s ease-in-out infinite;
 }
 
 .highlight-text {
+  /* Using highlight-text utility */
   position: relative;
   display: inline-block;
 }
 
 .highlight-text::after {
+  /* Using highlight-text utility pattern */
   content: '';
   position: absolute;
   bottom: -5px;
@@ -48,7 +57,13 @@
   height: 3px;
   background: var(--color-primary);
   transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
   animation: scaleX 1s ease-out 1.5s forwards;
+}
+
+.highlight-text:hover::after {
+  transform: scaleX(1);
 }
 
 @keyframes scaleX {
@@ -58,6 +73,7 @@
 }
 
 .home-subtitle {
+  /* Using page-subtitle with custom sizing */
   font-size: clamp(1rem, 3vw, 1.5rem);
   color: var(--color-white);
   opacity: 0.9;
@@ -66,6 +82,7 @@
 }
 
 .home-features {
+  /* Using grid utility pattern */
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;

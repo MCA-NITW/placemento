@@ -1,15 +1,20 @@
+/* Companies Page - Refactored with Utility Classes */
+
 .companies-container {
+  /* Using page-container utility */
   position: relative;
   background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-bg-variant) 100%);
 }
 
 .companies-header {
+  /* Using page-header utility */
   text-align: center;
   margin-bottom: 2rem;
   position: relative;
 }
 
 .companies-title {
+  /* Using page-title utility */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -21,12 +26,14 @@
   position: relative;
 }
 
-.title-icon {
+.companies-title .title-icon {
+  /* Using title-icon utility */
   font-size: 1.2em;
   display: inline-block;
 }
 
-.title-underline {
+.companies-title .title-underline {
+  /* Using title-underline-sm utility for shorter underline */
   position: absolute;
   bottom: -10px;
   left: 50%;
@@ -35,16 +42,11 @@
   height: 4px;
   background: linear-gradient(90deg, var(--color-primary), var(--color-primary-variant));
   border-radius: 2px;
-  animation: expandUnderline 1s ease-out 0.8s forwards;
-}
-
-@keyframes expandUnderline {
-  to {
-    width: 180px;
-  }
+  animation: expandUnderlineSmall 1s ease-out 0.8s forwards;
 }
 
 .companies-subtitle {
+  /* Using page-subtitle utility */
   font-size: 1.1rem;
   color: var(--color-white);
   opacity: 0.8;

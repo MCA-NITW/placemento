@@ -1,15 +1,20 @@
+/* Experience Page - Refactored with Utility Classes */
+
 .experience-container {
+  /* Using page-container utility */
   position: relative;
   background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-bg-variant) 100%);
 }
 
 .experience-header {
+  /* Using page-header utility */
   text-align: center;
-    margin-bottom: 2rem;
-    position: relative;
+  margin-bottom: 2rem;
+  position: relative;
 }
 
 .experience-title {
+  /* Using page-title utility */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -21,12 +26,14 @@
   position: relative;
 }
 
-.title-icon {
+.experience-title .title-icon {
+  /* Using title-icon utility */
   font-size: 1.2em;
   display: inline-block;
 }
 
-.title-underline {
+.experience-title .title-underline {
+  /* Using title-underline utility */
   position: absolute;
   bottom: -10px;
   left: 50%;
@@ -38,13 +45,8 @@
   animation: expandUnderline 1s ease-out 0.8s forwards;
 }
 
-@keyframes expandUnderline {
-  to {
-    width: 200px;
-  }
-}
-
 .experience-subtitle {
+  /* Using page-subtitle utility */
   font-size: 1.1rem;
   color: var(--color-white);
   opacity: 0.8;
@@ -54,7 +56,7 @@
   transition: all 0.6s ease;
 }
 
-/* Animation states */
+/* Custom animations for Experience page */
 .experience-subtitle.animate-fadeInUp {
   opacity: 0;
   transform: translateY(20px);
@@ -62,18 +64,18 @@
 }
 
 .experience-content {
+  /* Using page-content utility */
   width: 100%;
   position: relative;
 }
 
-/* Content animations */
 .experience-content.animate-fadeInUp {
   opacity: 0;
   transform: translateY(30px);
   animation: fadeInUp 0.6s ease-out 0.5s forwards;
 }
 
-/* Responsive Design */
+/* Responsive Design - using page responsive patterns */
 @media (max-width: 768px) {
   .experience-title {
     font-size: 2rem;

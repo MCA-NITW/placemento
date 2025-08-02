@@ -1,4 +1,4 @@
-/* Teams Page Styles - Theme Compliant with Proper Alignment */
+/* Teams Page Styles - Refactored with Utility Classes */
 
 /* Base Container */
 .teams-container {
@@ -10,7 +10,7 @@
   padding-top: 80px; /* Add space for navbar */
 }
 
-/* Hero Section */
+/* Hero Section - Using card utility styles */
 .hero-section {
   background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-primary-variant) 100%);
   padding: 5rem 2rem 4rem 2rem;
@@ -21,18 +21,20 @@
   margin: 0 auto;
 }
 
+/* Section Headers - Now using utility classes */
 .skills-section h4,
 .contributions-section h4 {
-  color: var(--color-primary);
+  /* Using section-subheader utility */
+  font-size: 1.2rem;
+  color: var(--color-primary-variant);
   margin-bottom: 1rem;
-  font-size: 1.1rem;
 }
 
 /* Collapsible Contributions */
 .contributions-header {
   width: 100%;
   background: transparent;
-  border: none;
+  /* Using section-subheader styles */
   color: var(--color-primary);
   font-size: 1.1rem;
   font-weight: 600;
@@ -41,6 +43,7 @@
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
+  /* Using flex-between utility pattern */
   display: flex;
   justify-content: space-between;
   align-items: center;

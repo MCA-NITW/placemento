@@ -1,4 +1,7 @@
+/* Stats Page - Refactored with Utility Classes */
+
 .stats {
+	/* Using card and stats-container utility patterns */
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -15,11 +18,13 @@
 }
 
 .stats:hover {
+	/* Using hover-lift utility pattern */
 	transform: translateY(-5px);
 	box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 }
 
 .stats-section {
+	/* Using stats-section utility class pattern */
 	display: flex;
 	flex-direction: column;
 	width: 100%;
