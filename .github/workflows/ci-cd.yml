@@ -48,30 +48,36 @@ jobs:
           
           # Check all dependencies and handle known dev dependency issues
           echo "📊 Checking all dependencies for known issues..."
-          if npm audit --audit-level=moderate --json > audit-results.json 2>/dev/null; then
+          
+          # Use set +e to prevent script exit on npm audit failure
+          set +e
+          AUDIT_OUTPUT=$(npm audit --audit-level=moderate 2>&1)
+          AUDIT_EXIT_CODE=$?
+          set -e
+          
+          if [ $AUDIT_EXIT_CODE -eq 0 ]; then
             echo "✅ No vulnerabilities found in any dependencies"
           else
             echo "⚠️ Vulnerabilities found - analyzing..."
             
             # Check if vulnerabilities are only in known development dependencies
-            if npm audit --audit-level=moderate 2>&1 | grep -q "react-scripts\|@svgr\|webpack-dev-server\|postcss\|nth-check"; then
+            if echo "$AUDIT_OUTPUT" | grep -q "react-scripts\|@svgr\|webpack-dev-server\|postcss\|nth-check"; then
               echo "📋 All vulnerabilities are in react-scripts development dependency chain"
               echo "🔒 These are build-time only dependencies that don't affect production"
               echo "📄 See SECURITY_VULNERABILITIES.md for detailed analysis"
               echo "✅ Production security is not compromised"
               
               # Count and display vulnerabilities for monitoring
-              VULN_COUNT=$(npm audit --audit-level=moderate 2>&1 | grep -o '[0-9]\+ vulnerabilities' | head -1 | grep -o '[0-9]\+' || echo "0")
+              VULN_COUNT=$(echo "$AUDIT_OUTPUT" | grep -o '[0-9]\+ vulnerabilities' | head -1 | grep -o '[0-9]\+' || echo "0")
               echo "📈 Total development dependency vulnerabilities: $VULN_COUNT"
             else
               echo "❌ Found vulnerabilities outside of known react-scripts issues"
               echo "🔍 Manual security review required"
+              echo "Audit output:"
+              echo "$AUDIT_OUTPUT"
               exit 1
             fi
           fi
-          
-          # Clean up
-          rm -f audit-results.json
 
       - name: Run linting
         run: npm run lint --if-present
