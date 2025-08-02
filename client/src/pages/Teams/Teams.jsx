@@ -1,61 +1,54 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Teams.css';
 
 const Teams = () => {
-	// Team members data
+	// State for managing collapsible contributions
+	const [expandedContributions, setExpandedContributions] = useState({});
+
+	// Toggle function for contributions
+	const toggleContributions = (memberId) => {
+		setExpandedContributions(prev => ({
+			...prev,
+			[memberId]: !prev[memberId]
+		}));
+	};
+	// Team members data - Real contributors to the project
 	const teamMembers = [
 		{
 			id: 1,
-			name: "Abhishek Bandiwadekar",
-			role: "Frontend Developer & Project Lead",
-			email: "abhishek@mcanitw.ac.in",
-			github: "https://github.com/abhishek",
-			linkedin: "https://linkedin.com/in/abhishek",
-			experience: "3+ Years",
-			motto: "Clean code is simple and direct",
-			skills: ["React", "JavaScript", "CSS3", "UI/UX Design", "Node.js", "MongoDB", "Git"],
-			contributions: [
-				"Led frontend architecture and component design",
-				"Implemented responsive UI with modern CSS3",
-				"Built comprehensive authentication system",
-				"Designed user-friendly interface components",
-				"Coordinated team collaboration and project delivery"
+			name: "Sagar Gupta",
+			role: "Lead Developer & Project Architect",
+			email: "sg85207@gmail.com",
+			github: "https://github.com/Sagargupta16",
+			linkedin: "https://linkedin.com/in/sagar-gupta",
+			motto: "Building scalable solutions with clean architecture",
+			commits: 124, // Actual commit count
+			skills: ["React", "Node.js", "MongoDB", "Express.js", "JWT", "API Design", "System Architecture", "Database Design"],
+			projectContributions: [
+				"Led the entire project architecture and development",
+				"Implemented complete MERN stack infrastructure",
+				"Built comprehensive authentication system with JWT",
+				"Designed and developed all major features and components",
+				"Created responsive UI/UX with modern React patterns",
+				"Established database schema and API endpoints",
+				"Implemented security measures and best practices"
 			]
 		},
 		{
 			id: 2,
-			name: "Priya Sharma",
-			role: "Backend Developer & Database Architect",
-			email: "priya@mcanitw.ac.in",
-			github: "https://github.com/priya",
-			linkedin: "https://linkedin.com/in/priya",
-			experience: "2+ Years",
-			motto: "Efficient code is beautiful code",
-			skills: ["Node.js", "Express", "MongoDB", "API Design", "JWT", "Database Design", "Testing"],
-			contributions: [
-				"Designed and implemented RESTful APIs",
-				"Built secure authentication with JWT",
-				"Optimized database schema and queries",
-				"Implemented email verification system",
-				"Created comprehensive error handling"
-			]
-		},
-		{
-			id: 3,
-			name: "Raj Patel",
-			role: "Full Stack Developer & DevOps",
-			email: "raj@mcanitw.ac.in",
-			github: "https://github.com/raj",
-			linkedin: "https://linkedin.com/in/raj",
-			experience: "2+ Years",
-			motto: "Automation makes everything better",
-			skills: ["React", "Node.js", "DevOps", "Git", "Deployment", "Testing", "Documentation"],
-			contributions: [
-				"Set up development and deployment pipeline",
-				"Implemented student and company management",
-				"Built advanced filtering and search features",
-				"Created comprehensive documentation",
-				"Ensured code quality and testing standards"
+			name: "Sachin Gupta", 
+			role: "Full Stack Developer & Contributor",
+			email: "sachin.gupta.2j99@gmail.com",
+			github: "https://github.com/sachin-gupta99",
+			linkedin: "https://linkedin.com/in/sachin-gupta",
+			motto: "Contributing to robust and efficient solutions",
+			commits: 3, // Actual commit count
+			skills: ["JavaScript", "React", "Node.js", "MongoDB", "Git", "Frontend Development", "Backend APIs"],
+			projectContributions: [
+				"Contributed to frontend component development",
+				"Assisted in backend API implementation", 
+				"Participated in code reviews and testing",
+				"Helped with bug fixes and feature enhancements"
 			]
 		}
 	];
@@ -88,12 +81,12 @@ const Teams = () => {
 		]
 	};
 
-	// Project statistics
+	// Project statistics - Based on actual project data
 	const stats = {
-		teamMembers: teamMembers.length,
+		teamMembers: teamMembers.length, // 2 real contributors
 		linesOfCode: "10,000+",
-		features: "25+",
-		bugsFixed: "100+"
+		totalCommits: "127", // Actual total commits by real contributors
+		features: "25+"
 	};
 
 	return (
@@ -119,8 +112,8 @@ const Teams = () => {
 								<span className="stat-label">Developers</span>
 							</div>
 							<div className="hero-stat">
-								<span className="stat-number">{stats.features}</span>
-								<span className="stat-label">Features</span>
+								<span className="stat-number">{stats.totalCommits}</span>
+								<span className="stat-label">Total Commits</span>
 							</div>
 							<div className="hero-stat">
 								<span className="stat-number">{stats.linesOfCode}</span>
@@ -202,16 +195,27 @@ const Teams = () => {
 									<div className="social-links">
 										<a href={member.github} target="_blank" rel="noopener noreferrer" className="social-link github">
 											<span className="link-icon">🐙</span>
-											GitHub
+											{" "}GitHub
 										</a>
 										<a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="social-link linkedin">
 											<span className="link-icon">💼</span>
-											LinkedIn
+											{" "}LinkedIn
 										</a>
 									</div>
 								</div>
 
 								<div className="member-details">
+									<div className="member-stats">
+										<div className="stat-item">
+											<span className="stat-number">{member.commits}</span>
+											<span className="stat-label">Commits</span>
+										</div>
+										<div className="stat-item">
+											<span className="stat-number">{member.skills.length}</span>
+											<span className="stat-label">Skills</span>
+										</div>
+									</div>
+									
 									<div className="member-skills">
 										<h4>💡 Technical Skills</h4>
 										<div className="skills-grid">
@@ -222,15 +226,28 @@ const Teams = () => {
 									</div>
 
 									<div className="member-contributions">
-										<h4>🎯 Key Contributions</h4>
-										<ul className="contributions-list">
-											{member.contributions.map((contribution, index) => (
-												<li key={contribution} className="contribution-item">
-													<span className="contribution-marker">{index + 1}</span>
-													{contribution}
-												</li>
-											))}
-										</ul>
+										<button 
+											className="contributions-header" 
+											onClick={() => toggleContributions(member.id)}
+											onKeyDown={(e) => e.key === 'Enter' && toggleContributions(member.id)}
+											aria-expanded={expandedContributions[member.id]}
+										>
+											🎯 Key Contributions
+											{" "}
+											<span className="toggle-icon">
+												{expandedContributions[member.id] ? '▼' : '▶'}
+											</span>
+										</button>
+										{expandedContributions[member.id] && (
+											<ul className="contributions-list">
+												{member.projectContributions.map((contribution, index) => (
+													<li key={contribution} className="contribution-item">
+														<span className="contribution-marker">{index + 1}</span>
+														{contribution}
+													</li>
+												))}
+											</ul>
+										)}
 									</div>
 								</div>
 							</div>

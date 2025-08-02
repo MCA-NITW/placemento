@@ -21,6 +21,55 @@
   margin: 0 auto;
 }
 
+.skills-section h4,
+.contributions-section h4 {
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+/* Collapsible Contributions */
+.contributions-header {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--color-primary);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  padding: 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: inherit;
+  border: 1px solid transparent;
+}
+
+.contributions-header:hover {
+  background: rgba(255, 204, 102, 0.1);
+  border-color: var(--color-primary);
+}
+
+.contributions-header:focus {
+  outline: none;
+  background: rgba(255, 204, 102, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(255, 204, 102, 0.2);
+}
+
+.toggle-icon {
+  font-size: 0.9rem;
+  transition: transform 0.3s ease;
+  margin-left: 0.5rem;
+}
+
+.member-contributions {
+  margin-bottom: 1rem;
+}
+
 .hero-content {
   max-width: 1000px;
   margin: 0 auto;
@@ -254,13 +303,14 @@
 .member-card {
   background: var(--color-bg-variant);
   border-radius: 20px;
-  padding: 2rem;
+  padding: 2.5rem;
   border: 2px solid var(--color-primary);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
   width: 100%;
   box-sizing: border-box;
+  margin-bottom: 1rem;
 }
 
 .member-card::before {
@@ -282,7 +332,7 @@
 .member-header {
   display: flex;
   gap: 1.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   align-items: center;
   flex-wrap: wrap;
 }
@@ -329,7 +379,37 @@
 }
 
 .member-details {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.member-stats {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 1rem 1.2rem;
+  background: rgba(255, 204, 102, 0.1);
+  border-radius: 8px;
+  border: 1px solid var(--color-primary);
+  min-width: 80px;
+}
+
+.stat-item .stat-number {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 0.2rem;
+}
+
+.stat-item .stat-label {
+  font-size: 0.8rem;
+  color: var(--color-white);
+  opacity: 0.8;
 }
 
 .member-details p {
@@ -337,13 +417,6 @@
   line-height: 1.6;
   margin-bottom: 1rem;
   font-size: 0.9rem;
-}
-
-.skills-section h4,
-.contributions-section h4 {
-  color: var(--color-primary);
-  margin-bottom: 1rem;
-  font-size: 1rem;
 }
 
 .skills-list {
