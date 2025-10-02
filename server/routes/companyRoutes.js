@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { authenticateUser, checkUserRole } = require('../middleware/authMiddleware');
 const companyController = require('../controllers/companyController');
-const limiter = require('../utils/limiter');
+const { limiter } = require('../utils/limiter');
 
 // Add Company
 router.post('/add', authenticateUser, checkUserRole(['admin', 'placementCoordinator']), limiter, companyController.postAddCompany);

@@ -55,8 +55,13 @@ const userSchema = new mongoose.Schema(
 	}
 );
 
-// Remove explicit index since email field already has unique: true
-// userSchema.index({ email: 1 }, { unique: true });
+// Add indexes for better query performance
+userSchema.index({ email: 1, isVerified: 1 });
+userSchema.index({ batch: 1, placed: 1 });
+userSchema.index({ 'placedAt.companyId': 1 });
+
+// Note: rollNo and email already have unique: true which creates indexes automatically
+// No need to add explicit indexes for them (prevents duplicate index warning)
 
 const User = mongoose.model('User', userSchema);
 

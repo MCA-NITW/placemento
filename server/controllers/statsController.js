@@ -1,6 +1,7 @@
 const logger = require('../utils/logger');
 const Company = require('../models/Company');
 const User = require('../models/User');
+const asyncHandler = require('../middleware/asyncHandler');
 
 const filterValidCompanies = (companies) => companies.filter((company) => company.status !== 'cancelled');
 
@@ -65,118 +66,103 @@ const getTopLocations = (companies) => {
 	return topLocations;
 };
 
-exports.getCTCStats = async (req, res) => {
-	try {
-		const students = await User.find();
-		const companies = await Company.find();
-		const filterCompanies = filterValidCompanies(companies);
+exports.getCTCStats = asyncHandler(async (req, res) => {
+	const students = await User.find();
+	const companies = await Company.find();
+	const filterCompanies = filterValidCompanies(companies);
 
-		// Handle case where no companies exist
-		if (filterCompanies.length === 0) {
-			return res.status(200).json({
-				highestCTCOffered: 0,
-				highestCTCOfferedCompany: 'N/A',
-				highestCTCPlaced: 0,
-				highestCTCPlacedCompany: 'N/A',
-				highestCTCPlacedStudent: 'N/A',
-				totalPlacedStudentsCTC: 0,
-				avgCTC: 0
-			});
-		}
-
-		const highestCTCOffered = getHighestCTC(filterCompanies);
-		const highestCTCOfferedCompany = getHighestCTCCompany(filterCompanies, highestCTCOffered);
-		const highestCTCPlaced = getHighestCTCPlaced(filterCompanies);
-		const highestCTCPlacedCompany = getHighestCTCPlacedCompany(filterCompanies, highestCTCPlaced);
-		const highestCTCPlacedStudent = getHighestCTCStudent(students, filterCompanies, highestCTCPlacedCompany?.name);
-		const totalPlacedStudentsCTC = calculateTotalPlacedStudentsCTC(filterCompanies);
-		const totalPlacedStudents = calculateTotalPlacedStudents(filterCompanies);
-		const avgCTC = totalPlacedStudents > 0 ? totalPlacedStudentsCTC / totalPlacedStudents : 0;
-
-		logger.info('CTC Stats fetched successfully');
-
-		res.status(200).json({
-			highestCTCOffered: highestCTCOffered || 0,
-			highestCTCOfferedCompany: highestCTCOfferedCompany?.name || 'N/A',
-			highestCTCPlaced: highestCTCPlaced || 0,
-			highestCTCPlacedCompany: highestCTCPlacedCompany?.name || 'N/A',
-			highestCTCPlacedStudent: highestCTCPlacedStudent?.name || 'N/A',
-			totalPlacedStudentsCTC,
-			avgCTC
+	// Handle case where no companies exist
+	if (filterCompanies.length === 0) {
+		return res.status(200).json({
+			highestCTCOffered: 0,
+			highestCTCOfferedCompany: 'N/A',
+			highestCTCPlaced: 0,
+			highestCTCPlacedCompany: 'N/A',
+			highestCTCPlacedStudent: 'N/A',
+			totalPlacedStudentsCTC: 0,
+			avgCTC: 0
 		});
-	} catch (error) {
-		logger.error(error.message);
-		res.status(500).json({ message: 'Internal server error' });
 	}
-};
 
-exports.getCompanyStats = async (req, res) => {
-	try {
-		const companies = await Company.find();
-		const filterCompanies = filterValidCompanies(companies);
-		const totalCompanies = companies.length;
-		const totalOngoingCompanies = getTotalCompaniesByStatus(companies, 'ongoing');
-		const totalCompletedCompanies = getTotalCompaniesByStatus(companies, 'completed');
-		const totalCancelledCompanies = getTotalCompaniesByStatus(companies, 'cancelled');
-		const totalValidCompanies = totalOngoingCompanies + totalCompletedCompanies;
-		const totalSoftwareCompanies = getTotalCompaniesByProfileCategory(filterCompanies, 'Software');
-		const totalAnalystCompanies = getTotalCompaniesByProfileCategory(filterCompanies, 'Analyst');
-		const totalOthersCompanies = getTotalCompaniesByProfileCategory(filterCompanies, 'Others');
-		const totalPPOs = filterCompanies.filter((company) => company.typeOfOffer === 'PPO').length;
-		const totalFTEs = filterCompanies.filter((company) => company.typeOfOffer === 'FTE').length;
-		const total6MFTEs = filterCompanies.filter((company) => company.typeOfOffer === '6M+FTE').length;
-		const totalInterns = filterCompanies.filter((company) => company.typeOfOffer === 'Intern').length;
-		const topLocations = getTopLocations(filterCompanies);
+	const highestCTCOffered = getHighestCTC(filterCompanies);
+	const highestCTCOfferedCompany = getHighestCTCCompany(filterCompanies, highestCTCOffered);
+	const highestCTCPlaced = getHighestCTCPlaced(filterCompanies);
+	const highestCTCPlacedCompany = getHighestCTCPlacedCompany(filterCompanies, highestCTCPlaced);
+	const highestCTCPlacedStudent = getHighestCTCStudent(students, filterCompanies, highestCTCPlacedCompany?.name);
+	const totalPlacedStudentsCTC = calculateTotalPlacedStudentsCTC(filterCompanies);
+	const totalPlacedStudents = calculateTotalPlacedStudents(filterCompanies);
+	const avgCTC = totalPlacedStudents > 0 ? totalPlacedStudentsCTC / totalPlacedStudents : 0;
 
-		logger.info('Company Stats fetched successfully');
+	logger.info('CTC Stats fetched successfully');
 
-		res.status(200).json({
-			totalCompanies,
-			totalOngoingCompanies,
-			totalCompletedCompanies,
-			totalCancelledCompanies,
-			totalValidCompanies,
-			totalSoftwareCompanies,
-			totalAnalystCompanies,
-			totalOthersCompanies,
-			totalPPOs,
-			totalFTEs,
-			total6MFTEs,
-			totalInterns,
-			topLocations
-		});
-	} catch (error) {
-		logger.error(error.message);
-		res.status(500).json({ message: 'Internal server error' });
-	}
-};
+	res.status(200).json({
+		highestCTCOffered: highestCTCOffered || 0,
+		highestCTCOfferedCompany: highestCTCOfferedCompany?.name || 'N/A',
+		highestCTCPlaced: highestCTCPlaced || 0,
+		highestCTCPlacedCompany: highestCTCPlacedCompany?.name || 'N/A',
+		highestCTCPlacedStudent: highestCTCPlacedStudent?.name || 'N/A',
+		totalPlacedStudentsCTC,
+		avgCTC
+	});
+});
 
-exports.getStudentStats = async (req, res) => {
-	try {
-		const students = await User.find();
-		const companies = await Company.find();
-		const filterCompanies = filterValidCompanies(companies);
-		const totalStudents = students.length;
-		const totalEligibleStudents = students.filter((student) => (student.pg.cgpa >= 6.5 && student.backlogs === 0) || student.placed).length;
-		const totalPlacedStudents = calculateTotalPlacedStudents(filterCompanies);
-		const totalVerifiedStudents = students.filter((student) => student.isVerified === true).length;
-		const totalUnverifiedStudents = students.filter((student) => student.isVerified === false).length;
-		const totalAdmins = students.filter((student) => student.role === 'admin').length;
-		const totalPlacementCoordinators = students.filter((student) => student.role === 'placementCoordinator').length;
+exports.getCompanyStats = asyncHandler(async (req, res) => {
+	const companies = await Company.find();
+	const filterCompanies = filterValidCompanies(companies);
+	const totalCompanies = companies.length;
+	const totalOngoingCompanies = getTotalCompaniesByStatus(companies, 'ongoing');
+	const totalCompletedCompanies = getTotalCompaniesByStatus(companies, 'completed');
+	const totalCancelledCompanies = getTotalCompaniesByStatus(companies, 'cancelled');
+	const totalValidCompanies = totalOngoingCompanies + totalCompletedCompanies;
+	const totalSoftwareCompanies = getTotalCompaniesByProfileCategory(filterCompanies, 'Software');
+	const totalAnalystCompanies = getTotalCompaniesByProfileCategory(filterCompanies, 'Analyst');
+	const totalOthersCompanies = getTotalCompaniesByProfileCategory(filterCompanies, 'Others');
+	const totalPPOs = filterCompanies.filter((company) => company.typeOfOffer === 'PPO').length;
+	const totalFTEs = filterCompanies.filter((company) => company.typeOfOffer === 'FTE').length;
+	const total6MFTEs = filterCompanies.filter((company) => company.typeOfOffer === '6M+FTE').length;
+	const totalInterns = filterCompanies.filter((company) => company.typeOfOffer === 'Intern').length;
+	const topLocations = getTopLocations(filterCompanies);
 
-		logger.info('Student Stats fetched successfully');
+	logger.info('Company Stats fetched successfully');
 
-		res.status(200).json({
-			totalStudents,
-			totalEligibleStudents,
-			totalPlacedStudents,
-			totalVerifiedStudents,
-			totalUnverifiedStudents,
-			totalAdmins,
-			totalPlacementCoordinators
-		});
-	} catch (error) {
-		logger.error(error.message);
-		res.status(500).json({ message: 'Internal server error' });
-	}
-};
+	res.status(200).json({
+		totalCompanies,
+		totalOngoingCompanies,
+		totalCompletedCompanies,
+		totalCancelledCompanies,
+		totalValidCompanies,
+		totalSoftwareCompanies,
+		totalAnalystCompanies,
+		totalOthersCompanies,
+		totalPPOs,
+		totalFTEs,
+		total6MFTEs,
+		totalInterns,
+		topLocations
+	});
+});
+
+exports.getStudentStats = asyncHandler(async (req, res) => {
+	const students = await User.find();
+	const companies = await Company.find();
+	const filterCompanies = filterValidCompanies(companies);
+	const totalStudents = students.length;
+	const totalEligibleStudents = students.filter((student) => (student.pg.cgpa >= 6.5 && student.backlogs === 0) || student.placed).length;
+	const totalPlacedStudents = calculateTotalPlacedStudents(filterCompanies);
+	const totalVerifiedStudents = students.filter((student) => student.isVerified === true).length;
+	const totalUnverifiedStudents = students.filter((student) => student.isVerified === false).length;
+	const totalAdmins = students.filter((student) => student.role === 'admin').length;
+	const totalPlacementCoordinators = students.filter((student) => student.role === 'placementCoordinator').length;
+
+	logger.info('Student Stats fetched successfully');
+
+	res.status(200).json({
+		totalStudents,
+		totalEligibleStudents,
+		totalPlacedStudents,
+		totalVerifiedStudents,
+		totalUnverifiedStudents,
+		totalAdmins,
+		totalPlacementCoordinators
+	});
+});

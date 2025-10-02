@@ -1,9 +1,10 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { MdDelete, MdEdit } from 'react-icons/md';
 import { toast } from 'react-toastify';
-import { addCompany, deleteCompany, getCompanies, getCompany, updateCompany } from '../../api/companyApi.jsx';
-import getUser from '../../utils/user.js';
+import { addCompany, deleteCompany, getCompany, updateCompany } from '../../api/companyApi.jsx';
+import { useAuth } from '../../context/AuthContext';
+import { useCompanies } from '../../hooks/useCompanies';
 import AgGridTable from '../AgGridTable/AgGridTable.jsx';
 import Modal from '../Modal/Modal.jsx';
 import Structure from '../Structure/Structure.jsx';
@@ -13,35 +14,36 @@ import CompanyForm from './CompanyForm';
 import './CompanyTable.css';
 
 const CompanyTable = () => {
-	const [companies, setCompanies] = useState([]);
 	const [companyData, setCompanyData] = useState(null);
 	const [isFormOpen, setIsFormOpen] = useState(false);
 	const [isAdd, setIsAdd] = useState(false);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [companyToDelete, setCompanyToDelete] = useState(null);
 
-	const [user, setUser] = useState({});
+	const { user, loading: authLoading } = useAuth();
+	
+	// Use custom hook with caching
+	const { companies: companiesData = [], loading: companiesLoading, error: companiesError, refetch } = useCompanies();
 
-	const fetchData = useCallback(async () => {
-		try {
-			const response = await Promise.all([getCompanies(), getUser()]);
-			const companiesResponse = response[0];
-			setUser(response[1]);
-			companiesResponse.data.forEach((company) => {
-				company.id = company._id;
-				company.selectedStudents = company.selectedStudentsRollNo.length;
-				company.cutoff_pg = formatCutoff(company.cutoffs.pg);
-				company.cutoff_ug = formatCutoff(company.cutoffs.ug);
-				company.cutoff_12 = formatCutoff(company.cutoffs.twelth);
-				company.cutoff_10 = formatCutoff(company.cutoffs.tenth);
-				company.ctcBase = company.ctcBreakup.base;
-			});
-			setCompanies(companiesResponse.data);
-		} catch (error) {
-			console.error('Error fetching companies:', error);
-			toast.error(<ToastContent res="error" messages={['Error fetching companies.']} />);
-		}
-	}, []);
+	// Helper function to format cutoff values
+	const formatCutoff = useCallback((cutoff) => (cutoff.cgpa ? `${cutoff.cgpa} CGPA` : `${cutoff.percentage}%`), []);
+
+	// Transform companies data for AG Grid (with safe defaults) - memoized to prevent infinite re-renders
+	const companies = useMemo(() => 
+		(companiesData || []).map((company) => ({
+			...company,
+			id: company._id,
+			selectedStudents: company.selectedStudentsRollNo.length,
+			cutoff_pg: formatCutoff(company.cutoffs.pg),
+			cutoff_ug: formatCutoff(company.cutoffs.ug),
+			cutoff_12: formatCutoff(company.cutoffs.twelth),
+			cutoff_10: formatCutoff(company.cutoffs.tenth),
+			ctcBase: company.ctcBreakup.base
+		})),
+		[companiesData, formatCutoff]
+	);
+
+	const fetchData = refetch;
 
 	const handleDeleteButtonClick = (company) => {
 		setIsModalOpen(true);
@@ -53,7 +55,7 @@ const CompanyTable = () => {
 			await deleteCompany(companyToDelete.id);
 			toast.success(<ToastContent res="success" messages={[`Company ${companyToDelete.name} deleted successfully.`]} />);
 			setIsModalOpen(false);
-			setCompanies((prevCompanies) => prevCompanies.filter((company) => company.id !== companyToDelete.id));
+			refetch(); // Refetch data from cache or API
 		} catch (error) {
 			console.error('Error deleting company:', error);
 			toast.error(<ToastContent res="error" messages={[`Error deleting company ${companyToDelete.name}.`]} />);
@@ -86,8 +88,6 @@ const CompanyTable = () => {
 		headerName,
 		children
 	});
-
-	const formatCutoff = (cutoff) => (cutoff.cgpa ? `${cutoff.cgpa} CGPA` : `${cutoff.percentage}%`);
 
 	const buttonRenderer = (params, className, icon, onClick) => {
 		return (
@@ -258,6 +258,19 @@ const CompanyTable = () => {
 			return [...prevState, value];
 		});
 	};
+
+	// Show loading state
+	if (authLoading || companiesLoading) {
+		return <div>Loading...</div>;
+	}
+
+	if (!user) {
+		return <div>Please log in to view this page.</div>;
+	}
+
+	if (companiesError) {
+		return <div>Error loading companies: {companiesError}</div>;
+	}
 
 	return (
 		<Structure

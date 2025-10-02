@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { BiStats } from 'react-icons/bi';
 import { CgProfile } from 'react-icons/cg';
 import { FaHome, FaSignInAlt, FaUsers } from 'react-icons/fa';
@@ -7,32 +7,16 @@ import { GoOrganization } from 'react-icons/go';
 import { PiSignOutBold } from 'react-icons/pi';
 import { RiTeamFill } from 'react-icons/ri';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { checkToken } from '../../api/tokenCheckApi';
+import { useAuth } from '../../context/AuthContext';
 import Modal from '../Modal/Modal';
 import classes from './Navbar.module.css';
 
 const NavBar = () => {
-	const [navItems, setNavItems] = useState([]);
-	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const navigate = useNavigate();
-	const token = localStorage.getItem('token');
+	const { isAuthenticated, logout } = useAuth();
 
-	useEffect(() => {
-		if (token) {
-			try {
-				checkToken().then((response) => {
-					if (response.data.isAuthenticated) setIsAuthenticated(true);
-					else setIsAuthenticated(false);
-				});
-			} catch (error) {
-				localStorage.removeItem('token');
-				console.error('Error checking token:', error);
-				setIsAuthenticated(false);
-			}
-		} else setIsAuthenticated(false);
-	}, [token]);
-
-	useEffect(() => {
+	// Memoize nav items calculation - only recalculate when isAuthenticated changes
+	const navItems = useMemo(() => {
 		const fixedItems = [
 			{
 				to: '/',
@@ -52,7 +36,7 @@ const NavBar = () => {
 		];
 
 		if (isAuthenticated) {
-			setNavItems([
+			return [
 				...fixedItems,
 				{
 					to: 'students',
@@ -74,17 +58,17 @@ const NavBar = () => {
 					label: 'Profile',
 					icon: <CgProfile />
 				}
-			]);
-		} else {
-			setNavItems([
-				...fixedItems,
-				{
-					to: 'auth?mode=signin',
-					label: 'Auth',
-					icon: <FaSignInAlt />
-				}
-			]);
+			];
 		}
+
+		return [
+			...fixedItems,
+			{
+				to: 'auth?mode=signin',
+				label: 'Auth',
+				icon: <FaSignInAlt />
+			}
+		];
 	}, [isAuthenticated]);
 
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -98,7 +82,7 @@ const NavBar = () => {
 	};
 
 	const onConfirmSignOut = () => {
-		localStorage.removeItem('token');
+		logout();
 		navigate('/');
 		closeModal();
 	};

@@ -1,21 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
-const limiter = require('../utils/limiter');
+const { limiter, authLimiter } = require('../utils/limiter');
 
-// Signup route with rate limiting
-router.post('/signup', limiter, authController.postSignup);
+// Signup route with stricter rate limiting
+router.post('/signup', authLimiter, authController.postSignup);
 
-// Login route with rate limiting
-router.post('/login', limiter, authController.getLogin);
+// Login route with stricter rate limiting
+router.post('/login', authLimiter, authController.getLogin);
 
 // Verify email route with rate limiting
 router.post('/verify-email', limiter, authController.postVerifyEmail);
 
-// Verify OTP route with rate limiting
-router.post('/verify-otp', limiter, authController.postVerifyOTP);
+// Verify OTP route with stricter rate limiting
+router.post('/verify-otp', authLimiter, authController.postVerifyOTP);
 
-// Reset password route with rate limiting
-router.post('/reset-password', limiter, authController.postResetPassword);
+// Reset password route with stricter rate limiting
+router.post('/reset-password', authLimiter, authController.postResetPassword);
 
 module.exports = router;

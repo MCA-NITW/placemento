@@ -52,6 +52,11 @@ const companySchema = new mongoose.Schema(
 	{ timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } }
 );
 
+// Add indexes for better query performance
+companySchema.index({ status: 1, dateOfOffer: -1 });
+companySchema.index({ name: 1 });
+companySchema.index({ profileCategory: 1 });
+
 const Company = mongoose.model('Company', companySchema);
 
 module.exports = Company;

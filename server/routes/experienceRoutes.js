@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateUser, checkUserRole } = require('../middleware/authMiddleware');
-const limiter = require('../utils/limiter');
+const { limiter } = require('../utils/limiter');
 const experienceController = require('../controllers/experienceController');
 
 // Add Experience

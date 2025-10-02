@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { authenticateUser, checkUserRole } = require('../middleware/authMiddleware');
 const userController = require('../controllers/userController');
-const limiter = require('../utils/limiter');
+const { limiter } = require('../utils/limiter');
 
 // View all users without rate limiting
 router.get('/view', authenticateUser, checkUserRole(['student', 'admin', 'placementCoordinator']), userController.viewAllUsers);

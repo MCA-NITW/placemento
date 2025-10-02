@@ -14,14 +14,20 @@ const Home = () => {
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
+		let isSubscribed = true;
 		fetchStats();
 
 		// Update time every second
 		const timeInterval = setInterval(() => {
-			setCurrentTime(new Date());
+			if (isSubscribed) {
+				setCurrentTime(new Date());
+			}
 		}, 1000);
 
-		return () => clearInterval(timeInterval);
+		return () => {
+			isSubscribed = false;
+			clearInterval(timeInterval);
+		};
 	}, []);
 
 	const fetchStats = async () => {

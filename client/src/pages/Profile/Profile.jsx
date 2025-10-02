@@ -3,34 +3,44 @@ import { MdOutlineModeEdit } from 'react-icons/md';
 import { RxCross1 } from 'react-icons/rx';
 import { toast } from 'react-toastify';
 import { getCompany } from '../../api/companyApi';
-import { updateStudent } from '../../api/studentApi';
+import { getStudent, updateStudent } from '../../api/studentApi';
+import { useAuth } from '../../context/AuthContext';
 import ToastContent from '../../components/ToastContent/ToastContent';
-import getUser from '../../utils/user.js';
 import './Profile.css';
 
 const Profile = () => {
-	const [user, setUser] = useState({});
+	const { user: authUser, loading: authLoading } = useAuth();
+	const [user, setUser] = useState(null);
 	const [isEditing, setIsEditing] = useState('');
 	const [isEdited, setIsEdited] = useState(false);
 	const [company, setCompany] = useState([]);
 	const [prevUser, setPrevUser] = useState({});
 	const [roleLabel, setRoleLabel] = useState('');
+	const [loading, setLoading] = useState(true);
 
+	// Fetch full user data from API (includes placedAt details not in JWT)
 	useEffect(() => {
-		const fetchUser = async () => {
-			try {
-				const user = await getUser();
-				setUser(user);
-				if (user.role === 'student') setRoleLabel('Student');
-				else if (user.role === 'admin') setRoleLabel('Admin');
-				else setRoleLabel('Placement Coordinator');
-				setPrevUser(user);
-			} catch (err) {
-				console.log(err);
+		const fetchFullUserData = async () => {
+			if (authUser?.id) {
+				try {
+					setLoading(true);
+					const response = await getStudent(authUser.id);
+					const fullUser = response.data;
+					setUser(fullUser);
+					if (fullUser.role === 'student') setRoleLabel('Student');
+					else if (fullUser.role === 'admin') setRoleLabel('Admin');
+					else setRoleLabel('Placement Coordinator');
+					setPrevUser(fullUser);
+				} catch (error) {
+					console.error('Error fetching user data:', error);
+					toast.error(<ToastContent res="error" messages={['Error loading profile data']} />);
+				} finally {
+					setLoading(false);
+				}
 			}
 		};
-		fetchUser();
-	}, []);
+		fetchFullUserData();
+	}, [authUser]);
 
 	useEffect(() => {
 		const fetchCompany = async (id) => {
@@ -42,8 +52,10 @@ const Profile = () => {
 				console.log(error);
 			}
 		};
-		if (user.placed) fetchCompany(user.placedAt.companyId);
-	}, [user.placedAt, user.placed]);
+		if (user?.placed && user?.placedAt?.companyId) {
+			fetchCompany(user.placedAt.companyId);
+		}
+	}, [user?.placedAt, user?.placed]);
 
 	const handleInputChange = (name, value) => {
 		setUser((prevState) => ({
@@ -72,6 +84,11 @@ const Profile = () => {
 		input.disabled = true;
 		setIsEditing('');
 	};
+
+	// Show loading state while auth or user data is loading
+	if (authLoading || loading || !user) {
+		return <div>Loading...</div>;
+	}
 
 	const inputRenderer = (name, value) => {
 		return (

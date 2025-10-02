@@ -1,10 +1,12 @@
+import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { addExperience, updateExperience } from '../../api/experienceApi';
-import getUser from '../../utils/user';
+import { useAuth } from '../../context/AuthContext';
 import ToastContent from '../ToastContent/ToastContent';
 
 const ExperienceForm = ({ closeExperienceAddModal, initialData, isAdd }) => {
+	const { user } = useAuth();
 	const [formData, setFormData] = useState({
 		companyName: initialData?.companyName || '',
 		content: initialData?.content || '',
@@ -21,8 +23,6 @@ const ExperienceForm = ({ closeExperienceAddModal, initialData, isAdd }) => {
 		setLoading(true);
 
 		try {
-			const user = await getUser();
-
 			const experienceData = {
 				...formData,
 				tags: formData.tags
@@ -381,6 +381,20 @@ const ExperienceForm = ({ closeExperienceAddModal, initialData, isAdd }) => {
 			</form>
 		</div>
 	);
+};
+
+ExperienceForm.propTypes = {
+	closeExperienceAddModal: PropTypes.func.isRequired,
+	initialData: PropTypes.shape({
+		companyName: PropTypes.string,
+		content: PropTypes.string,
+		tags: PropTypes.arrayOf(PropTypes.string),
+		rating: PropTypes.number,
+		interviewProcess: PropTypes.string,
+		tips: PropTypes.string,
+		difficulty: PropTypes.string
+	}),
+	isAdd: PropTypes.bool.isRequired
 };
 
 export default ExperienceForm;

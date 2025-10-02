@@ -9,8 +9,18 @@ const { authenticateUser } = require('./middleware/authMiddleware.js');
 const statsRoutes = require('./routes/statsRoutes.js');
 const userRoutes = require('./routes/userRoutes.js');
 const experienceRoutes = require('./routes/experienceRoutes.js');
+const errorHandler = require('./middleware/errorHandler.js');
 
 dotenv.config();
+
+// Validate required environment variables
+const requiredEnvVars = ['DB_CONNECTION_STRING', 'JWT_SECRET', 'EMAIL_ID', 'EMAIL_PASSWORD'];
+const missingEnvVars = requiredEnvVars.filter((varName) => !process.env[varName]);
+if (missingEnvVars.length > 0) {
+	console.error('❌ Missing required environment variables:', missingEnvVars.join(', '));
+	console.error('💡 Please check your .env file and ensure all required variables are set.');
+	process.exit(1);
+}
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -71,6 +81,10 @@ mongoose.connection.on('reconnected', () => {
 app.use(express.json());
 app.use(cors());
 
+// Security middleware
+const helmet = require('helmet');
+app.use(helmet());
+
 // Middleware to hide version information
 app.disable('x-powered-by');
 
@@ -93,9 +107,13 @@ app.get('/token-check', authenticateUser, (req, res) => {
 	try {
 		res.status(200).json({ isAuthenticated: true });
 	} catch (error) {
-		res.status(401).json({ isAuthenticated: false });
+		console.error('Token check error:', error.message);
+		res.status(401).json({ isAuthenticated: false, error: 'Authentication failed' });
 	}
 });
+
+// Global error handler - MUST BE LAST
+app.use(errorHandler);
 
 app.listen(PORT, () => {
 	console.log(`Server is running on port ${PORT}`);

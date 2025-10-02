@@ -1,17 +1,17 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { GrValidate } from 'react-icons/gr';
 import { MdDelete } from 'react-icons/md';
 import { toast } from 'react-toastify';
-import { getCompanies } from '../../api/companyApi.jsx';
 import {
 	deleteStudent,
-	getStudents,
 	updateStudentCompany,
 	updateStudentCompanyLocation,
 	updateUserRole,
 	updateVerificationStatus
 } from '../../api/studentApi.jsx';
-import getUser from '../../utils/user.js';
+import { useAuth } from '../../context/AuthContext';
+import { useUsers } from '../../hooks/useUsers';
+import { useCompanies } from '../../hooks/useCompanies';
 import AgGridTable from '../AgGridTable/AgGridTable.jsx';
 import Modal from '../Modal/Modal.jsx';
 import Structure from '../Structure/Structure.jsx';
@@ -20,31 +20,32 @@ import StudentFilters from './StudentFilters.jsx';
 import './StudentTable.css';
 
 const StudentTable = () => {
-	const [students, setStudents] = useState([]);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [selectedStudent, setSelectedStudent] = useState(null);
-	const [companies, setCompanies] = useState([]);
-	const [user, setUser] = useState({});
 	const [isDelete, setIsDelete] = useState(false);
 	const [message, setMessage] = useState('');
 	const [buttonTitle, setButtonTitle] = useState('');
+	const { user, loading: authLoading } = useAuth();
+	
+	// Use custom hooks with caching
+	const { users: students = [], loading: studentsLoading, error: studentsError, refetch: refetchStudents } = useUsers();
+	const { companies: companiesData = [], loading: companiesLoading, error: companiesError, refetch: refetchCompanies } = useCompanies();
 
-	const fetchData = useCallback(async () => {
-		try {
-			const response = await Promise.all([getStudents(), getCompanies(), getUser()]);
-			const studentsResponse = response[0].data.users;
-			const companiesResponse = response[1].data;
+	// Combined refetch function
+	const fetchData = useCallback(() => {
+		refetchStudents();
+		refetchCompanies();
+	}, [refetchStudents, refetchCompanies]);
 
-			studentsResponse.forEach((student) => (student.id = student._id));
-			companiesResponse.forEach((company) => (company.id = company._id));
-
-			setUser(response[2]);
-			setStudents(studentsResponse);
-			setCompanies(companiesResponse);
-		} catch (error) {
-			console.error('Error fetching data:', error);
-		}
-	}, []);
+	// Add IDs to data for AG Grid (with safe defaults) - memoized to prevent infinite re-renders
+	const studentsWithIds = useMemo(() => 
+		(students || []).map(student => ({ ...student, id: student._id })),
+		[students]
+	);
+	const companiesWithIds = useMemo(() => 
+		(companiesData || []).map(company => ({ ...company, id: company._id })),
+		[companiesData]
+	);
 
 	const closeModal = () => {
 		setIsModalOpen(false);
@@ -127,7 +128,7 @@ const StudentTable = () => {
 	};
 
 	const companyDropdownRenderer = (params) => {
-		const options = companies.map((company) => ({
+		const options = companiesWithIds.map((company) => ({
 			value: company.id,
 			label: company.name
 		}));
@@ -136,7 +137,7 @@ const StudentTable = () => {
 	};
 
 	const locationDropdownRenderer = (params) => {
-		const company = companies.find((company) => company.id === params.data.placedAt?.companyId);
+		const company = companiesWithIds.find((company) => company.id === params.data.placedAt?.companyId);
 		if (!company) return 'N/A';
 		const options = company.locations.map((location) => ({
 			value: location,
@@ -348,12 +349,25 @@ const StudentTable = () => {
 		});
 	};
 
+	// Show loading state while auth or data is loading
+	if (authLoading || studentsLoading || companiesLoading) {
+		return <div>Loading...</div>;
+	}
+
+	if (!user) {
+		return <div>Please log in to view this page.</div>;
+	}
+
+	if (studentsError || companiesError) {
+		return <div>Error loading data: {studentsError || companiesError}</div>;
+	}
+
 	return (
 		<Structure
 			LeftComponent={user.role && <StudentFilters optionClickHandler={optionClickHandler} role={user.role} />}
 			RightComponent={
 				<AgGridTable
-					rowData={students}
+					rowData={studentsWithIds}
 					columnDefinitions={columnDefinitions}
 					fetchData={fetchData}
 					doesExternalFilterPass={doesExternalFilterPass}

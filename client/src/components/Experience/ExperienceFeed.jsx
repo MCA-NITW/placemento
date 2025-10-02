@@ -1,27 +1,25 @@
 import { useCallback, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { FaRegComment } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 import { getAllExperience } from '../../api/experienceApi';
+import { useAuth } from '../../context/AuthContext';
 import Structure from '../../components/Structure/Structure';
-import getUser from '../../utils/user';
 import './ExperienceFeed.css';
 import ExperienceForm from './ExperienceForm';
 import ExperienceView from './ExperienceView';
 
 const ExperienceFeed = () => {
+	const { user } = useAuth();
 	const [allExperiences, setAllExperiences] = useState([]);
 	const [experiences, setExperiences] = useState([]);
 	const [showAddExperienceModal, setShowAddExperienceModal] = useState(false);
 	const [showExperienceViewModal, setShowExperienceViewModal] = useState(false);
 	const [experienceViewModalData, setExperienceViewModalData] = useState({});
-	const [user, setUser] = useState({});
 	const [tags, setTags] = useState([]);
 	const [activeTag, setActiveTag] = useState('All');
-
-	const fetchUser = async () => {
-		const user = await getUser();
-		setUser(user);
-	};
+	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState(null);
 
 	const formatCreatedAt = (createdAt) => {
 		const formattedDate = createdAt.toLocaleDateString('en-In', {
@@ -50,6 +48,8 @@ const ExperienceFeed = () => {
 
 	const fetchData = useCallback(async () => {
 		try {
+			setIsLoading(true);
+			setError(null);
 			const response = await getAllExperience();
 			const tags = [];
 			response.data.experiences.forEach((experience) => {
@@ -62,11 +62,15 @@ const ExperienceFeed = () => {
 			setAllExperiences(response.data.experiences);
 		} catch (error) {
 			console.error('Error fetching data:', error);
+			const errorMessage = error.response?.data?.message || 'Failed to load experiences. Please try again.';
+			setError(errorMessage);
+			toast.error(errorMessage);
+		} finally {
+			setIsLoading(false);
 		}
 	}, []);
 
 	useEffect(() => {
-		fetchUser();
 		fetchData();
 	}, [fetchData]);
 
@@ -151,11 +155,34 @@ const ExperienceFeed = () => {
 				</>
 			}
 			RightComponent={
-				experiences.length === 0 ? (
+				isLoading ? (
+					<div style={{ textAlign: 'center', padding: '2rem' }}>
+						<div className="loading-spinner">Loading experiences...</div>
+					</div>
+				) : error ? (
+					<div style={{ textAlign: 'center', padding: '2rem', color: '#e53e3e' }}>
+						<p>{error}</p>
+						<button 
+							onClick={fetchData}
+							style={{ 
+								marginTop: '1rem',
+								padding: '0.5rem 1rem',
+								background: '#667eea',
+								color: 'white',
+								border: 'none',
+								borderRadius: '4px',
+								cursor: 'pointer'
+							}}
+						>
+							Retry
+						</button>
+					</div>
+				) : experiences.length === 0 ? (
 					<div>No experiences to show.</div>
 				) : (
-					experiences.map((experience) => (
-						<div key={experience._id} className="experience-item">
+					<>
+						{experiences.map((experience) => (
+							<div key={experience._id} className="experience-item">
 							<div className="experience-header">
 								<h3 className="experience-student-details">
 									{experience.studentDetails.name} ({experience.studentDetails.batch})
@@ -182,7 +209,8 @@ const ExperienceFeed = () => {
 								{experience.Comments.length} <FaRegComment />
 							</div>
 						</div>
-					))
+					))}
+					</>
 				)
 			}
 			ContainerComponent={

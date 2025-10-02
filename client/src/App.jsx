@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 import NavBar from './components/NavBar/NavBar';
 import NotFound from './components/NotFound/NotFound';
 import Authentication from './pages/Auth/Authentication';
@@ -67,7 +68,7 @@ const App = () => {
 	]);
 
 	return (
-		<>
+		<ErrorBoundary>
 			<RouterProvider router={router} className="App" />
 			<ToastContainer
 				position="bottom-right"
@@ -80,7 +81,7 @@ const App = () => {
 				draggable
 				pauseOnHover
 			/>
-		</>
+		</ErrorBoundary>
 	);
 };
 

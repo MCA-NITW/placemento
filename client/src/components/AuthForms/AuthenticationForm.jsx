@@ -3,6 +3,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { signin, signup } from '../../api/authApi';
+import { useAuth } from '../../context/AuthContext';
 import ToastContent from '../ToastContent/ToastContent';
 import ForgetPassword from './ForgetPassword';
 import FormFooter from './FormFooter';
@@ -26,6 +27,7 @@ const AuthenticationForm = () => {
 	const [currentStep, setCurrentStep] = useState(1);
 	const [params] = useSearchParams();
 	const navigate = useNavigate();
+	const { login } = useAuth();
 
 	const isSignIn = params.get('mode') === 'signin';
 
@@ -60,7 +62,7 @@ const AuthenticationForm = () => {
 			const res = await (isSignIn ? signin(user) : signup(user));
 			toast.success(<ToastContent res={isSignIn ? 'Sign In successful' : 'Sign Up successful'} messages={res.data.messages} />);
 			if (isSignIn) {
-				localStorage.setItem('token', res.data.data.token);
+				login(res.data.data.token); // Use Auth Context login method
 				navigate('/');
 			} else navigate('/auth?mode=signin');
 		} catch (err) {
