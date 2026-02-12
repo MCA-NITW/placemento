@@ -8,15 +8,16 @@
 	height: 100%;
 	/* Remove overflow to prevent nested scrollbars - parent handles scrolling */
 	overflow: visible;
-	border: 5px solid var(--color-bg);
-	border-radius: 10px;
-	box-shadow: 0 0 10px var(--color-bg);
-	background: var(--color-bg-variant);
-	animation: fadeInUp 0.8s ease-out;
+	border: var(--glass-border);
+	border-radius: var(--radius-lg);
+	box-shadow: var(--glass-shadow);
+	background: var(--glass-bg);
+	backdrop-filter: var(--glass-blur);
+	animation: fadeInUp 0.6s ease-out;
 }
 
 .profile:hover {
-	transform: translateY(-5px);
+	transform: translateY(-2px);
 	box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 }
 
@@ -29,13 +30,13 @@
 	gap: 20px;
 	padding: 20px 0 20px 5px;
 	border-radius: 10px;
-	background: var(--color-bg-variant);
-	animation: fadeInLeft 0.8s ease-out 0.2s both;
+	background: transparent;
+	animation: fadeInLeft 0.6s ease-out 0.2s both;
 }
 
 .profile-items:hover {
-	transform: scale(1.02);
-	box-shadow: 0 10px 20px rgba(255, 204, 102, 0.2);
+	transform: scale(1.01);
+	box-shadow: 0 10px 20px rgba(124, 58, 237, 0.15);
 }
 
 .profile-buttons {
@@ -53,7 +54,7 @@
 	flex-direction: column;
 	align-items: center;
 	gap: 10px;
-	background: var(--color-bg);
+	background: rgba(10, 10, 15, 0.5);
 	padding: 20px;
 	border-radius: 10px;
 	width: 100%;
@@ -63,9 +64,9 @@
 }
 
 .item-group:hover {
-	transform: translateY(-3px);
-	box-shadow: 0 8px 25px rgba(255, 204, 102, 0.15);
-	border: 2px solid var(--color-primary);
+	transform: translateY(-2px);
+	box-shadow: 0 8px 25px rgba(124, 58, 237, 0.1);
+	border: 1px solid rgba(124, 58, 237, 0.3);
 }
 
 .item-group h2 {
@@ -77,7 +78,7 @@
 }
 
 .item-group h2:hover {
-	transform: scale(1.05);
+	transform: scale(1.02);
 	text-shadow: 0 0 15px var(--color-primary);
 }
 
@@ -99,7 +100,7 @@
 	display: flex;
 	align-items: center;
 	border-radius: 10px;
-	filter: drop-shadow(0px 0px 1px var(--color-bg-variant));
+	box-shadow: none;
 }
 
 .item {
@@ -112,7 +113,6 @@
 	padding: 10px;
 	border-radius: 10px;
 	background: var(--color-bg-variant);
-	filter: drop-shadow(0px 0px 1px var(--color-bg-variant));
 }
 
 .item label {
@@ -157,7 +157,7 @@
 	border-radius: 5px;
 	border: none;
 	background: var(--color-primary);
-	color: var(--color-bg);
+	color: var(--color-white);
 	font-size: 1.2rem;
 	cursor: pointer;
 	display: flex;

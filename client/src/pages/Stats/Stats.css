@@ -22,12 +22,12 @@
 .stats-header h1 {
 	font-size: 2.5rem;
 	font-weight: 700;
-	background: linear-gradient(135deg, #ffcc66, #ff6666);
+	background: linear-gradient(135deg, #7c3aed, #06b6d4);
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
 	background-clip: text;
 	margin-bottom: 0.5rem;
-	text-shadow: 0 4px 8px rgba(255, 204, 102, 0.3);
+	text-shadow: 0 4px 8px rgba(124, 58, 237, 0.3);
 	line-height: 1.2;
 }
 
@@ -52,14 +52,14 @@
 .loading-spinner {
 	width: 60px;
 	height: 60px;
-	border: 4px solid rgba(255, 204, 102, 0.3);
-	border-top: 4px solid #ffcc66;
+	border: 4px solid rgba(124, 58, 237, 0.3);
+	border-top: 4px solid #7c3aed;
 	border-radius: 50%;
 	animation: spin 1s linear infinite;
 }
 
 .loading p {
-	color: #ffcc66;
+	color: #7c3aed;
 	font-size: 1.1rem;
 	font-weight: 500;
 }
@@ -84,9 +84,9 @@
 }
 
 .stats-card {
-	background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+	background: rgba(15, 15, 25, 0.6);
 	backdrop-filter: blur(10px);
-	border: 1px solid rgba(255, 255, 255, 0.1);
+	border: 1px solid rgba(255, 255, 255, 0.08);
 	border-radius: 16px;
 	padding: 1.5rem;
 	display: flex;
@@ -105,15 +105,15 @@
 	left: 0;
 	right: 0;
 	height: 3px;
-	background: linear-gradient(90deg, #ffcc66, #ff6666);
+	background: linear-gradient(90deg, #7c3aed, #06b6d4);
 	opacity: 0;
 	transition: opacity 0.3s ease;
 }
 
 .stats-card:hover {
-	transform: translateY(-8px);
-	box-shadow: 0 20px 40px rgba(255, 204, 102, 0.2);
-	border-color: rgba(255, 204, 102, 0.3);
+	transform: translateY(-4px);
+	box-shadow: 0 20px 40px rgba(124, 58, 237, 0.2);
+	border-color: rgba(124, 58, 237, 0.3);
 }
 
 .stats-card:hover::before {
@@ -121,19 +121,19 @@
 }
 
 .stats-card-primary::before {
-	background: linear-gradient(90deg, #ffcc66, #ffd666);
+	background: linear-gradient(90deg, #7c3aed, #6366f1);
 }
 
 .stats-card-success::before {
-	background: linear-gradient(90deg, #66ff66, #55ee55);
+	background: linear-gradient(90deg, #22c55e, #16a34a);
 }
 
 .stats-card-info::before {
-	background: linear-gradient(90deg, #66ccff, #55bbee);
+	background: linear-gradient(90deg, #3b82f6, #2563eb);
 }
 
 .stats-card-warning::before {
-	background: linear-gradient(90deg, #ff9966, #ee8855);
+	background: linear-gradient(90deg, #f59e0b, #d97706);
 }
 
 .stats-card-icon {
@@ -151,7 +151,7 @@
 .stats-card-value {
 	font-size: 2rem;
 	font-weight: 700;
-	color: #ffcc66;
+	color: #7c3aed;
 	margin: 0 0 0.25rem 0;
 	line-height: 1;
 }
@@ -185,7 +185,7 @@
 }
 
 .stats-card-trend.negative {
-	color: #ff6666;
+	color: #ef4444;
 }
 
 /* Charts Section */
@@ -198,9 +198,9 @@
 }
 
 .stats-chart-container {
-	background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+	background: rgba(15, 15, 25, 0.6);
 	backdrop-filter: blur(10px);
-	border: 1px solid rgba(255, 255, 255, 0.1);
+	border: 1px solid rgba(255, 255, 255, 0.08);
 	border-radius: 16px;
 	padding: 1.5rem;
 	transition: all 0.3s ease;
@@ -213,12 +213,12 @@
 
 .stats-chart-container:hover {
 	transform: translateY(-4px);
-	box-shadow: 0 15px 30px rgba(255, 204, 102, 0.15);
-	border-color: rgba(255, 204, 102, 0.2);
+	box-shadow: 0 15px 30px rgba(124, 58, 237, 0.15);
+	border-color: rgba(124, 58, 237, 0.2);
 }
 
 .stats-chart-container h3 {
-	color: #ffcc66;
+	color: #7c3aed;
 	font-size: 1.3rem;
 	font-weight: 600;
 	margin-bottom: 1rem;
@@ -243,9 +243,9 @@
 }
 
 .stats-section.enhanced {
-	background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+	background: rgba(15, 15, 25, 0.6);
 	backdrop-filter: blur(10px);
-	border: 1px solid rgba(255, 255, 255, 0.1);
+	border: 1px solid rgba(255, 255, 255, 0.08);
 	border-radius: 16px;
 	padding: 0;
 	overflow: hidden;
@@ -257,22 +257,22 @@
 
 .stats-section.enhanced:hover {
 	transform: translateY(-4px);
-	box-shadow: 0 15px 30px rgba(255, 204, 102, 0.15);
-	border-color: rgba(255, 204, 102, 0.2);
+	box-shadow: 0 15px 30px rgba(124, 58, 237, 0.15);
+	border-color: rgba(124, 58, 237, 0.2);
 }
 
 .stats-section-header {
-	background: linear-gradient(135deg, rgba(255, 204, 102, 0.15) 0%, rgba(255, 102, 102, 0.15) 100%);
+	background: linear-gradient(135deg, rgba(124, 58, 237, 0.15) 0%, rgba(239, 68, 68, 0.15) 100%);
 	padding: 1.25rem 1.5rem;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 	flex-shrink: 0;
 }
 
 .stats-section-header h2 {
-	color: #ffcc66;
+	color: #7c3aed;
 	font-size: 1.3rem;
 	font-weight: 600;
 	margin: 0;
@@ -307,7 +307,7 @@
 }
 
 .stats-section-item:hover {
-	background: rgba(255, 204, 102, 0.05);
+	background: rgba(124, 58, 237, 0.05);
 	transform: translateX(8px);
 	border-radius: 8px;
 	padding-left: 1rem;
@@ -331,7 +331,7 @@
 }
 
 .stats-section-item-right {
-	color: #ffcc66;
+	color: #7c3aed;
 	font-weight: 600;
 	text-align: right;
 	flex-shrink: 0;
@@ -347,7 +347,7 @@
 }
 
 .stats-value-main {
-	color: #ffcc66;
+	color: #7c3aed;
 	font-weight: 700;
 	font-size: 1.1rem;
 }
@@ -370,19 +370,19 @@
 	align-items: center;
 	gap: 0.5rem;
 	padding: 0.5rem;
-	background: rgba(255, 204, 102, 0.05);
+	background: rgba(124, 58, 237, 0.05);
 	border-radius: 8px;
 	transition: all 0.3s ease;
 }
 
 .stats-location-item:hover {
-	background: rgba(255, 204, 102, 0.1);
+	background: rgba(124, 58, 237, 0.1);
 	transform: translateX(4px);
 }
 
 .location-rank {
-	background: #ffcc66;
-	color: #000;
+	background: #7c3aed;
+	color: #f8fafc;
 	font-weight: 700;
 	font-size: 0.8rem;
 	padding: 0.25rem 0.5rem;
@@ -398,7 +398,7 @@
 }
 
 .location-count {
-	color: #ffcc66;
+	color: #7c3aed;
 	font-weight: 600;
 	font-size: 0.9rem;
 }
@@ -407,7 +407,7 @@
 @keyframes fadeInDown {
 	from {
 		opacity: 0;
-		transform: translateY(-30px);
+		transform: translateY(-15px);
 	}
 	to {
 		opacity: 1;
@@ -418,7 +418,7 @@
 @keyframes fadeInUp {
 	from {
 		opacity: 0;
-		transform: translateY(30px);
+		transform: translateY(15px);
 	}
 	to {
 		opacity: 1;
@@ -575,7 +575,7 @@
 }
 
 .ag-chart-title {
-	color: #ffcc66 !important;
+	color: #7c3aed !important;
 	font-weight: 600 !important;
 }
 
@@ -592,9 +592,9 @@
 }
 
 .ag-chart-axis-line {
-	stroke: #ffcc66 !important;
+	stroke: rgba(124, 58, 237, 0.5) !important;
 }
 
 .ag-chart-axis-tick {
-	stroke: #ffcc66 !important;
+	stroke: rgba(124, 58, 237, 0.5) !important;
 }

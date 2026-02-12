@@ -11,7 +11,7 @@
 	height: 100%;
 	/* Remove overflow to prevent nested scrollbars */
 	overflow: visible;
-	animation: slideInFromLeft 0.8s ease-out;
+	animation: slideInFromLeft 0.6s ease-out;
 }
 
 .filter h3 {
@@ -34,10 +34,12 @@
 	flex-direction: column;
 	gap: 10px;
 	width: 100%;
-	background: var(--color-bg-variant);
+	background: var(--glass-bg);
+	backdrop-filter: blur(10px);
+	border: var(--glass-border);
 	padding: 1rem;
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-	border-radius: 0.5rem;
+	border-radius: var(--radius-sm);
 	animation: fadeInUp 0.6s ease-out;
 	animation-fill-mode: both;
 }
@@ -52,7 +54,7 @@
 
 .filter__item:hover {
 	transform: scale(1.02);
-	box-shadow: 0 5px 15px rgba(255, 204, 102, 0.2);
+	box-shadow: 0 5px 15px rgba(124, 58, 237, 0.15);
 }
 
 .filter__item__label {
@@ -92,7 +94,7 @@
 	left: -100%;
 	width: 100%;
 	height: 100%;
-	background: linear-gradient(90deg, transparent, rgba(255, 204, 102, 0.2), transparent);
+	background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.15), transparent);
 	transition: left 0.5s;
 }
 
@@ -102,14 +104,13 @@
 
 .filter__item__value:hover {
 	border: 1px solid var(--color-primary);
-	transform: scale(1.05);
-	box-shadow: 0 3px 10px rgba(255, 204, 102, 0.3);
+	transform: scale(1.02);
+	box-shadow: 0 3px 10px rgba(124, 58, 237, 0.2);
 }
 
 .filter__item__value.active {
 	border: 1px solid var(--color-primary);
 	background: var(--color-primary);
-	color: var(--color-bg);
+	color: var(--color-white);
 	transform: scale(1.02);
-	animation: pulse 0.5s ease;
 }

@@ -1,14 +1,16 @@
 .modal {
-	background-color: var(--color-bg-variant);
+	background: var(--glass-bg);
+	backdrop-filter: var(--glass-blur);
+	border: var(--glass-border);
 	padding: 10px 20px;
-	border-radius: 0.5rem;
+	border-radius: var(--radius-lg);
 	width: 100%;
 	max-width: 400px;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+	box-shadow: var(--glass-shadow);
 	animation: scaleIn 0.3s ease-out;
 	position: relative;
 	overflow: hidden;
@@ -21,7 +23,7 @@
 	left: 0;
 	right: 0;
 	height: 3px;
-	background: linear-gradient(90deg, var(--color-primary), var(--color-primary-variant));
+	background: var(--gradient-accent);
 }
 
 .modal p {

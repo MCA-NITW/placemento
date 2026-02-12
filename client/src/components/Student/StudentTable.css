@@ -12,21 +12,21 @@
 }
 
 .verify-button.verified {
-	color: green;
+	color: var(--color-success);
 }
 
 .verify-button.verified:hover {
-	background-color: green;
-	color: var(--color-bg);
+	background-color: var(--color-success);
+	color: var(--color-white);
 }
 
 .verify-button.unverified {
-	color: red;
+	color: var(--color-danger);
 }
 
 .verify-button.unverified:hover {
-	background-color: red;
-	color: var(--color-bg);
+	background-color: var(--color-danger);
+	color: var(--color-white);
 }
 
 .render-dropdown {
@@ -43,7 +43,7 @@
 	cursor: pointer;
 	transition: all 0.3s ease-in-out;
 	padding: 0 0.5rem;
-	box-shadow: 0 0 0 0.5px var(--color-white);
+	box-shadow: 0 0 0 0.5px var(--color-border);
 }
 
 .render-dropdown:hover {

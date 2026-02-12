@@ -15,7 +15,7 @@
 	background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-primary-variant) 100%);
 	padding: 5rem 2rem 4rem 2rem;
 	text-align: center;
-	border-bottom: 2px solid var(--color-primary);
+	border-bottom: 1px solid var(--color-primary);
 	width: 100%;
 	box-sizing: border-box;
 	margin: 0 auto;
@@ -52,15 +52,15 @@
 }
 
 .contributions-header:hover {
-	background: rgba(255, 204, 102, 0.1);
+	background: rgba(124, 58, 237, 0.1);
 	border-color: var(--color-primary);
 }
 
 .contributions-header:focus {
 	outline: none;
-	background: rgba(255, 204, 102, 0.1);
+	background: rgba(124, 58, 237, 0.1);
 	border-color: var(--color-primary);
-	box-shadow: 0 0 0 2px rgba(255, 204, 102, 0.2);
+	box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
 }
 
 .toggle-icon {
@@ -107,19 +107,19 @@
 }
 
 .hero-stat {
-	background: rgba(255, 255, 255, 0.1);
+	background: var(--glass-bg);
 	padding: 1.5rem;
 	border-radius: 15px;
-	backdrop-filter: blur(10px);
-	border: 1px solid var(--color-primary);
+	backdrop-filter: var(--glass-blur);
+	border: var(--glass-border);
 	transition: transform 0.3s ease;
 	text-align: center;
 }
 
 .hero-stat:hover {
-	transform: translateY(-5px);
+	transform: translateY(-3px);
 	border-color: var(--color-primary);
-	box-shadow: 0 10px 20px rgba(255, 204, 102, 0.2);
+	box-shadow: 0 10px 20px rgba(124, 58, 237, 0.2);
 }
 
 .hero-stat .number {
@@ -212,8 +212,9 @@
 
 /* Project Overview */
 .project-overview {
-	background: var(--color-bg-variant);
-	border: 2px solid var(--color-primary);
+	background: var(--glass-bg);
+	backdrop-filter: var(--glass-blur);
+	border: var(--glass-border);
 	border-radius: 20px;
 	padding: 3rem;
 	margin: 2rem auto;
@@ -245,7 +246,7 @@
 }
 
 .feature-highlight {
-	background: rgba(255, 204, 102, 0.1);
+	background: rgba(124, 58, 237, 0.1);
 	padding: 1.5rem;
 	border-radius: 10px;
 	border-left: 4px solid var(--color-primary);
@@ -261,18 +262,19 @@
 }
 
 .stat-card {
-	background: var(--color-bg);
+	background: var(--glass-bg);
+	backdrop-filter: var(--glass-blur);
 	padding: 1.5rem;
 	border-radius: 15px;
 	text-align: center;
-	border: 2px solid var(--color-primary);
+	border: var(--glass-border);
 	transition: all 0.3s ease;
 }
 
 .stat-card:hover {
-	transform: translateY(-5px);
+	transform: translateY(-3px);
 	background: var(--color-primary-variant);
-	box-shadow: 0 10px 20px rgba(255, 204, 102, 0.2);
+	box-shadow: 0 10px 20px rgba(124, 58, 237, 0.2);
 }
 
 .stat-number {
@@ -304,10 +306,11 @@
 }
 
 .member-card {
-	background: var(--color-bg-variant);
+	background: var(--glass-bg);
+	backdrop-filter: var(--glass-blur);
 	border-radius: 20px;
 	padding: 2.5rem;
-	border: 2px solid var(--color-primary);
+	border: var(--glass-border);
 	transition: all 0.3s ease;
 	position: relative;
 	overflow: hidden;
@@ -327,8 +330,8 @@
 }
 
 .member-card:hover {
-	transform: translateY(-10px);
-	box-shadow: 0 20px 40px rgba(255, 204, 102, 0.2);
+	transform: translateY(-4px);
+	box-shadow: 0 20px 40px rgba(124, 58, 237, 0.2);
 	border-color: var(--color-primary);
 }
 
@@ -350,7 +353,7 @@
 	justify-content: center;
 	font-size: 1.5rem;
 	font-weight: 800;
-	color: var(--color-bg);
+	color: #f8fafc;
 	border: 3px solid var(--color-primary);
 	flex-shrink: 0;
 }
@@ -395,7 +398,7 @@
 .stat-item {
 	text-align: center;
 	padding: 1rem 1.2rem;
-	background: rgba(255, 204, 102, 0.1);
+	background: rgba(124, 58, 237, 0.1);
 	border-radius: 8px;
 	border: 1px solid var(--color-primary);
 	min-width: 80px;
@@ -431,7 +434,7 @@
 
 .skill-tag {
 	background: var(--color-primary);
-	color: var(--color-bg);
+	color: #f8fafc;
 	padding: 0.3rem 0.8rem;
 	border-radius: 15px;
 	font-size: 0.7rem;
@@ -452,7 +455,7 @@
 }
 
 .contributions-list li::before {
-	content: '▶';
+	content: '\25B6';
 	position: absolute;
 	left: 0;
 	color: var(--color-primary);
@@ -480,7 +483,7 @@
 
 .contact-link:hover {
 	background: var(--color-primary);
-	color: var(--color-bg);
+	color: #f8fafc;
 }
 
 /* Technology Stack Section */
@@ -498,18 +501,19 @@
 }
 
 .tech-category {
-	background: var(--color-bg);
+	background: var(--glass-bg);
+	backdrop-filter: var(--glass-blur);
 	border-radius: 15px;
 	padding: 1.5rem;
-	border: 2px solid var(--color-primary);
+	border: var(--glass-border);
 	transition: transform 0.3s ease;
 	width: 100%;
 	box-sizing: border-box;
 }
 
 .tech-category:hover {
-	transform: translateY(-5px);
-	box-shadow: 0 10px 20px rgba(255, 204, 102, 0.2);
+	transform: translateY(-3px);
+	box-shadow: 0 10px 20px rgba(124, 58, 237, 0.2);
 }
 
 .tech-category h3 {
@@ -540,8 +544,8 @@
 
 .tech-item:hover {
 	background: var(--color-primary);
-	color: var(--color-bg);
-	transform: scale(1.05);
+	color: #f8fafc;
+	transform: scale(1.02);
 }
 
 .tech-item .icon {
@@ -557,7 +561,7 @@
 }
 
 .tech-item:hover .name {
-	color: var(--color-bg);
+	color: #f8fafc;
 }
 
 /* Timeline Section */
@@ -594,7 +598,7 @@
 
 .timeline-content {
 	background: var(--color-bg-variant);
-	border: 2px solid var(--color-primary);
+	border: 1px solid var(--color-primary);
 	border-radius: 15px;
 	padding: 1.5rem;
 	width: 45%;
@@ -668,8 +672,9 @@
 }
 
 .highlight-card {
-	background: var(--color-bg);
-	border: 2px solid var(--color-primary);
+	background: var(--glass-bg);
+	backdrop-filter: var(--glass-blur);
+	border: var(--glass-border);
 	border-radius: 15px;
 	padding: 1.5rem;
 	text-align: center;
@@ -691,8 +696,8 @@
 }
 
 .highlight-card:hover {
-	transform: translateY(-10px);
-	box-shadow: 0 20px 40px rgba(255, 204, 102, 0.2);
+	transform: translateY(-4px);
+	box-shadow: 0 20px 40px rgba(124, 58, 237, 0.2);
 }
 
 .highlight-icon {

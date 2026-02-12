@@ -8,12 +8,13 @@
 	text-align: center;
 	width: 100%;
 	max-width: 700px;
-	background: var(--color-bg);
+	background: var(--glass-bg);
+	backdrop-filter: var(--glass-blur);
+	border: var(--glass-border);
 	padding: 20px;
-	border-radius: 1rem;
+	border-radius: var(--radius-lg);
 	box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-	border: 1px solid var(--color-primary);
-	animation: fadeInUp 0.8s ease-out;
+	animation: fadeInUp 0.6s ease-out;
 }
 
 .input-group-out {
@@ -39,7 +40,7 @@
 	gap: 10px;
 	align-items: center;
 	justify-content: center;
-	background-color: var(--color-bg-variant);
+	background: rgba(15, 15, 25, 0.4);
 	padding: 8px;
 	border-radius: 5px;
 	width: 100%;
@@ -54,7 +55,7 @@
 	border: none;
 	border-radius: 5px;
 	background-color: var(--color-bg);
-	color: var(--color-primary);
+	color: var(--color-white);
 	font-weight: 600;
 	width: 100%;
 }

@@ -122,6 +122,19 @@ dist
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
 
+# IDE settings
+.vscode/
+
+# Build output
+client/build/
+server/dist/
+
+# Server logs
+server/logs/
+
+# Claude Code
+.claude/
+
 # yarn v2
 .yarn/cache
 .yarn/unplugged

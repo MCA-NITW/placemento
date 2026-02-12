@@ -23,12 +23,12 @@
 }
 
 .btn--icon--del {
-	color: red;
+	color: var(--color-danger);
 }
 
 .btn--icon--del:hover {
-	background-color: red;
-	color: var(--color-bg);
+	background-color: var(--color-danger);
+	color: var(--color-white);
 }
 
 .btn--icon--edit {
@@ -37,5 +37,5 @@
 
 .btn--icon--edit:hover {
 	background-color: var(--color-primary);
-	color: var(--color-bg);
+	color: var(--color-white);
 }

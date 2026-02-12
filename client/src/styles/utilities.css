@@ -1,7 +1,7 @@
 /* Button Utilities */
 .btn {
 	padding: 0.75rem 1.5rem;
-	border-radius: 0.5rem;
+	border-radius: var(--radius-sm);
 	font-weight: 600;
 	text-transform: uppercase;
 	letter-spacing: 0.5px;
@@ -17,13 +17,13 @@
 }
 
 .btn-primary {
-	background: linear-gradient(135deg, var(--color-primary), var(--color-primary-variant));
-	color: var(--color-bg);
+	background: var(--gradient-primary);
+	color: var(--color-white);
 }
 
 .btn-primary:hover {
-	transform: scale(1.05);
-	box-shadow: 0 10px 20px rgba(255, 204, 102, 0.3);
+	transform: scale(1.02);
+	box-shadow: 0 10px 20px rgba(124, 58, 237, 0.3);
 }
 
 .btn-secondary {
@@ -34,8 +34,8 @@
 
 .btn-secondary:hover {
 	background: var(--color-primary);
-	color: var(--color-bg);
-	transform: scale(1.05);
+	color: var(--color-white);
+	transform: scale(1.02);
 }
 
 .btn-danger {
@@ -44,8 +44,8 @@
 }
 
 .btn-danger:hover {
-	background: #c53030;
-	transform: scale(1.05);
+	background: #dc2626;
+	transform: scale(1.02);
 }
 
 .btn-sm {
@@ -78,14 +78,14 @@
 }
 
 .chip:hover {
-	background: var(--color-primary-variant);
-	color: var(--color-bg);
-	transform: scale(1.05);
+	background: rgba(124, 58, 237, 0.2);
+	color: var(--color-white);
+	transform: scale(1.02);
 }
 
 .chip-active {
 	background: var(--color-primary);
-	color: var(--color-bg);
+	color: var(--color-white);
 	border-color: var(--color-primary);
 }
 
@@ -134,7 +134,7 @@
 /* PAGE LAYOUT PATTERNS */
 .page-container {
 	position: relative;
-	background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-bg-variant) 100%);
+	background: linear-gradient(135deg, #0a0a0f 0%, #0d1117 50%, #13131a 100%);
 	min-height: 100vh;
 	overflow: hidden;
 }
@@ -167,7 +167,7 @@
 }
 
 .page-title-gradient {
-	background: linear-gradient(45deg, var(--color-primary), var(--color-white), var(--color-primary));
+	background: linear-gradient(45deg, #7c3aed, #06b6d4, #7c3aed);
 	background-size: 200% 200%;
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
@@ -197,7 +197,7 @@
 	transform: translateX(-50%);
 	width: 0;
 	height: 4px;
-	background: linear-gradient(90deg, var(--color-primary), var(--color-primary-variant));
+	background: var(--gradient-accent);
 	border-radius: 2px;
 	animation: expandUnderline 1s ease-out 0.8s forwards;
 }
@@ -218,8 +218,8 @@
 	left: -50%;
 	width: 200%;
 	height: 200%;
-	background: radial-gradient(circle, rgba(255, 204, 102, 0.1) 0%, transparent 70%);
-	animation: float 6s ease-in-out infinite;
+	background: radial-gradient(circle, rgba(124, 58, 237, 0.08) 0%, transparent 70%);
+	animation: float 20s ease-in-out infinite;
 	z-index: -1;
 }
 
@@ -278,10 +278,10 @@
 @keyframes float {
 	0%,
 	100% {
-		transform: translateY(0px) rotate(0deg);
+		transform: translateY(0px);
 	}
 	50% {
-		transform: translateY(-20px) rotate(5deg);
+		transform: translateY(-8px);
 	}
 }
 
@@ -294,7 +294,7 @@
 
 .page-section {
 	margin-bottom: 3rem;
-	animation: fadeInUp 0.8s ease-out;
+	animation: fadeInUp 0.6s ease-out;
 }
 
 /* PAGE RESPONSIVE PATTERNS */
@@ -321,27 +321,29 @@
 
 /* Common Component Containers */
 .card {
-	background: var(--color-bg-variant);
-	border-radius: 1rem;
+	background: var(--glass-bg);
+	backdrop-filter: var(--glass-blur);
+	border: var(--glass-border);
+	border-radius: var(--radius-lg);
 	padding: 1rem;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+	box-shadow: var(--glass-shadow);
 	transition: var(--transition);
-	animation: fadeInUp 0.8s ease-out;
+	animation: fadeInUp 0.6s ease-out;
 }
 
 .card:hover {
 	transform: translateY(-2px);
-	box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+	border-color: var(--color-border-hover);
 }
 
 .card-lg {
 	padding: 2rem;
-	box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
 .card-primary {
-	border: 1px solid var(--color-primary);
-	box-shadow: 0 0 20px rgba(255, 204, 102, 0.1);
+	border: 1px solid rgba(124, 58, 237, 0.3);
+	box-shadow: 0 0 20px rgba(124, 58, 237, 0.1);
 }
 
 /* Section Headers */
@@ -351,12 +353,12 @@
 	color: var(--color-primary);
 	text-align: center;
 	margin-bottom: 1.5rem;
-	text-shadow: 0 0 10px rgba(255, 204, 102, 0.3);
+	text-shadow: 0 0 10px rgba(124, 58, 237, 0.3);
 	transition: all 0.3s ease;
 }
 
 .section-header:hover {
-	transform: scale(1.05);
+	transform: scale(1.02);
 	text-shadow: 0 0 20px var(--color-primary);
 }
 
@@ -378,11 +380,12 @@
 	gap: 1rem;
 	width: 100%;
 	max-width: 600px;
-	background: var(--color-bg);
+	background: var(--glass-bg);
+	backdrop-filter: var(--glass-blur);
 	padding: 2rem;
-	border-radius: 1rem;
-	box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-	border: 1px solid var(--color-primary);
+	border-radius: var(--radius-lg);
+	box-shadow: var(--glass-shadow);
+	border: var(--glass-border);
 }
 
 .form-group {
@@ -411,19 +414,19 @@
 	width: 100%;
 	padding: 0.75rem;
 	border: 1px solid transparent;
-	border-radius: 0.5rem;
+	border-radius: var(--radius-sm);
 	background: var(--color-bg);
 	color: var(--color-white);
 	font-size: 1rem;
 	font-family: inherit;
 	outline: none;
-	transition: all 0.4s ease-in-out;
+	transition: var(--transition);
 }
 
 .input-field:focus {
 	border-color: var(--color-primary-variant);
-	transform: scale(1.02);
-	box-shadow: 0 0 15px rgba(255, 204, 102, 0.3);
+	transform: scale(1.01);
+	box-shadow: 0 0 15px rgba(124, 58, 237, 0.2);
 }
 
 .input-field::placeholder {
@@ -446,7 +449,7 @@
 	width: 100%;
 	height: 100%;
 	overflow-y: auto;
-	animation: slideInFromLeft 0.8s ease-out;
+	animation: slideInFromLeft 0.6s ease-out;
 }
 
 .filter-header {
@@ -459,7 +462,7 @@
 	text-align: center;
 	color: var(--color-primary);
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-	border-radius: 0.5rem;
+	border-radius: var(--radius-sm);
 }
 
 .filter-section {
@@ -467,9 +470,11 @@
 	flex-direction: column;
 	gap: 0.5rem;
 	width: 100%;
-	background: var(--color-bg-variant);
+	background: var(--glass-bg);
+	backdrop-filter: blur(10px);
+	border: var(--glass-border);
 	padding: 1rem;
-	border-radius: 0.5rem;
+	border-radius: var(--radius-sm);
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }
 
@@ -499,21 +504,24 @@
 	flex-direction: column;
 	width: 100%;
 	padding: 1.5rem;
-	background: var(--color-bg-variant);
-	border-radius: 1rem;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+	background: var(--glass-bg);
+	backdrop-filter: var(--glass-blur);
+	border: var(--glass-border);
+	border-radius: var(--radius-lg);
+	box-shadow: var(--glass-shadow);
 	gap: 1rem;
-	animation: fadeInLeft 0.8s ease-out;
+	animation: fadeInLeft 0.6s ease-out;
 	transition: var(--transition);
 }
 
 .stats-section:nth-child(even) {
-	animation: fadeInRight 0.8s ease-out;
+	animation: fadeInRight 0.6s ease-out;
 }
 
 .stats-section:hover {
-	transform: scale(1.02);
-	box-shadow: 0 15px 25px rgba(255, 204, 102, 0.2);
+	transform: scale(1.01);
+	box-shadow: 0 15px 25px rgba(124, 58, 237, 0.15);
+	border-color: var(--color-border-hover);
 }
 
 .stats-header {
@@ -531,9 +539,9 @@
 }
 
 .stats-item {
-	background: var(--color-bg);
+	background: rgba(10, 10, 15, 0.5);
 	padding: 1rem;
-	border-radius: 0.5rem;
+	border-radius: var(--radius-sm);
 	text-align: center;
 	border: 1px solid var(--color-primary-variant);
 }
@@ -554,15 +562,16 @@
 /* Table Styles */
 .table-container {
 	width: 100%;
-	height: calc(100vh - 200px); /* Ensure adequate height for tables */
+	height: calc(100vh - 200px);
 	min-height: 400px;
-	background: var(--color-bg-variant);
-	border-radius: 1rem;
+	background: var(--glass-bg);
+	backdrop-filter: var(--glass-blur);
+	border: var(--glass-border);
+	border-radius: var(--radius-lg);
 	padding: 1rem;
-	box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+	box-shadow: var(--glass-shadow);
 	display: flex;
 	flex-direction: column;
-	/* Remove overflow hidden to allow table scrolling */
 	overflow: visible;
 }
 
@@ -587,7 +596,7 @@
 	height: 100%;
 	flex: 1;
 	min-height: 300px;
-	overflow: visible; /* Let AgGrid handle its own scrolling */
+	overflow: visible;
 }
 
 .table-actions {
@@ -807,15 +816,15 @@
 
 /* Animation Utilities */
 .animate-fadeIn {
-	animation: fadeInUp 0.8s ease-out;
+	animation: fadeInUp 0.6s ease-out;
 }
 
 .animate-slideInLeft {
-	animation: slideInFromLeft 0.8s ease-out;
+	animation: slideInFromLeft 0.6s ease-out;
 }
 
 .animate-slideInRight {
-	animation: slideInFromRight 0.8s ease-out;
+	animation: slideInFromRight 0.6s ease-out;
 }
 
 /* Hover Effects */
@@ -830,7 +839,7 @@
 }
 
 .hover-glow:hover {
-	box-shadow: 0 0 20px rgba(255, 204, 102, 0.3);
+	box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
 	transition: var(--transition);
 }
 

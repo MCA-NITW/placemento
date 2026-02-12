@@ -1,4 +1,4 @@
-@import './animations.css';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import './styles/utilities.css';
 
 * {
@@ -8,30 +8,46 @@
 	outline: 0;
 	box-sizing: border-box;
 	text-decoration: none;
-	font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+	font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 :root {
-	--color-white: #fff;
-	--color-light: rgba(255, 255, 255, 0.6);
-	--transition: all 0.4s ease-in-out;
+	--color-white: #f8fafc;
+	--color-light: #94a3b8;
+	--transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 	--container-width-lg: 75%;
 	--container-width-md: 86%;
 	--container-width-sm: 90%;
 
-	--color-bg: #1e1e26;
-	--color-bg-variant: #2c2c33;
-	--color-bg-variant-2: #3a3a40;
-	--color-primary: #ffcc66;
-	--color-primary-variant: rgba(255, 204, 102, 0.5);
-	--color-danger: #ff6666;
-	--color-danger-variant: rgba(255, 102, 102, 0.5);
-	--color-success: #66ff66;
-	--color-success-variant: rgba(102, 255, 102, 0.5);
-	--color-warning: #ffcc66;
-	--color-warning-variant: rgba(255, 204, 102, 0.5);
-	--color-info: #66ccff;
-	--color-info-variant: rgba(102, 204, 255, 0.5);
+	--color-bg: #0a0a0f;
+	--color-bg-variant: #13131a;
+	--color-bg-variant-2: #1e1e2e;
+	--color-primary: #7c3aed;
+	--color-primary-variant: rgba(124, 58, 237, 0.5);
+	--color-danger: #ef4444;
+	--color-danger-variant: rgba(239, 68, 68, 0.5);
+	--color-success: #22c55e;
+	--color-success-variant: rgba(34, 197, 94, 0.5);
+	--color-warning: #f59e0b;
+	--color-warning-variant: rgba(245, 158, 11, 0.5);
+	--color-info: #3b82f6;
+	--color-info-variant: rgba(59, 130, 246, 0.5);
+
+	--color-accent: #06b6d4;
+	--color-accent-variant: rgba(6, 182, 212, 0.5);
+	--color-surface: rgba(20, 20, 35, 0.7);
+	--color-border: rgba(255, 255, 255, 0.08);
+	--color-border-hover: rgba(255, 255, 255, 0.15);
+	--gradient-primary: linear-gradient(135deg, #7c3aed, #6366f1);
+	--gradient-accent: linear-gradient(135deg, #7c3aed, #06b6d4);
+	--glass-bg: rgba(15, 15, 25, 0.6);
+	--glass-blur: blur(20px);
+	--glass-border: 1px solid rgba(255, 255, 255, 0.08);
+	--glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+	--radius-sm: 8px;
+	--radius-md: 12px;
+	--radius-lg: 16px;
+	--radius-xl: 24px;
 }
 
 html {
@@ -41,7 +57,6 @@ html {
 	line-height: 1.7;
 	background: var(--color-bg);
 	user-select: none;
-	/* Firefox scrollbar styling */
 	scrollbar-width: thin;
 	scrollbar-color: var(--color-primary) var(--color-bg);
 	@media screen and (max-width: 600px) {
@@ -52,11 +67,9 @@ html {
 	}
 }
 
-/* Enhanced Scrollbar CSS - Better Visual Experience */
-
 ::-webkit-scrollbar {
-	width: 0.75rem;
-	height: 0.75rem;
+	width: 0.5rem;
+	height: 0.5rem;
 	border-radius: 0.5rem;
 	background-color: var(--color-bg-variant);
 }
@@ -71,20 +84,17 @@ html {
 	background: linear-gradient(180deg, var(--color-primary), var(--color-primary-variant));
 	border-radius: 0.5rem;
 	border: 1px solid var(--color-primary-variant);
-	box-shadow: inset 0 0 3px rgba(255, 204, 102, 0.3);
 }
 
 ::-webkit-scrollbar-thumb:hover {
 	background: linear-gradient(180deg, var(--color-primary-variant), var(--color-primary));
-	box-shadow: inset 0 0 5px rgba(255, 204, 102, 0.5);
-	transform: scale(1.1);
+	box-shadow: inset 0 0 5px rgba(124, 58, 237, 0.5);
 }
 
 ::-webkit-scrollbar-corner {
 	background-color: var(--color-bg);
 }
 
-/* Firefox scrollbar styling */
 body {
 	scrollbar-width: thin;
 	scrollbar-color: var(--color-primary) var(--color-bg);
@@ -95,29 +105,29 @@ body {
 .container {
 	width: calc(100% - 2rem);
 	margin: 6rem 1rem 1rem 1rem;
-	border-radius: 1rem;
+	border-radius: var(--radius-lg);
 	padding: 1rem;
-	height: calc(100vh - 8rem); /* Exact full screen height minus navbar and margins */
-	max-height: calc(100vh - 8rem); /* Prevent exceeding screen height */
-	min-height: calc(100vh - 8rem); /* Ensure minimum full screen height */
-	background: var(--color-bg-variant);
-	opacity: 0.7;
-	filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.4));
+	height: calc(100vh - 8rem);
+	max-height: calc(100vh - 8rem);
+	min-height: calc(100vh - 8rem);
+	background: var(--glass-bg);
+	backdrop-filter: var(--glass-blur);
+	border: var(--glass-border);
+	box-shadow: var(--glass-shadow);
 	transition: var(--transition);
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: flex-start;
-	/* Restore scrolling for content that overflows */
 	overflow-y: auto;
 	overflow-x: hidden;
-	animation: fadeInUp 0.8s ease-out;
+	animation: fadeInUp 0.6s ease-out;
 }
 
 .container:hover {
-	opacity: 1;
 	transform: translateY(-2px);
-	filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
+	border-color: var(--color-border-hover);
+	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
 }
 
 .container h1 {
@@ -125,25 +135,24 @@ body {
 	font-weight: 600;
 	margin-bottom: 20px;
 	color: var(--color-primary);
-	animation: fadeInDown 0.8s ease-out;
-	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+	animation: fadeInDown 0.6s ease-out;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 	transition: all 0.3s ease;
 }
 
 .container h1:hover {
-	transform: scale(1.05);
+	transform: scale(1.02);
 	text-shadow: 0 0 20px var(--color-primary);
 }
 
 .btn {
 	width: 100%;
-	font:
-		1em Comic Sans MS,
-		Comic Sans,
-		cursive;
+	font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+	font-size: 1em;
+	font-weight: 500;
 	padding: 10px 15px;
 	border: none;
-	border-radius: 0.5rem;
+	border-radius: var(--radius-sm);
 	cursor: pointer;
 	transition: var(--transition);
 	position: relative;
@@ -175,30 +184,30 @@ body {
 
 .btn:active {
 	transform: translateY(0);
-	animation: pulse 0.3s ease;
 }
 
 .btn-primary {
-	background-color: var(--color-primary);
-	color: var(--color-bg);
+	background: var(--gradient-primary);
+	color: var(--color-white);
 }
 
 .btn-primary:hover {
-	background-color: var(--color-primary-variant);
+	box-shadow: 0 5px 20px rgba(124, 58, 237, 0.4);
 }
 
 .btn-danger {
-	background-color: red;
-	color: var(--color-bg);
+	background-color: var(--color-danger);
+	color: var(--color-white);
 }
 
 .btn-danger:hover {
-	background-color: var(--color-primary-variant);
+	box-shadow: 0 5px 20px rgba(239, 68, 68, 0.4);
 }
 
 .btn-primary-inverse {
 	background-color: var(--color-bg);
 	color: var(--color-primary);
+	border: 1px solid var(--color-primary-variant);
 }
 
 .btn-primary-inverse:hover {
@@ -212,10 +221,10 @@ body {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background: rgba(0, 0, 0, 0.3);
+	background: rgba(0, 0, 0, 0.5);
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	z-index: 15;
-	backdrop-filter: blur(1.5px);
+	backdrop-filter: blur(8px);
 }

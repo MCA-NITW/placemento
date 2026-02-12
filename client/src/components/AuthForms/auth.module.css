@@ -4,14 +4,15 @@
 	width: 60%;
 	max-width: 500px;
 	margin: 0 auto;
-	/* Using utility class styles directly */
-	background: var(--color-bg-variant);
-	border-radius: 1rem;
+	/* Glass treatment */
+	background: var(--glass-bg);
+	backdrop-filter: var(--glass-blur);
+	border-radius: var(--radius-lg);
 	padding: 2rem;
-	box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+	box-shadow: var(--glass-shadow);
 	transition: var(--transition);
 	animation: fadeInUp 0.8s ease-out;
-	border: 1px solid var(--color-primary);
+	border: var(--glass-border);
 	/* Form container styles */
 	display: flex;
 	flex-direction: column;
@@ -27,7 +28,7 @@
 	color: var(--color-primary);
 	text-align: center;
 	margin-bottom: 1.5rem;
-	text-shadow: 0 0 10px rgba(255, 204, 102, 0.3);
+	text-shadow: 0 0 10px rgba(124, 58, 237, 0.3);
 }
 
 .auth-form form {
@@ -63,7 +64,7 @@
 	align-items: center;
 	justify-content: space-between;
 	background-color: var(--color-bg-variant);
-	border-radius: 0.5rem;
+	border-radius: var(--radius-sm);
 	padding: 0.5rem;
 }
 
@@ -90,17 +91,16 @@
 .auth-form__item input:focus,
 .input-container input:focus {
 	border-color: var(--color-primary-variant);
-	transform: scale(1.02);
-	box-shadow: 0 0 15px rgba(255, 204, 102, 0.3);
-	animation: glow 0.5s ease;
+	transform: scale(1.01);
+	box-shadow: 0 0 15px rgba(124, 58, 237, 0.2);
 }
 
 .auth-form form .btn {
 	width: 100%;
 	padding: 1rem;
 	border-radius: 0.5rem;
-	background: var(--color-primary);
-	color: var(--color-bg);
+	background: var(--gradient-primary);
+	color: var(--color-white);
 	font-size: 1rem;
 	transition: var(--transition);
 	cursor: pointer;
@@ -108,7 +108,7 @@
 }
 
 .auth-form form .btn:hover {
-	background: var(--color-primary-variant);
+	box-shadow: 0 5px 20px rgba(124, 58, 237, 0.4);
 	border: 1px solid var(--color-primary);
 }
 

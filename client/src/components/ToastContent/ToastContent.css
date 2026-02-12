@@ -2,7 +2,9 @@
 
 .Toastify__toast {
 	border-radius: 1rem;
-	background: var(--color-bg);
+	background: var(--glass-bg);
+	backdrop-filter: var(--glass-blur);
+	border: var(--glass-border);
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
 	margin: 0.5rem;
 }
@@ -40,7 +42,7 @@
 .toast-res {
 	display: flex;
 	width: 100%;
-	background-color: var(--color-bg-variant);
+	background: rgba(15, 15, 25, 0.4);
 	padding: 0.5rem 1rem;
 	border-radius: 0.5rem;
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
@@ -56,7 +58,7 @@
 	justify-content: flex-start;
 	gap: 0.5rem;
 	width: 100%;
-	background-color: var(--color-bg-variant);
+	background: rgba(15, 15, 25, 0.4);
 	padding: 0.5rem 1rem;
 	border-radius: 0.5rem;
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
