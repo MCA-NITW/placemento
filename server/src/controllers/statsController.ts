@@ -1,73 +1,62 @@
 import { Request, Response } from 'express';
 import Company from '../models/Company';
 import User from '../models/User';
-import { ICompany, IUser } from '../types';
 import logger from '../utils/logger';
 
-const filterValidCompanies = (companies: ICompany[]) => companies.filter((company) => company.status !== 'cancelled');
+// Lean query results — plain objects, not Mongoose documents
+type CompanyData = {
+	name: string;
+	status: string;
+	profileCategory: string;
+	typeOfOffer: string;
+	ctc: number;
+	ctcBreakup: { base: number };
+	selectedStudentsRollNo: string[];
+	locations: string[];
+};
+type StudentData = { name: string; rollNo: string; pg: { cgpa: number }; backlogs: number; placed: boolean };
 
-const getTotalCompaniesByStatus = (companies: ICompany[], status: string) =>
-	companies.filter((company) => company.status === status).length;
+const filterValidCompanies = (companies: CompanyData[]) => companies.filter((c) => c.status !== 'cancelled');
 
-const getTotalCompaniesByProfileCategory = (companies: ICompany[], profileCategory: string) =>
-	companies.filter((company) => company.profileCategory === profileCategory).length;
+const getTotalCompaniesByStatus = (companies: CompanyData[], status: string) => companies.filter((c) => c.status === status).length;
 
-const calculateTotalPlacedStudents = (companies: ICompany[]) =>
-	companies.reduce((acc, company) => {
-		const validRollNos = company.selectedStudentsRollNo.filter((rollNo) => rollNo && rollNo.trim() !== '');
-		return acc + validRollNos.length;
-	}, 0);
+const getTotalCompaniesByProfileCategory = (companies: CompanyData[], cat: string) => companies.filter((c) => c.profileCategory === cat).length;
 
-const calculateTotalPlacedStudentsCTC = (companies: ICompany[]) =>
-	companies.reduce((acc, company) => {
-		const validRollNos = company.selectedStudentsRollNo.filter((rollNo) => rollNo && rollNo.trim() !== '');
-		return acc + validRollNos.length * (company.ctc || 0);
-	}, 0);
+const calculateTotalPlacedStudents = (companies: CompanyData[]) =>
+	companies.reduce((acc, c) => acc + c.selectedStudentsRollNo.filter((r) => r && r.trim() !== '').length, 0);
 
-const getHighestCTC = (companies: ICompany[]) => {
-	if (companies.length === 0) return 0;
-	return Math.max(...companies.map((company) => company.ctc || 0));
+const calculateTotalPlacedStudentsCTC = (companies: CompanyData[]) =>
+	companies.reduce((acc, c) => acc + c.selectedStudentsRollNo.filter((r) => r && r.trim() !== '').length * (c.ctc || 0), 0);
+
+const getHighestCTC = (companies: CompanyData[]) => (companies.length === 0 ? 0 : Math.max(...companies.map((c) => c.ctc || 0)));
+
+const getHighestCTCPlaced = (companies: CompanyData[]) => {
+	const placed = companies.filter((c) => c.selectedStudentsRollNo.length > 0);
+	return placed.length === 0 ? 0 : Math.max(...placed.map((c) => c.ctc || 0));
 };
 
-const getHighestCTCPlaced = (companies: ICompany[]) => {
-	const placedCompanies = companies.filter((company) => company.selectedStudentsRollNo.length > 0);
-	if (placedCompanies.length === 0) return 0;
-	return Math.max(...placedCompanies.map((company) => company.ctc || 0));
+const getHighestCTCCompany = (companies: CompanyData[], ctc: number) => companies.find((c) => c.ctc === ctc) || null;
+
+const getHighestCTCPlacedCompany = (companies: CompanyData[], ctc: number) =>
+	companies.find((c) => c.selectedStudentsRollNo.length > 0 && c.ctc === ctc) || null;
+
+const getHighestCTCStudent = (students: StudentData[], companies: CompanyData[], companyName: string | undefined) => {
+	if (!companyName) return null;
+	return students.find((s) => companies.find((c) => c.name === companyName && c.selectedStudentsRollNo.includes(s.rollNo))) || null;
 };
 
-const getHighestCTCCompany = (companies: ICompany[], highestCTC: number) =>
-	companies.find((company) => company.ctc === highestCTC) || null;
-
-const getHighestCTCPlacedCompany = (companies: ICompany[], highestCTCPlaced: number) =>
-	companies.find((company) => company.selectedStudentsRollNo.length > 0 && company.ctc === highestCTCPlaced) || null;
-
-const getHighestCTCStudent = (students: IUser[], companies: ICompany[], highestCTCPlacedCompanyName: string | undefined) => {
-	if (!highestCTCPlacedCompanyName) return null;
-	return (
-		students.find((student) =>
-			companies.find(
-				(company) => company.name === highestCTCPlacedCompanyName && company.selectedStudentsRollNo.includes(student.rollNo)
-			)
-		) || null
-	);
-};
-
-const getTopLocations = (companies: ICompany[]) => {
-	const locations = companies.reduce((acc, company) => {
-		company.locations.forEach((location) => {
-			acc.set(location, (acc.get(location) || 0) + 1);
-		});
-		return acc;
-	}, new Map<string, number>());
-
-	const sortedLocations = Array.from(locations.entries()).sort((a, b) => b[1] - a[1]);
-	return sortedLocations.map(([location, count]) => ({ location, count }));
+const getTopLocations = (companies: CompanyData[]) => {
+	const map = new Map<string, number>();
+	companies.forEach((c) => c.locations.forEach((l) => map.set(l, (map.get(l) || 0) + 1)));
+	return Array.from(map.entries())
+		.sort((a, b) => b[1] - a[1])
+		.map(([location, count]) => ({ location, count }));
 };
 
 export const getCTCStats = async (_req: Request, res: Response): Promise<void> => {
 	try {
-		const students = await User.find();
-		const companies = await Company.find();
+		const students = await User.find().lean();
+		const companies = await Company.find().lean();
 		const filterCompanies = filterValidCompanies(companies);
 
 		if (filterCompanies.length === 0) {
@@ -105,13 +94,13 @@ export const getCTCStats = async (_req: Request, res: Response): Promise<void> =
 		});
 	} catch (error: any) {
 		logger.error(error.message);
-		res.status(500).json({ message: 'Internal server error' });
+		res.status(500).json({ errors: ['Internal server error'] });
 	}
 };
 
 export const getCompanyStats = async (_req: Request, res: Response): Promise<void> => {
 	try {
-		const companies = await Company.find();
+		const companies = await Company.find().lean();
 		const filterCompanies = filterValidCompanies(companies);
 		const totalCompanies = companies.length;
 		const totalOngoingCompanies = getTotalCompaniesByStatus(companies, 'ongoing');
@@ -146,19 +135,17 @@ export const getCompanyStats = async (_req: Request, res: Response): Promise<voi
 		});
 	} catch (error: any) {
 		logger.error(error.message);
-		res.status(500).json({ message: 'Internal server error' });
+		res.status(500).json({ errors: ['Internal server error'] });
 	}
 };
 
 export const getStudentStats = async (_req: Request, res: Response): Promise<void> => {
 	try {
-		const students = await User.find();
-		const companies = await Company.find();
+		const students = await User.find().lean();
+		const companies = await Company.find().lean();
 		const filterCompanies = filterValidCompanies(companies);
 		const totalStudents = students.length;
-		const totalEligibleStudents = students.filter(
-			(student) => (student.pg.cgpa >= 6.5 && student.backlogs === 0) || student.placed
-		).length;
+		const totalEligibleStudents = students.filter((student) => (student.pg.cgpa >= 6.5 && student.backlogs === 0) || student.placed).length;
 		const totalPlacedStudents = calculateTotalPlacedStudents(filterCompanies);
 		const totalVerifiedStudents = students.filter((student) => student.isVerified === true).length;
 		const totalUnverifiedStudents = students.filter((student) => student.isVerified === false).length;
@@ -167,10 +154,13 @@ export const getStudentStats = async (_req: Request, res: Response): Promise<voi
 
 		logger.info('Student Stats fetched successfully');
 
+		const placementPercentage = totalEligibleStudents > 0 ? ((totalPlacedStudents / totalEligibleStudents) * 100).toFixed(1) : '0';
+
 		res.status(200).json({
 			totalStudents,
 			totalEligibleStudents,
 			totalPlacedStudents,
+			placementPercentage,
 			totalVerifiedStudents,
 			totalUnverifiedStudents,
 			totalAdmins,
@@ -178,6 +168,38 @@ export const getStudentStats = async (_req: Request, res: Response): Promise<voi
 		});
 	} catch (error: any) {
 		logger.error(error.message);
-		res.status(500).json({ message: 'Internal server error' });
+		res.status(500).json({ errors: ['Internal server error'] });
+	}
+};
+
+// Combined dashboard — single call for Home page
+export const getDashboard = async (_req: Request, res: Response): Promise<void> => {
+	try {
+		const [students, companies] = await Promise.all([User.find().lean(), Company.find().lean()]);
+		const valid = filterValidCompanies(companies);
+		const totalPlaced = calculateTotalPlacedStudents(valid);
+		const eligible = students.filter((s) => (s.pg.cgpa >= 6.5 && s.backlogs === 0) || s.placed).length;
+		const highestCTC = valid.length > 0 ? Math.max(...valid.map((c) => c.ctc || 0)) : 0;
+		const totalCTC = calculateTotalPlacedStudentsCTC(valid);
+		const avgCTC = totalPlaced > 0 ? totalCTC / totalPlaced : 0;
+
+		res.status(200).json({
+			students: {
+				total: students.length,
+				placed: totalPlaced,
+				percentage: eligible > 0 ? ((totalPlaced / eligible) * 100).toFixed(1) : '0'
+			},
+			companies: {
+				total: companies.length,
+				active: companies.filter((c) => c.status === 'ongoing').length
+			},
+			ctc: {
+				highest: highestCTC,
+				average: Number(avgCTC.toFixed(2))
+			}
+		});
+	} catch (error: any) {
+		logger.error(`getDashboard: ${error.message}`);
+		res.status(500).json({ errors: ['Internal server error'] });
 	}
 };

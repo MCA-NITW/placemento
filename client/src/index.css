@@ -1,230 +1,173 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-@import './styles/utilities.css';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-* {
+*,
+*::before,
+*::after {
 	margin: 0;
 	padding: 0;
-	border: 0;
-	outline: 0;
 	box-sizing: border-box;
-	text-decoration: none;
-	font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 :root {
-	--color-white: #f8fafc;
-	--color-light: #94a3b8;
-	--transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-	--container-width-lg: 75%;
-	--container-width-md: 86%;
-	--container-width-sm: 90%;
+	--font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
-	--color-bg: #0a0a0f;
-	--color-bg-variant: #13131a;
-	--color-bg-variant-2: #1e1e2e;
-	--color-primary: #7c3aed;
-	--color-primary-variant: rgba(124, 58, 237, 0.5);
-	--color-danger: #ef4444;
-	--color-danger-variant: rgba(239, 68, 68, 0.5);
-	--color-success: #22c55e;
-	--color-success-variant: rgba(34, 197, 94, 0.5);
-	--color-warning: #f59e0b;
-	--color-warning-variant: rgba(245, 158, 11, 0.5);
-	--color-info: #3b82f6;
-	--color-info-variant: rgba(59, 130, 246, 0.5);
+	/* Palette */
+	--bg: #06060c;
+	--bg1: #0c0c16;
+	--bg2: #14142a;
+	--bg3: #1c1c3a;
+	--text: #e4e6f0;
+	--dim: #7b7f99;
+	--primary: #8b5cf6;
+	--primary-glow: rgba(139, 92, 246, 0.35);
+	--accent: #22d3ee;
+	--accent-glow: rgba(34, 211, 238, 0.25);
+	--danger: #f43f5e;
+	--success: #10b981;
+	--warn: #f59e0b;
+	--border: rgba(255, 255, 255, 0.06);
+	--border-h: rgba(255, 255, 255, 0.12);
 
-	--color-accent: #06b6d4;
-	--color-accent-variant: rgba(6, 182, 212, 0.5);
-	--color-surface: rgba(20, 20, 35, 0.7);
-	--color-border: rgba(255, 255, 255, 0.08);
-	--color-border-hover: rgba(255, 255, 255, 0.15);
-	--gradient-primary: linear-gradient(135deg, #7c3aed, #6366f1);
-	--gradient-accent: linear-gradient(135deg, #7c3aed, #06b6d4);
-	--glass-bg: rgba(15, 15, 25, 0.6);
-	--glass-blur: blur(20px);
-	--glass-border: 1px solid rgba(255, 255, 255, 0.08);
-	--glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-	--radius-sm: 8px;
-	--radius-md: 12px;
-	--radius-lg: 16px;
-	--radius-xl: 24px;
+	/* Glass */
+	--glass: rgba(12, 12, 22, 0.6);
+	--glass-h: rgba(20, 20, 42, 0.75);
+	--blur: blur(20px);
+	--shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+
+	/* Radius */
+	--r1: 8px;
+	--r2: 12px;
+	--r3: 16px;
+	--r4: 24px;
 }
 
 html {
+	font-size: 15px;
 	scroll-behavior: smooth;
-	font-size: 90%;
-	color: var(--color-white);
-	line-height: 1.7;
-	background: var(--color-bg);
-	user-select: none;
 	scrollbar-width: thin;
-	scrollbar-color: var(--color-primary) var(--color-bg);
-	@media screen and (max-width: 600px) {
-		font-size: 85%;
-	}
-	@media screen and (max-width: 400px) {
-		font-size: 80%;
-	}
+	scrollbar-color: var(--bg3) var(--bg);
+}
+body {
+	font-family: var(--font);
+	background: var(--bg);
+	color: var(--text);
+	line-height: 1.6;
+	-webkit-font-smoothing: antialiased;
+	min-height: 100vh;
+}
+a {
+	color: inherit;
+	text-decoration: none;
+}
+button {
+	font-family: inherit;
+	cursor: pointer;
+}
+input,
+select,
+textarea {
+	font-family: inherit;
 }
 
 ::-webkit-scrollbar {
-	width: 0.5rem;
-	height: 0.5rem;
-	border-radius: 0.5rem;
-	background-color: var(--color-bg-variant);
+	width: 5px;
+	height: 5px;
 }
-
 ::-webkit-scrollbar-track {
-	border-radius: 0.5rem;
-	background: var(--color-bg);
-	border: 1px solid var(--color-bg-variant);
+	background: var(--bg);
 }
-
 ::-webkit-scrollbar-thumb {
-	background: linear-gradient(180deg, var(--color-primary), var(--color-primary-variant));
-	border-radius: 0.5rem;
-	border: 1px solid var(--color-primary-variant);
+	background: var(--bg3);
+	border-radius: 3px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-	background: linear-gradient(180deg, var(--color-primary-variant), var(--color-primary));
-	box-shadow: inset 0 0 5px rgba(124, 58, 237, 0.5);
+	background: var(--primary-glow);
 }
 
-::-webkit-scrollbar-corner {
-	background-color: var(--color-bg);
+/* Animations */
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+@keyframes slideUp {
+	from {
+		opacity: 0;
+		transform: translateY(24px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+@keyframes pulse {
+	0%,
+	100% {
+		opacity: 0.6;
+	}
+	50% {
+		opacity: 1;
+	}
+}
+@keyframes shimmer {
+	0% {
+		background-position: -200% 0;
+	}
+	100% {
+		background-position: 200% 0;
+	}
+}
+@keyframes glow {
+	0%,
+	100% {
+		box-shadow: 0 0 12px var(--primary-glow);
+	}
+	50% {
+		box-shadow: 0 0 28px var(--primary-glow);
+	}
 }
 
-body {
-	scrollbar-width: thin;
-	scrollbar-color: var(--color-primary) var(--color-bg);
+/* Glass card */
+.glass {
+	background: var(--glass);
+	backdrop-filter: var(--blur);
+	-webkit-backdrop-filter: var(--blur);
+	border: 1px solid var(--border);
+	border-radius: var(--r3);
+	box-shadow: var(--shadow);
+}
+.glass:hover {
+	border-color: var(--border-h);
 }
 
-/* Global CSS */
-
-.container {
-	width: calc(100% - 2rem);
-	margin: 6rem 1rem 1rem 1rem;
-	border-radius: var(--radius-lg);
-	padding: 1rem;
-	height: calc(100vh - 8rem);
-	max-height: calc(100vh - 8rem);
-	min-height: calc(100vh - 8rem);
-	background: var(--glass-bg);
-	backdrop-filter: var(--glass-blur);
-	border: var(--glass-border);
-	box-shadow: var(--glass-shadow);
-	transition: var(--transition);
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: flex-start;
-	overflow-y: auto;
-	overflow-x: hidden;
-	animation: fadeInUp 0.6s ease-out;
+/* Toast overrides */
+.Toastify__toast {
+	background: var(--bg2) !important;
+	color: var(--text) !important;
+	border: 1px solid var(--border) !important;
+	border-radius: var(--r2) !important;
+	backdrop-filter: var(--blur) !important;
+}
+.Toastify__progress-bar {
+	background: var(--primary) !important;
+}
+.Toastify__close-button {
+	color: var(--dim) !important;
 }
 
-.container:hover {
-	transform: translateY(-2px);
-	border-color: var(--color-border-hover);
-	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+/* Responsive */
+@media (max-width: 768px) {
+	html {
+		font-size: 14px;
+	}
 }
-
-.container h1 {
-	font-size: 24px;
-	font-weight: 600;
-	margin-bottom: 20px;
-	color: var(--color-primary);
-	animation: fadeInDown 0.6s ease-out;
-	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-	transition: all 0.3s ease;
-}
-
-.container h1:hover {
-	transform: scale(1.02);
-	text-shadow: 0 0 20px var(--color-primary);
-}
-
-.btn {
-	width: 100%;
-	font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-	font-size: 1em;
-	font-weight: 500;
-	padding: 10px 15px;
-	border: none;
-	border-radius: var(--radius-sm);
-	cursor: pointer;
-	transition: var(--transition);
-	position: relative;
-	overflow: hidden;
-	transform: perspective(1px) translateZ(0);
-}
-
-.btn::before {
-	content: '';
-	position: absolute;
-	z-index: -1;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-	transform: translateX(-100%);
-	transition: transform 0.6s;
-}
-
-.btn:hover::before {
-	transform: translateX(100%);
-}
-
-.btn:hover {
-	transform: translateY(-2px);
-	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-.btn:active {
-	transform: translateY(0);
-}
-
-.btn-primary {
-	background: var(--gradient-primary);
-	color: var(--color-white);
-}
-
-.btn-primary:hover {
-	box-shadow: 0 5px 20px rgba(124, 58, 237, 0.4);
-}
-
-.btn-danger {
-	background-color: var(--color-danger);
-	color: var(--color-white);
-}
-
-.btn-danger:hover {
-	box-shadow: 0 5px 20px rgba(239, 68, 68, 0.4);
-}
-
-.btn-primary-inverse {
-	background-color: var(--color-bg);
-	color: var(--color-primary);
-	border: 1px solid var(--color-primary-variant);
-}
-
-.btn-primary-inverse:hover {
-	background-color: var(--color-bg-variant);
-}
-
-/* Modal */
-.overlay {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: rgba(0, 0, 0, 0.5);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	z-index: 15;
-	backdrop-filter: blur(8px);
+@media (max-width: 480px) {
+	html {
+		font-size: 13px;
+	}
 }

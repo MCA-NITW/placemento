@@ -101,14 +101,10 @@ export interface IOtp extends Document {
 	createdAt: Date;
 }
 
-export interface AuthenticatedRequest extends Request {
-	user: {
-		id: string;
-		role: 'student' | 'placementCoordinator' | 'admin';
-		rollNo: string;
-		name: string;
-		batch: number;
-	};
-}
-
 export type UserRole = 'student' | 'placementCoordinator' | 'admin';
+
+// Typed request with authenticated user + token attached by auth middleware
+export interface AuthRequest extends Request {
+	user: IUser;
+	token: string;
+}

@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { describe, expect, it } from 'vitest';
 import request from 'supertest';
+import { describe, expect, it } from 'vitest';
 import app from '../src/app';
 import User from '../src/models/User';
 
@@ -30,10 +30,7 @@ describe('POST /experiences/add', () => {
 	it('should create an experience', async () => {
 		const { token } = await createVerifiedUser();
 
-		const res = await request(app)
-			.post('/experiences/add')
-			.set('Authorization', `Bearer ${token}`)
-			.send(validExperience);
+		const res = await request(app).post('/experiences/add').set('Authorization', `Bearer ${token}`).send(validExperience);
 
 		expect(res.status).toBe(201);
 		expect(res.body.savedExperience.companyName).toBe('Google');
@@ -43,10 +40,7 @@ describe('POST /experiences/add', () => {
 	it('should validate required fields', async () => {
 		const { token } = await createVerifiedUser();
 
-		const res = await request(app)
-			.post('/experiences/add')
-			.set('Authorization', `Bearer ${token}`)
-			.send({});
+		const res = await request(app).post('/experiences/add').set('Authorization', `Bearer ${token}`).send({});
 
 		expect(res.status).toBe(400);
 		expect(res.body.errors.length).toBeGreaterThan(0);
@@ -57,14 +51,9 @@ describe('GET /experiences/view', () => {
 	it('should return all experiences', async () => {
 		const { token } = await createVerifiedUser();
 
-		await request(app)
-			.post('/experiences/add')
-			.set('Authorization', `Bearer ${token}`)
-			.send(validExperience);
+		await request(app).post('/experiences/add').set('Authorization', `Bearer ${token}`).send(validExperience);
 
-		const res = await request(app)
-			.get('/experiences/view')
-			.set('Authorization', `Bearer ${token}`);
+		const res = await request(app).get('/experiences/view').set('Authorization', `Bearer ${token}`);
 
 		expect(res.status).toBe(200);
 		expect(res.body.experiences.length).toBe(1);
@@ -75,10 +64,7 @@ describe('PUT /experiences/update/:id', () => {
 	it('should allow owner to update their experience', async () => {
 		const { token } = await createVerifiedUser();
 
-		const createRes = await request(app)
-			.post('/experiences/add')
-			.set('Authorization', `Bearer ${token}`)
-			.send(validExperience);
+		const createRes = await request(app).post('/experiences/add').set('Authorization', `Bearer ${token}`).send(validExperience);
 
 		const experienceId = createRes.body.savedExperience._id;
 
@@ -94,10 +80,7 @@ describe('PUT /experiences/update/:id', () => {
 	it('should prevent non-owner from updating experience', async () => {
 		const { token: ownerToken } = await createVerifiedUser();
 
-		const createRes = await request(app)
-			.post('/experiences/add')
-			.set('Authorization', `Bearer ${ownerToken}`)
-			.send(validExperience);
+		const createRes = await request(app).post('/experiences/add').set('Authorization', `Bearer ${ownerToken}`).send(validExperience);
 
 		const experienceId = createRes.body.savedExperience._id;
 
@@ -121,16 +104,11 @@ describe('DELETE /experiences/delete/:id', () => {
 	it('should allow owner to delete their experience', async () => {
 		const { token } = await createVerifiedUser();
 
-		const createRes = await request(app)
-			.post('/experiences/add')
-			.set('Authorization', `Bearer ${token}`)
-			.send(validExperience);
+		const createRes = await request(app).post('/experiences/add').set('Authorization', `Bearer ${token}`).send(validExperience);
 
 		const experienceId = createRes.body.savedExperience._id;
 
-		const res = await request(app)
-			.delete(`/experiences/delete/${experienceId}`)
-			.set('Authorization', `Bearer ${token}`);
+		const res = await request(app).delete(`/experiences/delete/${experienceId}`).set('Authorization', `Bearer ${token}`);
 
 		expect(res.status).toBe(200);
 	});
@@ -138,10 +116,7 @@ describe('DELETE /experiences/delete/:id', () => {
 	it('should prevent non-owner from deleting experience', async () => {
 		const { token: ownerToken } = await createVerifiedUser();
 
-		const createRes = await request(app)
-			.post('/experiences/add')
-			.set('Authorization', `Bearer ${ownerToken}`)
-			.send(validExperience);
+		const createRes = await request(app).post('/experiences/add').set('Authorization', `Bearer ${ownerToken}`).send(validExperience);
 
 		const experienceId = createRes.body.savedExperience._id;
 
@@ -151,9 +126,7 @@ describe('DELETE /experiences/delete/:id', () => {
 			name: 'Other Student'
 		});
 
-		const res = await request(app)
-			.delete(`/experiences/delete/${experienceId}`)
-			.set('Authorization', `Bearer ${otherToken}`);
+		const res = await request(app).delete(`/experiences/delete/${experienceId}`).set('Authorization', `Bearer ${otherToken}`);
 
 		expect(res.status).toBe(403);
 	});
@@ -161,9 +134,7 @@ describe('DELETE /experiences/delete/:id', () => {
 	it('should return 404 for non-existent experience', async () => {
 		const { token } = await createVerifiedUser();
 
-		const res = await request(app)
-			.delete('/experiences/delete/000000000000000000000000')
-			.set('Authorization', `Bearer ${token}`);
+		const res = await request(app).delete('/experiences/delete/000000000000000000000000').set('Authorization', `Bearer ${token}`);
 
 		expect(res.status).toBe(404);
 	});
@@ -173,10 +144,7 @@ describe('POST /experiences/comment/add/:id', () => {
 	it('should add a comment to an experience', async () => {
 		const { token } = await createVerifiedUser();
 
-		const createRes = await request(app)
-			.post('/experiences/add')
-			.set('Authorization', `Bearer ${token}`)
-			.send(validExperience);
+		const createRes = await request(app).post('/experiences/add').set('Authorization', `Bearer ${token}`).send(validExperience);
 
 		const experienceId = createRes.body.savedExperience._id;
 
@@ -194,28 +162,17 @@ describe('DELETE /experiences/comment/delete/:id/:commentId', () => {
 	it('should delete a comment by index', async () => {
 		const { token } = await createVerifiedUser();
 
-		const createRes = await request(app)
-			.post('/experiences/add')
-			.set('Authorization', `Bearer ${token}`)
-			.send(validExperience);
+		const createRes = await request(app).post('/experiences/add').set('Authorization', `Bearer ${token}`).send(validExperience);
 
 		const experienceId = createRes.body.savedExperience._id;
 
 		// Add two comments
-		await request(app)
-			.post(`/experiences/comment/add/${experienceId}`)
-			.set('Authorization', `Bearer ${token}`)
-			.send({ comment: 'First comment' });
+		await request(app).post(`/experiences/comment/add/${experienceId}`).set('Authorization', `Bearer ${token}`).send({ comment: 'First comment' });
 
-		await request(app)
-			.post(`/experiences/comment/add/${experienceId}`)
-			.set('Authorization', `Bearer ${token}`)
-			.send({ comment: 'Second comment' });
+		await request(app).post(`/experiences/comment/add/${experienceId}`).set('Authorization', `Bearer ${token}`).send({ comment: 'Second comment' });
 
 		// Delete the first comment (index 0)
-		const res = await request(app)
-			.delete(`/experiences/comment/delete/${experienceId}/0`)
-			.set('Authorization', `Bearer ${token}`);
+		const res = await request(app).delete(`/experiences/comment/delete/${experienceId}/0`).set('Authorization', `Bearer ${token}`);
 
 		expect(res.status).toBe(200);
 		expect(res.body.savedExperience.Comments).toHaveLength(1);

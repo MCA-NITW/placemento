@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { describe, expect, it } from 'vitest';
 import request from 'supertest';
+import { describe, expect, it } from 'vitest';
 import app from '../src/app';
 import Company from '../src/models/Company';
 import User from '../src/models/User';
@@ -38,10 +38,7 @@ describe('POST /companies/add', () => {
 	it('should create a company as admin', async () => {
 		const { token } = await createVerifiedUser();
 
-		const res = await request(app)
-			.post('/companies/add')
-			.set('Authorization', `Bearer ${token}`)
-			.send(validCompany);
+		const res = await request(app).post('/companies/add').set('Authorization', `Bearer ${token}`).send(validCompany);
 
 		expect(res.status).toBe(201);
 		expect(res.body.name).toBe('Google');
@@ -53,10 +50,7 @@ describe('POST /companies/add', () => {
 	it('should reject company creation by student', async () => {
 		const { token } = await createVerifiedUser({ role: 'student', email: 'student@student.nitw.ac.in', rollNo: '22MCF1R02' });
 
-		const res = await request(app)
-			.post('/companies/add')
-			.set('Authorization', `Bearer ${token}`)
-			.send(validCompany);
+		const res = await request(app).post('/companies/add').set('Authorization', `Bearer ${token}`).send(validCompany);
 
 		expect(res.status).toBe(403);
 	});
@@ -64,10 +58,7 @@ describe('POST /companies/add', () => {
 	it('should validate required fields', async () => {
 		const { token } = await createVerifiedUser();
 
-		const res = await request(app)
-			.post('/companies/add')
-			.set('Authorization', `Bearer ${token}`)
-			.send({ ctc: 10 });
+		const res = await request(app).post('/companies/add').set('Authorization', `Bearer ${token}`).send({ ctc: 10 });
 
 		expect(res.status).toBe(400);
 		expect(res.body.errors).toBeDefined();
@@ -75,9 +66,7 @@ describe('POST /companies/add', () => {
 	});
 
 	it('should reject without authentication', async () => {
-		const res = await request(app)
-			.post('/companies/add')
-			.send(validCompany);
+		const res = await request(app).post('/companies/add').send(validCompany);
 
 		expect(res.status).toBe(401);
 	});
@@ -88,19 +77,14 @@ describe('GET /companies/view', () => {
 		const { token } = await createVerifiedUser();
 
 		// Create a company first
-		await request(app)
-			.post('/companies/add')
-			.set('Authorization', `Bearer ${token}`)
-			.send(validCompany);
+		await request(app).post('/companies/add').set('Authorization', `Bearer ${token}`).send(validCompany);
 
-		const res = await request(app)
-			.get('/companies/view')
-			.set('Authorization', `Bearer ${token}`);
+		const res = await request(app).get('/companies/view').set('Authorization', `Bearer ${token}`);
 
 		expect(res.status).toBe(200);
-		expect(Array.isArray(res.body)).toBe(true);
-		expect(res.body.length).toBe(1);
-		expect(res.body[0].name).toBe('Google');
+		expect(Array.isArray(res.body.companies)).toBe(true);
+		expect(res.body.companies.length).toBe(1);
+		expect(res.body.companies[0].name).toBe('Google');
 	});
 
 	it('should reject unauthenticated request', async () => {
@@ -113,10 +97,7 @@ describe('PUT /companies/update/:id', () => {
 	it('should update company as admin', async () => {
 		const { token } = await createVerifiedUser();
 
-		const createRes = await request(app)
-			.post('/companies/add')
-			.set('Authorization', `Bearer ${token}`)
-			.send(validCompany);
+		const createRes = await request(app).post('/companies/add').set('Authorization', `Bearer ${token}`).send(validCompany);
 
 		const companyId = createRes.body._id;
 
@@ -133,10 +114,7 @@ describe('PUT /companies/update/:id', () => {
 	it('should return 404 for non-existent company', async () => {
 		const { token } = await createVerifiedUser();
 
-		const res = await request(app)
-			.put('/companies/update/000000000000000000000000')
-			.set('Authorization', `Bearer ${token}`)
-			.send(validCompany);
+		const res = await request(app).put('/companies/update/000000000000000000000000').set('Authorization', `Bearer ${token}`).send(validCompany);
 
 		expect(res.status).toBe(404);
 	});
@@ -146,16 +124,11 @@ describe('DELETE /companies/delete/:id', () => {
 	it('should delete company as admin', async () => {
 		const { token } = await createVerifiedUser();
 
-		const createRes = await request(app)
-			.post('/companies/add')
-			.set('Authorization', `Bearer ${token}`)
-			.send(validCompany);
+		const createRes = await request(app).post('/companies/add').set('Authorization', `Bearer ${token}`).send(validCompany);
 
 		const companyId = createRes.body._id;
 
-		const res = await request(app)
-			.delete(`/companies/delete/${companyId}`)
-			.set('Authorization', `Bearer ${token}`);
+		const res = await request(app).delete(`/companies/delete/${companyId}`).set('Authorization', `Bearer ${token}`);
 
 		expect(res.status).toBe(200);
 
@@ -166,9 +139,7 @@ describe('DELETE /companies/delete/:id', () => {
 	it('should return 404 for non-existent company', async () => {
 		const { token } = await createVerifiedUser();
 
-		const res = await request(app)
-			.delete('/companies/delete/000000000000000000000000')
-			.set('Authorization', `Bearer ${token}`);
+		const res = await request(app).delete('/companies/delete/000000000000000000000000').set('Authorization', `Bearer ${token}`);
 
 		expect(res.status).toBe(404);
 	});

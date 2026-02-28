@@ -1,8 +1,8 @@
-import { MongoMemoryServer } from 'mongodb-memory-server';
+import { MongoMemoryReplSet } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import { afterAll, afterEach, beforeAll } from 'vitest';
 
-let mongoServer: MongoMemoryServer;
+let mongoServer: MongoMemoryReplSet;
 
 beforeAll(async () => {
 	// Set test environment variables
@@ -11,7 +11,9 @@ beforeAll(async () => {
 	process.env.JWT_SALT_ROUNDS = '4';
 	process.env.CORS_ORIGIN = 'http://localhost:3000';
 
-	mongoServer = await MongoMemoryServer.create({
+	// Use replica set to support transactions
+	mongoServer = await MongoMemoryReplSet.create({
+		replSet: { count: 1 },
 		binary: { version: '7.0.0' }
 	});
 	const mongoUri = mongoServer.getUri();

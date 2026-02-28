@@ -1,86 +1,34 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import NavBar from './components/NavBar/NavBar';
-import NotFound from './components/NotFound/NotFound';
-import Authentication from './pages/Auth/Authentication';
-import Companies from './pages/Companies/Companies';
-import Experience from './pages/Experience/Experience';
-import Home from './pages/Home/Home';
-import Profile from './pages/Profile/Profile';
-import Stats from './pages/Stats/Stats';
-import Students from './pages/Students/Students';
-import Teams from './pages/Teams/Teams';
-import { checkAuthAction, getAuthToken } from './utils/auth';
+import NavBar from './components/NavBar';
+import Auth from './pages/Auth';
+import Companies from './pages/Companies';
+import Experience from './pages/Experience';
+import Home from './pages/Home';
+import NotFound from './pages/NotFound';
+import Profile from './pages/Profile';
+import Stats from './pages/Stats';
+import Students from './pages/Students';
+import Teams from './pages/Teams';
 
-const router = createBrowserRouter([
-	{
-		path: '/',
-		element: <NavBar />,
-		id: 'root',
-		loader: getAuthToken,
-		children: [
-			{
-				index: true,
-				element: <Home />
-			},
-			{
-				path: 'stats',
-				element: <Stats />
-			},
-			{
-				path: 'teams',
-				element: <Teams />
-			},
-			{
-				path: 'students',
-				element: <Students />,
-				loader: checkAuthAction
-			},
-			{
-				path: 'companies',
-				element: <Companies />,
-				loader: checkAuthAction
-			},
-			{
-				path: 'experience',
-				element: <Experience />,
-				loader: checkAuthAction
-			},
-			{
-				path: 'profile',
-				element: <Profile />,
-				loader: checkAuthAction
-			},
-			{
-				path: 'auth',
-				element: <Authentication />
-			}
-		]
-	},
-	{
-		path: '*',
-		element: <NotFound />
-	}
-]);
-
-const App = () => {
-	return (
-		<>
-			<RouterProvider router={router} />
-			<ToastContainer
-				position="bottom-right"
-				autoClose={2500}
-				hideProgressBar={false}
-				newestOnTop={false}
-				closeOnClick
-				rtl={false}
-				pauseOnFocusLoss
-				draggable
-				pauseOnHover
-			/>
-		</>
-	);
-};
+const App = () => (
+	<BrowserRouter>
+		<Routes>
+			<Route element={<NavBar />}>
+				<Route path="/" element={<Home />} />
+				<Route path="/stats" element={<Stats />} />
+				<Route path="/teams" element={<Teams />} />
+				<Route path="/students" element={<Students />} />
+				<Route path="/companies" element={<Companies />} />
+				<Route path="/experience" element={<Experience />} />
+				<Route path="/profile" element={<Profile />} />
+				<Route path="/auth" element={<Auth />} />
+				<Route path="*" element={<NotFound />} />
+			</Route>
+		</Routes>
+		<ToastContainer position="bottom-right" autoClose={2500} theme="dark" newestOnTop closeOnClick />
+	</BrowserRouter>
+);
 
 export default App;

@@ -1,8 +1,12 @@
+import bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
-import { isValidObjectId } from 'mongoose';
+import mongoose, { isValidObjectId } from 'mongoose';
 import Company from '../models/Company';
 import User from '../models/User';
+import { type AuthRequest } from '../types';
 import logger from '../utils/logger';
+
+const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
 
 const validateAcademicField = (field: { cgpa?: number; percentage?: number }, label: string): string[] => {
 	const errors: string[] = [];
@@ -15,71 +19,66 @@ const validateAcademicField = (field: { cgpa?: number; percentage?: number }, la
 	return errors;
 };
 
+// Strip password from user object before sending
+const sanitizeUser = (user: any) => {
+	const obj = user.toObject ? user.toObject() : { ...user };
+	delete obj.password;
+	return obj;
+};
+
 export const viewAllUsers = async (req: Request, res: Response): Promise<void> => {
 	try {
-		const user = (req as any).user;
+		const authUser = (req as unknown as AuthRequest).user;
 		const users =
-			user.role === 'student'
-				? await User.find({ isVerified: true }).select({
-						password: 0,
-						pg: 0,
-						ug: 0,
-						hsc: 0,
-						ssc: 0,
-						backlogs: 0,
-						totalGapInAcademics: 0
-					})
-				: await User.find().select({ password: 0 }).sort({ rollNo: 1 });
-		if (!users) {
-			res.status(404).json({ message: 'No users found' });
-			return;
-		}
-		logger.info('All users Viewed');
+			authUser.role === 'student'
+				? await User.find({ isVerified: true }).select('-password -pg -ug -hsc -ssc -backlogs -totalGapInAcademics').lean()
+				: await User.find().select('-password').sort({ rollNo: 1 }).lean();
 		res.status(200).json({ users });
 	} catch (error: any) {
-		logger.error(error);
-		res.status(500).json({ message: 'Internal server error' });
+		logger.error(`viewAllUsers: ${error.message}`);
+		res.status(500).json({ errors: ['Internal server error'] });
 	}
 };
 
 export const viewSingleUser = async (req: Request, res: Response): Promise<void> => {
 	try {
-		const authUser = (req as any).user;
+		if (!isValidObjectId(req.params.id)) {
+			res.status(400).json({ errors: ['Invalid user ID'] });
+			return;
+		}
+		const authUser = (req as unknown as AuthRequest).user;
 		const user = await User.findById(req.params.id);
 		if (!user) {
-			res.status(404).json({ message: 'User not found' });
+			res.status(404).json({ errors: ['User not found'] });
 			return;
 		}
-		if (authUser.role === 'student' && req.params.id !== authUser.id) {
-			res.status(403).json({ message: 'Forbidden' });
+		if (authUser.role === 'student' && req.params.id !== String(authUser._id)) {
+			res.status(403).json({ errors: ['Forbidden'] });
 			return;
 		}
-		logger.info(`User Viewed: ${user.name}`);
-		const userObj = user.toObject();
-		(userObj as any).password = null;
-		res.status(200).json(userObj);
+		res.status(200).json(sanitizeUser(user));
 	} catch (error: any) {
-		logger.error(error);
-		res.status(500).json({ message: 'Internal server error' });
+		logger.error(`viewSingleUser: ${error.message}`);
+		res.status(500).json({ errors: ['Internal server error'] });
 	}
 };
 
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
 	try {
 		if (!isValidObjectId(req.params.id)) {
-			res.status(400).json({ message: 'Invalid user ID' });
+			res.status(400).json({ errors: ['Invalid user ID'] });
 			return;
 		}
 
-		const authUser = (req as any).user;
+		const authUser = (req as unknown as AuthRequest).user;
 		const user = await User.findById(req.params.id);
 		if (!user) {
-			res.status(404).json({ message: 'User not found' });
+			res.status(404).json({ errors: ['User not found'] });
 			return;
 		}
 
-		if (authUser.role === 'student' && req.params.id !== authUser.id) {
-			res.status(403).json({ message: 'Forbidden' });
+		if (authUser.role === 'student' && req.params.id !== String(authUser._id)) {
+			res.status(403).json({ errors: ['Forbidden'] });
 			return;
 		}
 
@@ -96,10 +95,11 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
 			validationErrors.push('Total gap in academics must be a non-negative integer');
 		}
 		if (validationErrors.length > 0) {
-			res.status(400).json({ message: validationErrors.join(', ') });
+			res.status(400).json({ errors: validationErrors });
 			return;
 		}
 
+		// Whitelist: only allow academic fields and location to be updated
 		const updatedUser = await User.findByIdAndUpdate(
 			req.params.id,
 			{
@@ -129,108 +129,116 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
 			{ new: true }
 		);
 		if (!updatedUser) {
-			res.status(404).json({ message: 'User not found' });
+			res.status(404).json({ errors: ['User not found'] });
 			return;
 		}
 
 		logger.info(`User updated: ${updatedUser.name}`);
-		res.status(200).json(updatedUser);
+		res.status(200).json(sanitizeUser(updatedUser));
 	} catch (error: any) {
-		logger.error(error);
-		res.status(500).json({ message: 'Internal server error' });
+		logger.error(`updateUser: ${error.message}`);
+		res.status(500).json({ errors: ['Internal server error'] });
 	}
 };
 
 export const verify = async (req: Request, res: Response): Promise<void> => {
 	try {
-		const authUser = (req as any).user;
 		if (!isValidObjectId(req.params.id)) {
-			res.status(400).json({ message: 'Invalid user ID' });
+			res.status(400).json({ errors: ['Invalid user ID'] });
 			return;
 		}
-		if (req.params.id === authUser.id) {
-			res.status(400).json({ message: 'You cannot verify your own account' });
+		const authUser = (req as unknown as AuthRequest).user;
+		if (req.params.id === String(authUser._id)) {
+			res.status(400).json({ errors: ['You cannot verify your own account'] });
 			return;
 		}
 
 		const user = await User.findById(req.params.id);
-
-		const updatedUser = await User.findByIdAndUpdate(req.params.id, { isVerified: !user?.isVerified }, { new: true });
-		if (!updatedUser) {
-			res.status(404).json({ message: 'User not found' });
+		if (!user) {
+			res.status(404).json({ errors: ['User not found'] });
 			return;
 		}
-		logger.info(`User verified: ${updatedUser.name}`);
-		res.status(200).json({
-			message: `${updatedUser.name} ${updatedUser.isVerified ? 'Verified' : 'Unverified'} Successfully`
-		});
+
+		const updatedUser = await User.findByIdAndUpdate(req.params.id, { isVerified: !user.isVerified }, { new: true });
+		logger.info(`User ${updatedUser!.isVerified ? 'verified' : 'unverified'}: ${updatedUser!.name}`);
+		res.status(200).json({ message: `${updatedUser!.name} ${updatedUser!.isVerified ? 'verified' : 'unverified'} successfully` });
 	} catch (error: any) {
-		logger.error(error);
-		res.status(500).json({ message: 'Internal server error' });
+		logger.error(`verify: ${error.message}`);
+		res.status(500).json({ errors: ['Internal server error'] });
 	}
 };
 
 export const updateRole = async (req: Request, res: Response): Promise<void> => {
 	try {
-		const authUser = (req as any).user;
 		if (!isValidObjectId(req.params.id)) {
-			res.status(400).json({ message: 'Invalid user ID' });
+			res.status(400).json({ errors: ['Invalid user ID'] });
 			return;
 		}
+		const authUser = (req as unknown as AuthRequest).user;
 		if (!['admin', 'student', 'placementCoordinator'].includes(req.body.role)) {
-			res.status(400).json({ message: 'Invalid role' });
+			res.status(400).json({ errors: ['Invalid role'] });
 			return;
 		}
-		if (req.params.id === authUser.id) {
-			res.status(400).json({ message: 'You cannot change your own role' });
+		if (req.params.id === String(authUser._id)) {
+			res.status(400).json({ errors: ['You cannot change your own role'] });
 			return;
 		}
 		const updatedUser = await User.findByIdAndUpdate(req.params.id, { role: req.body.role }, { new: true });
 		if (!updatedUser) {
-			res.status(404).json({ message: 'User not found' });
+			res.status(404).json({ errors: ['User not found'] });
 			return;
 		}
-		logger.info(`User role updated: ${updatedUser.name}`);
-		res.status(200).json({ message: `Role of ${updatedUser.name} updated Successfully` });
+		logger.info(`Role updated for ${updatedUser.name} to ${updatedUser.role}`);
+		res.status(200).json({ message: `Role of ${updatedUser.name} updated successfully` });
 	} catch (error: any) {
-		logger.error(error);
-		res.status(500).json({ message: 'Internal server error' });
+		logger.error(`updateRole: ${error.message}`);
+		res.status(500).json({ errors: ['Internal server error'] });
 	}
 };
 
 export const deleteUser = async (req: Request, res: Response): Promise<void> => {
 	try {
-		const authUser = (req as any).user;
 		if (!isValidObjectId(req.params.id)) {
-			res.status(400).json({ message: 'Invalid user ID' });
+			res.status(400).json({ errors: ['Invalid user ID'] });
 			return;
 		}
-		if (req.params.id === authUser.id) {
-			res.status(400).json({ message: 'You cannot delete your own account' });
+		const authUser = (req as unknown as AuthRequest).user;
+		if (req.params.id === String(authUser._id)) {
+			res.status(400).json({ errors: ['You cannot delete your own account'] });
 			return;
 		}
 		const deletedUser = await User.findByIdAndDelete(req.params.id);
 		if (!deletedUser) {
-			res.status(404).json({ message: 'User not found' });
+			res.status(404).json({ errors: ['User not found'] });
 			return;
 		}
 		logger.info(`User deleted: ${deletedUser.name}`);
-		res.status(200).json({ message: `Student ${deletedUser.name} deleted Successfully` });
+		res.status(200).json({ message: `${deletedUser.name} deleted successfully` });
 	} catch (error: any) {
-		logger.error(error);
-		res.status(500).json({ message: 'Internal server error' });
+		logger.error(`deleteUser: ${error.message}`);
+		res.status(500).json({ errors: ['Internal server error'] });
 	}
 };
 
 export const updateCompany = async (req: Request, res: Response): Promise<void> => {
+	// Uses transaction since it modifies both User and Company documents
+	const session = await mongoose.startSession();
 	try {
 		if (!isValidObjectId(req.params.id)) {
-			res.status(400).json({ message: 'Invalid user ID' });
+			res.status(400).json({ errors: ['Invalid user ID'] });
 			return;
 		}
-		const user = await User.findById(req.params.id);
+		if (req.body.companyId !== 'np' && !isValidObjectId(req.body.companyId)) {
+			res.status(400).json({ errors: ['Invalid company ID'] });
+			return;
+		}
+
+		session.startTransaction();
+
+		const user = await User.findById(req.params.id).session(session);
 		if (!user) {
-			res.status(404).json({ message: 'User not found' });
+			await session.abortTransaction();
+			res.status(404).json({ errors: ['User not found'] });
 			return;
 		}
 
@@ -246,18 +254,14 @@ export const updateCompany = async (req: Request, res: Response): Promise<void> 
 			bond: 0
 		};
 
-		if (user.placedAt.companyId !== 'np') {
-			const company = await Company.findById(user.placedAt.companyId);
-			if (company) {
-				const index = company.selectedStudentsRollNo.indexOf(user.rollNo);
-				if (index > -1) {
-					company.selectedStudentsRollNo.splice(index, 1);
-				}
-				await company.save();
-			}
+		// Remove from previous company
+		if (user.placedAt.companyId !== 'np' && isValidObjectId(user.placedAt.companyId)) {
+			await Company.findByIdAndUpdate(user.placedAt.companyId, { $pull: { selectedStudentsRollNo: user.rollNo } }, { session });
 		}
+
+		// Add to new company
 		if (req.body.companyId !== 'np') {
-			const company = await Company.findById(req.body.companyId);
+			const company = await Company.findById(req.body.companyId).session(session);
 			if (company) {
 				placedAt = {
 					companyId: String(company._id),
@@ -270,63 +274,80 @@ export const updateCompany = async (req: Request, res: Response): Promise<void> 
 					location: 'N/A',
 					bond: company.bond
 				};
-				if (!company.selectedStudentsRollNo.includes(user.rollNo)) {
-					company.selectedStudentsRollNo.push(user.rollNo);
-					await company.save();
-				}
+				await Company.findByIdAndUpdate(company._id, { $addToSet: { selectedStudentsRollNo: user.rollNo } }, { session });
 			}
 		}
 
-		const updatedUser = await User.findByIdAndUpdate(
-			req.params.id,
-			{
-				placedAt,
-				placed: req.body.companyId !== 'np'
-			},
-			{ new: true }
-		);
-		logger.info(`User company updated: ${updatedUser?.name}`);
-		res.status(200).json({ message: `Company of ${updatedUser?.name} updated Successfully` });
+		const updatedUser = await User.findByIdAndUpdate(req.params.id, { placedAt, placed: req.body.companyId !== 'np' }, { new: true, session });
+
+		await session.commitTransaction();
+		logger.info(`Company updated for ${updatedUser?.name}`);
+		res.status(200).json({ message: `Company of ${updatedUser?.name} updated successfully` });
 	} catch (error: any) {
-		logger.error(error);
-		res.status(500).json({ message: 'Internal server error' });
+		await session.abortTransaction();
+		logger.error(`updateCompany: ${error.message}`);
+		res.status(500).json({ errors: ['Internal server error'] });
+	} finally {
+		session.endSession();
 	}
 };
 
 export const updateCompanyLocation = async (req: Request, res: Response): Promise<void> => {
 	try {
 		if (!isValidObjectId(req.params.id)) {
-			res.status(400).json({ message: 'Invalid user ID' });
+			res.status(400).json({ errors: ['Invalid user ID'] });
 			return;
 		}
-		const user = await User.findById(req.params.id);
-		if (!user) {
-			res.status(404).json({ message: 'User not found' });
+		if (typeof req.body.location !== 'string' || !req.body.location) {
+			res.status(400).json({ errors: ['Invalid location value'] });
 			return;
 		}
-		if (typeof req.body.location !== 'string' || req.body.location === null) {
-			res.status(400).json({ message: 'Invalid location value' });
-			return;
-		}
-		const updatedUser = await User.findByIdAndUpdate(
-			req.params.id,
-			{
-				'placedAt.location': req.body.location
-			},
-			{ new: true }
-		);
-
+		const updatedUser = await User.findByIdAndUpdate(req.params.id, { 'placedAt.location': req.body.location }, { new: true });
 		if (!updatedUser) {
-			res.status(404).json({ message: 'User not found' });
+			res.status(404).json({ errors: ['User not found'] });
+			return;
+		}
+		logger.info(`Location updated for ${updatedUser.name}`);
+		res.status(200).json({ message: `Location of ${updatedUser.name} updated successfully` });
+	} catch (error: any) {
+		logger.error(`updateCompanyLocation: ${error.message}`);
+		res.status(500).json({ errors: ['Internal server error'] });
+	}
+};
+
+export const changePassword = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const authUser = (req as unknown as AuthRequest).user;
+		const { currentPassword, newPassword } = req.body;
+
+		if (!currentPassword || !newPassword) {
+			res.status(400).json({ errors: ['Current password and new password are required'] });
+			return;
+		}
+		if (!PASSWORD_REGEX.test(newPassword)) {
+			res.status(400).json({ errors: ['Password must be at least 6 characters with one uppercase, one lowercase, and one number'] });
 			return;
 		}
 
-		logger.info(`User company location updated: ${updatedUser.name}`);
-		res.status(200).json({
-			message: `Company location of ${updatedUser.name} updated Successfully`
-		});
+		const user = await User.findById(authUser._id);
+		if (!user) {
+			res.status(404).json({ errors: ['User not found'] });
+			return;
+		}
+
+		const match = await bcrypt.compare(currentPassword, user.password);
+		if (!match) {
+			logger.warn(`Failed password change attempt: ${user.email}`);
+			res.status(401).json({ errors: ['Current password is incorrect'] });
+			return;
+		}
+
+		user.password = await bcrypt.hash(newPassword, Number(process.env.JWT_SALT_ROUNDS));
+		await user.save();
+		logger.info(`Password changed for ${user.email}`);
+		res.status(200).json({ message: 'Password changed successfully' });
 	} catch (error: any) {
-		logger.error(error);
-		res.status(500).json({ message: 'Internal server error' });
+		logger.error(`changePassword: ${error.message}`);
+		res.status(500).json({ errors: ['Internal server error'] });
 	}
 };

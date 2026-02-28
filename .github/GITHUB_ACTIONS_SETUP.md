@@ -3,30 +3,36 @@
 ## Current Workflow Permissions Needed:
 
 ### 1. Repository Settings → Actions → General
+
 - ✅ **Allow all actions and reusable workflows**
 - ✅ **Allow actions created by GitHub**
 
 ### 2. Repository Settings → Actions → Workflow permissions
+
 - ✅ **Read and write permissions**
 - ✅ **Allow GitHub Actions to create and approve pull requests**
 
 ### 3. Branch Protection Rules (Recommended)
+
 Navigate to: Settings → Branches → Add rule
 
 **Rule configuration:**
+
 ```
 Branch name pattern: main
 ☑️ Require a pull request before merging
 ☑️ Require status checks to pass before merging
     - Select: CI/CD Pipeline
-    - Select: Security and Dependency Checks  
+    - Select: Security and Dependency Checks
     - Select: Code Quality & Linting
 ☑️ Require branches to be up to date before merging
 ☑️ Include administrators
 ```
 
 ### 4. Required Status Checks
+
 The following checks should pass before merging:
+
 - ✅ Frontend CI (Node 18.x, 20.x)
 - ✅ Backend CI (Node 18.x, 20.x)
 - ✅ Security Scan
@@ -36,6 +42,7 @@ The following checks should pass before merging:
 - ✅ CodeQL Analysis
 
 ### 5. Secrets Configuration Status
+
 ```
 Required Secrets:
 ✅ GITHUB_TOKEN (automatically provided)
@@ -49,6 +56,7 @@ Optional Secrets (for enhanced functionality):
 ## Quick Setup Commands:
 
 ### Enable Workflow Permissions via GitHub CLI:
+
 ```bash
 # Install GitHub CLI if not installed
 gh auth login
@@ -69,6 +77,7 @@ gh api repos/MCA-NITW/placemento/actions/permissions/workflow \
 ## Verification Steps:
 
 1. **Check Repository Settings**:
+
    ```
    https://github.com/MCA-NITW/placemento/settings/actions
    ```
@@ -87,19 +96,17 @@ gh api repos/MCA-NITW/placemento/actions/permissions/workflow \
 ## Troubleshooting:
 
 ### Common Issues:
-1. **"Resource not accessible by integration"**
-   → Enable "Read and write permissions" in Actions settings
 
-2. **"Bad credentials"**
-   → Check if GITHUB_TOKEN is properly referenced
+1. **"Resource not accessible by integration"** → Enable "Read and write permissions" in Actions settings
 
-3. **"API rate limit exceeded"**
-   → Use fine-grained token or wait for reset
+2. **"Bad credentials"** → Check if GITHUB_TOKEN is properly referenced
 
-4. **Workflow not triggering**
-   → Check branch protection rules and filters
+3. **"API rate limit exceeded"** → Use fine-grained token or wait for reset
+
+4. **Workflow not triggering** → Check branch protection rules and filters
 
 ### Debug Commands:
+
 ```bash
 # Check current permissions
 gh api repos/MCA-NITW/placemento/actions/permissions

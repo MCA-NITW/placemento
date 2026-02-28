@@ -1,9 +1,0 @@
-{
-	"github.copilot.enable": {
-		"plaintext": "true",
-		"markdown": "true",
-		"scminput": "true"
-	},
-	"githubPullRequests.notifications": "off",
-	"githubIssues.createIssueTriggers": ["TODO", "BUG", "FIXME", "ISSUE", "HACK"]
-}

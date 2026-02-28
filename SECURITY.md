@@ -4,27 +4,30 @@
 
 We actively maintain and provide security updates for the following versions of Placemento:
 
-| Version | Supported          | Status      |
-| ------- | ------------------ | ----------- |
-| 1.0.x   | :white_check_mark: | Current     |
-| 0.9.x   | :white_check_mark: | Previous    |
-| < 0.9   | :x:                | Deprecated  |
+| Version | Supported          | Status     |
+| ------- | ------------------ | ---------- |
+| 1.0.x   | :white_check_mark: | Current    |
+| 0.9.x   | :white_check_mark: | Previous   |
+| < 0.9   | :x:                | Deprecated |
 
 ## Security Features
 
 ### 🔐 Authentication & Authorization
+
 - **JWT-based Authentication**: Secure token-based user authentication
 - **Role-based Access Control**: Different permission levels for admins and students
 - **Password Hashing**: Bcrypt encryption for secure password storage
 - **Email OTP Verification**: Two-factor authentication for account security
 
 ### 🛡️ Data Protection
+
 - **Input Validation**: Comprehensive validation for all user inputs
 - **SQL Injection Prevention**: Mongoose ODM with parameterized queries
 - **XSS Protection**: Sanitized user inputs and secure rendering
 - **Rate Limiting**: API rate limiting to prevent abuse and DDoS attacks
 
 ### 🔒 Privacy & Compliance
+
 - **Data Encryption**: Sensitive data encrypted at rest and in transit
 - **Secure Headers**: HTTP security headers implementation
 - **CORS Policy**: Controlled cross-origin resource sharing
@@ -35,11 +38,13 @@ We actively maintain and provide security updates for the following versions of 
 We take security vulnerabilities seriously. If you discover a security issue in Placemento, please follow these steps:
 
 ### 📧 Contact Information
+
 - **Primary Contact**: Create an issue on [GitHub Issues](https://github.com/MCA-NITW/placemento/issues)
 - **For Sensitive Issues**: Email directly to the development team
 - **Response Time**: We aim to respond within 48 hours
 
 ### 🔍 What to Include
+
 When reporting a vulnerability, please provide:
 
 1. **Detailed Description**: Clear explanation of the vulnerability
@@ -83,11 +88,13 @@ We appreciate security researchers who help us maintain a secure platform:
 ## Known Security Considerations
 
 ### ⚠️ Current Limitations
+
 - This is an educational project developed by MCA students
 - Primarily designed for internal use within NIT Warangal
 - Regular security audits are recommended for production deployments
 
 ### 🎯 Planned Improvements
+
 - Enhanced encryption for sensitive student data
 - Advanced audit logging and monitoring
 - Integration with institutional authentication systems

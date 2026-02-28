@@ -8,9 +8,11 @@ export const getExperienceByTag = async (tag: string) => axiosInstance.get(`/exp
 
 export const getExperienceByUser = async (id: string) => axiosInstance.get(`/experiences/user/${id}`);
 
-export const addComment = async (id: string, commentData: Record<string, unknown>) => axiosInstance.post(`/experiences/comment/add/${id}`, commentData);
+export const addComment = async (id: string, commentData: Record<string, unknown>) =>
+	axiosInstance.post(`/experiences/comment/add/${id}`, commentData);
 
-export const updateExperience = async (id: string, experienceData: Record<string, unknown>) => axiosInstance.put(`/experiences/update/${id}`, experienceData);
+export const updateExperience = async (id: string, experienceData: Record<string, unknown>) =>
+	axiosInstance.put(`/experiences/update/${id}`, experienceData);
 
 export const deleteExperience = async (id: string) => axiosInstance.delete(`/experiences/delete/${id}`);
 

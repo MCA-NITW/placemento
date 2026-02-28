@@ -100,17 +100,17 @@ jobs:
       - name: Create release archive
         run: |
           echo "📦 Creating release archive..."
-          
+
           # Create release directory
           mkdir -p release/placemento-${{ steps.version.outputs.version }}
-          
+
           # Copy source code (excluding node_modules, build artifacts, etc.)
           rsync -av --exclude='node_modules' --exclude='.git' --exclude='client/build' --exclude='*.log' . release/placemento-${{ steps.version.outputs.version }}/
-          
+
           # Copy built frontend
           mkdir -p release/placemento-${{ steps.version.outputs.version }}/client/build
           cp -r client/build/* release/placemento-${{ steps.version.outputs.version }}/client/build/
-          
+
           # Create tarball
           cd release
           tar -czf placemento-${{ steps.version.outputs.version }}.tar.gz placemento-${{ steps.version.outputs.version }}
@@ -128,7 +128,7 @@ jobs:
             ${{ steps.changelog.outputs.changelog }}
 
             ### 📦 Installation
-            
+
             #### Option 1: Download and Extract
             1. Download the source code archive below
             2. Extract to your desired location

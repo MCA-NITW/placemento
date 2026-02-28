@@ -1,7 +1,7 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import Modal from '../src/components/Modal/Modal';
-import ToastContent from '../src/components/ToastContent/ToastContent';
+import Modal from '../src/components/Modal';
+import ToastContent from '../src/components/ToastContent';
 
 describe('Modal', () => {
 	beforeEach(() => {
@@ -15,31 +15,15 @@ describe('Modal', () => {
 		if (modalRoot) document.body.removeChild(modalRoot);
 	});
 
-	it('should render when isOpen is true', () => {
-		render(
-			<Modal
-				isOpen={true}
-				onClose={vi.fn()}
-				onConfirm={vi.fn()}
-				message="Are you sure?"
-				buttonTitle="Confirm"
-			/>
-		);
+	it('should render when open is true', () => {
+		render(<Modal open={true} onClose={vi.fn()} onConfirm={vi.fn()} message="Are you sure?" confirmText="Confirm" />);
 
 		expect(screen.getByText('Are you sure?')).toBeInTheDocument();
 		expect(screen.getByText('Confirm')).toBeInTheDocument();
 	});
 
-	it('should not render when isOpen is false', () => {
-		render(
-			<Modal
-				isOpen={false}
-				onClose={vi.fn()}
-				onConfirm={vi.fn()}
-				message="Are you sure?"
-				buttonTitle="Confirm"
-			/>
-		);
+	it('should not render when open is false', () => {
+		render(<Modal open={false} onClose={vi.fn()} onConfirm={vi.fn()} message="Are you sure?" confirmText="Confirm" />);
 
 		expect(screen.queryByText('Are you sure?')).not.toBeInTheDocument();
 	});
@@ -47,15 +31,7 @@ describe('Modal', () => {
 	it('should call onConfirm when confirm button is clicked', () => {
 		const onConfirm = vi.fn();
 
-		render(
-			<Modal
-				isOpen={true}
-				onClose={vi.fn()}
-				onConfirm={onConfirm}
-				message="Delete this?"
-				buttonTitle="Delete"
-			/>
-		);
+		render(<Modal open={true} onClose={vi.fn()} onConfirm={onConfirm} message="Delete this?" confirmText="Delete" />);
 
 		fireEvent.click(screen.getByText('Delete'));
 		expect(onConfirm).toHaveBeenCalledTimes(1);
@@ -64,15 +40,7 @@ describe('Modal', () => {
 	it('should call onClose when cancel button is clicked', () => {
 		const onClose = vi.fn();
 
-		render(
-			<Modal
-				isOpen={true}
-				onClose={onClose}
-				onConfirm={vi.fn()}
-				message="Delete this?"
-				buttonTitle="Delete"
-			/>
-		);
+		render(<Modal open={true} onClose={onClose} onConfirm={vi.fn()} message="Delete this?" confirmText="Delete" />);
 
 		fireEvent.click(screen.getByText('Cancel'));
 		expect(onClose).toHaveBeenCalledTimes(1);

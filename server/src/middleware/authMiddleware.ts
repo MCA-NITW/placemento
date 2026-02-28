@@ -1,60 +1,58 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import User from '../models/User';
-import { UserRole } from '../types';
+import { type AuthRequest, type UserRole } from '../types';
 import logger from '../utils/logger';
 
 interface JwtPayload {
 	id: string;
 	role: UserRole;
-	exp: number;
 }
 
 export const authenticateUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 	try {
 		const token = req.headers['authorization']?.split(' ')[1];
+		if (!token) {
+			res.status(401).json({ errors: ['Missing authorization token'] });
+			return;
+		}
 
-		if (!token) throw new Error('Invalid or missing Authorization header');
+		// jwt.verify already checks expiration — no manual check needed
 		const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
 
-		if (decoded.exp * 1000 < Date.now()) throw new Error('Token has expired');
+		const user = await User.findById(decoded.id);
+		if (!user) {
+			res.status(401).json({ errors: ['User not found'] });
+			return;
+		}
+		if (!user.isVerified) {
+			res.status(401).json({ errors: ['Account not verified. Contact admin.'] });
+			return;
+		}
 
-		const user = await User.findOne({ _id: decoded.id });
-
-		if (!user) throw new Error('User not found');
-		if (user.isVerified === false) throw new Error('User not verified');
-
-		(req as any).token = token;
-		(req as any).user = user;
-		logger.info(`User ${user.email} authenticated`);
+		(req as unknown as AuthRequest).token = token;
+		(req as unknown as AuthRequest).user = user;
 		next();
 	} catch (error: any) {
-		logger.error(error.message);
-		if (error.name === 'TokenExpiredError' || error.name === 'JsonWebTokenError') {
-			res.status(401).json({ message: 'Unauthorized: Invalid or expired token' });
+		if (error.name === 'TokenExpiredError') {
+			res.status(401).json({ errors: ['Token expired. Please sign in again.'] });
+		} else if (error.name === 'JsonWebTokenError') {
+			res.status(401).json({ errors: ['Invalid token'] });
 		} else {
-			res.status(401).json({ message: 'Unauthorized' });
+			logger.error(`Auth error: ${error.message}`);
+			res.status(401).json({ errors: ['Unauthorized'] });
 		}
 	}
 };
 
 export const checkUserRole = (allowedRoles: UserRole[]) => {
 	return (req: Request, res: Response, next: NextFunction): void => {
-		try {
-			const userRole = (req as any).user.role;
-
-			logger.info(`User ${(req as any).user.email} has role ${userRole}`);
-
-			if (allowedRoles.includes(userRole)) {
-				logger.info(`User ${(req as any).user.email} authorized`);
-				next();
-			} else {
-				logger.info(`User ${(req as any).user.email} forbidden`);
-				res.status(403).json({ message: 'Forbidden' });
-			}
-		} catch (error: any) {
-			logger.error(error.message);
-			res.status(500).json({ message: 'Internal server error' });
+		const user = (req as unknown as AuthRequest).user;
+		if (allowedRoles.includes(user.role)) {
+			next();
+		} else {
+			logger.warn(`Forbidden: ${user.email} (${user.role}) tried to access ${allowedRoles.join('/')}-only route`);
+			res.status(403).json({ errors: ['Forbidden: insufficient permissions'] });
 		}
 	};
 };

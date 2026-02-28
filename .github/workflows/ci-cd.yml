@@ -36,7 +36,7 @@ jobs:
       - name: Check for vulnerabilities
         run: |
           echo "🔍 Checking for security vulnerabilities..."
-          
+
           # Check production dependencies first (this should pass)
           echo "📊 Checking production dependencies..."
           if npm run audit:production; then
@@ -45,16 +45,16 @@ jobs:
             echo "❌ Critical vulnerabilities found in production dependencies!"
             exit 1
           fi
-          
+
           # Check all dependencies and handle known dev dependency issues
           echo "📊 Checking all dependencies for known issues..."
-          
+
           # Use set +e to prevent script exit on npm audit failure
           set +e
           AUDIT_OUTPUT=$(npm audit --audit-level=moderate 2>&1)
           AUDIT_EXIT_CODE=$?
           set -e
-          
+
           if [ $AUDIT_EXIT_CODE -eq 0 ]; then
             echo "✅ No vulnerabilities found in any dependencies"
           else
@@ -116,10 +116,7 @@ jobs:
         ports:
           - 27017:27017
         options: >-
-          --health-cmd "mongosh --eval 'db.adminCommand(\"ping\")'"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --health-cmd "mongosh --eval 'db.adminCommand(\"ping\")'" --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
       - name: Checkout repository

@@ -7,6 +7,7 @@ We welcome contributions to Placemento! This guide will help you understand how 
 ### For Organization Members
 
 1. **Create a feature branch** from `main`:
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
@@ -22,6 +23,7 @@ We welcome contributions to Placemento! This guide will help you understand how 
 1. **Fork the repository** to your GitHub account
 
 2. **Clone your fork** and create a feature branch:
+
    ```bash
    git clone https://github.com/your-username/placemento.git
    cd placemento
@@ -44,18 +46,19 @@ We welcome contributions to Placemento! This guide will help you understand how 
 ### Installation Steps
 
 1. **Clone the repository**:
+
    ```bash
    git clone https://github.com/MCA-NITW/placemento.git
    cd placemento
    ```
 
 2. **Install dependencies**:
+
    ```bash
    npm run install-deps
    ```
 
-3. **Set up environment variables**:
-   Create `.env` file in the server directory with required variables
+3. **Set up environment variables**: Create `.env` file in the server directory with required variables
 
 4. **Start development servers**:
    ```bash
@@ -67,11 +70,13 @@ We welcome contributions to Placemento! This guide will help you understand how 
 ### General Guidelines
 
 - **Code Formatting**: Use Prettier for consistent code formatting
+
   ```bash
   npm run format
   ```
 
 - **Commit Messages**: Write clear, descriptive commit messages
+
   ```
   feat: add student profile management
   fix: resolve authentication bug
@@ -90,23 +95,20 @@ We welcome contributions to Placemento! This guide will help you understand how 
 - **Props Validation**: Always use PropTypes for component props
 
 Example component structure:
+
 ```jsx
 import PropTypes from 'prop-types';
 import './ComponentName.css';
 
 const ComponentName = ({ prop1, prop2 }) => {
-  // Component logic here
-  
-  return (
-    <div className="component-name">
-      {/* JSX content */}
-    </div>
-  );
+	// Component logic here
+
+	return <div className="component-name">{/* JSX content */}</div>;
 };
 
 ComponentName.propTypes = {
-  prop1: PropTypes.string.isRequired,
-  prop2: PropTypes.number
+	prop1: PropTypes.string.isRequired,
+	prop2: PropTypes.number
 };
 
 export default ComponentName;
@@ -121,22 +123,23 @@ export default ComponentName;
 - **Logging**: Use Winston for structured logging
 
 Example API endpoint:
+
 ```javascript
 const methodName = async (req, res) => {
-  try {
-    // Validate inputs
-    const { error } = validateSchema(req.body);
-    if (error) return res.status(400).json({ message: error.details[0].message });
-    
-    // Business logic
-    const result = await Model.findOne({ _id: req.params.id });
-    
-    // Response
-    res.status(200).json({ data: result });
-  } catch (error) {
-    logger.error('Error in methodName:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
+	try {
+		// Validate inputs
+		const { error } = validateSchema(req.body);
+		if (error) return res.status(400).json({ message: error.details[0].message });
+
+		// Business logic
+		const result = await Model.findOne({ _id: req.params.id });
+
+		// Response
+		res.status(200).json({ data: result });
+	} catch (error) {
+		logger.error('Error in methodName:', error);
+		res.status(500).json({ message: 'Internal server error' });
+	}
 };
 ```
 
@@ -167,6 +170,7 @@ cd server && npm test
 ## 📁 Project Structure
 
 ### Frontend Structure
+
 ```
 client/src/
 ├── api/              # API service layer
@@ -177,6 +181,7 @@ client/src/
 ```
 
 ### Backend Structure
+
 ```
 server/
 ├── controllers/      # Route controllers

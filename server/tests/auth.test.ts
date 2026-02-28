@@ -86,9 +86,7 @@ describe('POST /auth/login', () => {
 		await request(app).post('/auth/signup').send(validUser);
 		await User.updateOne({ email: validUser.email }, { isVerified: true });
 
-		const res = await request(app)
-			.post('/auth/login')
-			.send({ email: validUser.email, password: validUser.password });
+		const res = await request(app).post('/auth/login').send({ email: validUser.email, password: validUser.password });
 
 		expect(res.status).toBe(200);
 		expect(res.body.data.token).toBeDefined();
@@ -104,9 +102,7 @@ describe('POST /auth/login', () => {
 	it('should reject unverified user', async () => {
 		await request(app).post('/auth/signup').send(validUser);
 
-		const res = await request(app)
-			.post('/auth/login')
-			.send({ email: validUser.email, password: validUser.password });
+		const res = await request(app).post('/auth/login').send({ email: validUser.email, password: validUser.password });
 
 		expect(res.status).toBe(401);
 	});
@@ -115,25 +111,19 @@ describe('POST /auth/login', () => {
 		await request(app).post('/auth/signup').send(validUser);
 		await User.updateOne({ email: validUser.email }, { isVerified: true });
 
-		const res = await request(app)
-			.post('/auth/login')
-			.send({ email: validUser.email, password: 'WrongPass1' });
+		const res = await request(app).post('/auth/login').send({ email: validUser.email, password: 'WrongPass1' });
 
 		expect(res.status).toBe(401);
 	});
 
 	it('should reject non-NITW email', async () => {
-		const res = await request(app)
-			.post('/auth/login')
-			.send({ email: 'test@gmail.com', password: 'Password1' });
+		const res = await request(app).post('/auth/login').send({ email: 'test@gmail.com', password: 'Password1' });
 
 		expect(res.status).toBe(400);
 	});
 
 	it('should return 404 for non-existent user', async () => {
-		const res = await request(app)
-			.post('/auth/login')
-			.send({ email: 'nobody@student.nitw.ac.in', password: 'Password1' });
+		const res = await request(app).post('/auth/login').send({ email: 'nobody@student.nitw.ac.in', password: 'Password1' });
 
 		expect(res.status).toBe(404);
 	});
@@ -147,23 +137,15 @@ describe('Authentication middleware', () => {
 	});
 
 	it('should reject request with invalid token', async () => {
-		const res = await request(app)
-			.get('/companies/view')
-			.set('Authorization', 'Bearer invalidtoken');
+		const res = await request(app).get('/companies/view').set('Authorization', 'Bearer invalidtoken');
 
 		expect(res.status).toBe(401);
 	});
 
 	it('should reject expired token', async () => {
-		const expiredToken = jwt.sign(
-			{ id: 'fakeid', role: 'student' },
-			process.env.JWT_SECRET!,
-			{ expiresIn: '-1s' }
-		);
+		const expiredToken = jwt.sign({ id: 'fakeid', role: 'student' }, process.env.JWT_SECRET!, { expiresIn: '-1s' });
 
-		const res = await request(app)
-			.get('/companies/view')
-			.set('Authorization', `Bearer ${expiredToken}`);
+		const res = await request(app).get('/companies/view').set('Authorization', `Bearer ${expiredToken}`);
 
 		expect(res.status).toBe(401);
 	});
@@ -174,6 +156,6 @@ describe('404 handler', () => {
 		const res = await request(app).get('/nonexistent-route');
 
 		expect(res.status).toBe(404);
-		expect(res.body.message).toBe('Route not found');
+		expect(res.body.errors).toContain('Route not found');
 	});
 });

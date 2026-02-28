@@ -95,19 +95,13 @@ export interface StudentDetails {
 	batch: number;
 }
 
-// Comment
-export interface ExperienceComment {
-	_id: string;
-	content: string;
-}
-
 // Experience
 export interface Experience {
 	_id: string;
 	companyName: string;
 	studentDetails: StudentDetails;
 	content: string;
-	Comments: ExperienceComment[];
+	Comments: string[];
 	tags: string[];
 	createdAt: string;
 	rating: number;

@@ -14,8 +14,7 @@ const validateFields = (user: Record<string, unknown>): string[] => {
 		{ field: 'email', message: 'Enter a valid NITW email.', regex: /@student\.nitw\.ac\.in$/ },
 		{
 			field: 'password',
-			message:
-				'Password must be at least 6 characters long and contain at least one uppercase, one lowercase, and one numeric character.',
+			message: 'Password must be at least 6 characters long and contain at least one uppercase, one lowercase, and one numeric character.',
 			regex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/
 		},
 		{ field: 'rollNo', message: 'Enter a valid roll number. (Eg: 21MCF1R01)', regex: /^\d{2}MCF1R\d{2,}$/ },

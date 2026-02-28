@@ -1,9 +1,9 @@
-import express from 'express';
+import express, { type Router } from 'express';
 import * as companyController from '../controllers/companyController';
 import { authenticateUser, checkUserRole } from '../middleware/authMiddleware';
 import limiter from '../utils/limiter';
 
-const router = express.Router();
+const router: Router = express.Router();
 
 router.post('/add', authenticateUser, checkUserRole(['admin', 'placementCoordinator']), limiter, companyController.postAddCompany);
 router.put('/update/:id', authenticateUser, checkUserRole(['admin', 'placementCoordinator']), limiter, companyController.putUpdateCompany);

@@ -1,6 +1,7 @@
 # Placemento Backend Server
 
-A robust Node.js backend API server for the Placemento placement management system. Built with Express.js, MongoDB, and comprehensive authentication features.
+A robust Node.js backend API server for the Placemento placement management system. Built with Express.js, MongoDB, and comprehensive authentication
+features.
 
 ## 🚀 Features
 
@@ -28,32 +29,34 @@ Before running the server, ensure you have:
 ## 🛠️ Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd placemento/server
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
-3. **Environment Configuration**
-   Create a `.env` file in the server directory:
+3. **Environment Configuration** Create a `.env` file in the server directory:
+
    ```env
    # Database Configuration
    DB_CONNECTION_STRING=mongodb+srv://<username>:<password>@cluster.mongodb.net/placemento
    LOCAL_DB_CONNECTION_STRING=mongodb://localhost:27017/placemento
-   
+
    # JWT Configuration
    JWT_SECRET=your_super_secure_jwt_secret_key_here
    JWT_EXPIRES_IN=24h
-   
+
    # Email Configuration
    EMAIL_USER=your-email@gmail.com
    EMAIL_PASS=your-app-password
    EMAIL_SERVICE=gmail
-   
+
    # Server Configuration
    PORT=5000
    NODE_ENV=development
@@ -68,18 +71,23 @@ Before running the server, ensure you have:
 ## 🚀 Running the Server
 
 ### Development Mode
+
 ```bash
 npm run dev
 ```
+
 Starts the server with nodemon for automatic restarts on file changes.
 
 ### Production Mode
+
 ```bash
 npm start
 ```
+
 Starts the server in production mode.
 
 ### Available Scripts
+
 - `npm run dev` - Development server with hot reload
 - `npm start` - Production server
 - `npm run seed` - Seed database with initial data
@@ -122,6 +130,7 @@ server/
 ## 🔌 API Endpoints
 
 ### Authentication Routes (`/auth`)
+
 - `POST /auth/register` - User registration
 - `POST /auth/login` - User login
 - `POST /auth/logout` - User logout
@@ -130,12 +139,14 @@ server/
 - `POST /auth/verify-otp` - OTP verification
 
 ### User Routes (`/users`)
+
 - `GET /users` - Get all users (Admin only)
 - `GET /users/profile` - Get user profile
 - `PUT /users/profile` - Update user profile
 - `DELETE /users/:id` - Delete user (Admin only)
 
 ### Company Routes (`/companies`)
+
 - `GET /companies` - Get all companies
 - `POST /companies` - Create new company
 - `GET /companies/:id` - Get company by ID
@@ -143,6 +154,7 @@ server/
 - `DELETE /companies/:id` - Delete company
 
 ### Experience Routes (`/experiences`)
+
 - `GET /experiences` - Get all experiences
 - `POST /experiences` - Create new experience
 - `GET /experiences/:id` - Get experience by ID
@@ -150,17 +162,20 @@ server/
 - `DELETE /experiences/:id` - Delete experience
 
 ### Statistics Routes (`/stats`)
+
 - `GET /stats/overview` - Get placement overview statistics
 - `GET /stats/companies` - Get company-wise statistics
 - `GET /stats/students` - Get student statistics
 - `GET /stats/trends` - Get placement trends
 
 ### Utility Routes
+
 - `GET /token-check` - Verify JWT token validity
 
 ## 🗄️ Database Models
 
 ### User Model
+
 ```javascript
 {
   name: String,
@@ -180,6 +195,7 @@ server/
 ```
 
 ### Company Model
+
 ```javascript
 {
   name: String,
@@ -204,6 +220,7 @@ server/
 ```
 
 ### Experience Model
+
 ```javascript
 {
   author: ObjectId (User),
@@ -219,6 +236,7 @@ server/
 ```
 
 ### OTP Model
+
 ```javascript
 {
   email: String,
@@ -232,16 +250,19 @@ server/
 ## 🔐 Authentication & Security
 
 ### JWT Authentication
+
 - Tokens expire in 24 hours by default
 - Middleware validates tokens on protected routes
 - Refresh token mechanism available
 
 ### Password Security
+
 - bcrypt hashing with salt rounds
 - Password strength validation
 - Secure password reset flow
 
 ### API Security
+
 - CORS enabled for cross-origin requests
 - Rate limiting to prevent abuse
 - Input validation and sanitization
@@ -250,6 +271,7 @@ server/
 ## 📧 Email Service
 
 The server includes email functionality for:
+
 - User registration confirmation
 - Password reset links
 - OTP verification
@@ -260,6 +282,7 @@ Configure your email service in the `.env` file.
 ## 📊 Logging
 
 Winston logging system captures:
+
 - Server startup and shutdown
 - Database connections
 - API requests and responses
@@ -267,17 +290,20 @@ Winston logging system captures:
 - Performance metrics
 
 Logs are written to:
+
 - `combined.log` - All log levels
 - Console output in development
 
 ## 🔧 Database Configuration
 
 ### MongoDB Atlas (Primary)
+
 - Cloud-hosted MongoDB service
 - Automatic scaling and backups
 - Global cluster distribution
 
 ### Local MongoDB (Fallback)
+
 - Local development database
 - Automatic fallback if Atlas fails
 - Connection retry logic
@@ -285,6 +311,7 @@ Logs are written to:
 ## 🚦 Rate Limiting
 
 API endpoints are protected with rate limiting:
+
 - Default: 100 requests per 15 minutes
 - Configurable per endpoint
 - IP-based tracking
@@ -292,20 +319,25 @@ API endpoints are protected with rate limiting:
 ## 🧪 Testing
 
 ### Statistics Testing
+
 ```bash
 npm run test:stats
 ```
+
 Runs comprehensive tests for the statistics system.
 
 ### Database Seeding
+
 ```bash
 npm run seed
 ```
+
 Populates the database with sample data for development.
 
 ## 🐛 Error Handling
 
 Comprehensive error handling includes:
+
 - Centralized error middleware
 - Structured error responses
 - Logging of all errors
@@ -314,6 +346,7 @@ Comprehensive error handling includes:
 ## 📈 Performance
 
 Optimizations include:
+
 - Database connection pooling
 - Efficient query design
 - Response caching strategies
@@ -328,6 +361,7 @@ Optimizations include:
 5. Submit a pull request
 
 ### Coding Standards
+
 - Use consistent indentation
 - Follow ESLint configuration
 - Write descriptive commit messages
@@ -336,20 +370,21 @@ Optimizations include:
 
 ## 📝 Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `PORT` | Server port | 5000 |
-| `DB_CONNECTION_STRING` | MongoDB Atlas URI | - |
-| `LOCAL_DB_CONNECTION_STRING` | Local MongoDB URI | - |
-| `JWT_SECRET` | JWT signing secret | - |
-| `JWT_EXPIRES_IN` | Token expiration | 24h |
-| `EMAIL_USER` | Email service user | - |
-| `EMAIL_PASS` | Email service password | - |
-| `NODE_ENV` | Environment mode | development |
+| Variable                     | Description            | Default     |
+| ---------------------------- | ---------------------- | ----------- |
+| `PORT`                       | Server port            | 5000        |
+| `DB_CONNECTION_STRING`       | MongoDB Atlas URI      | -           |
+| `LOCAL_DB_CONNECTION_STRING` | Local MongoDB URI      | -           |
+| `JWT_SECRET`                 | JWT signing secret     | -           |
+| `JWT_EXPIRES_IN`             | Token expiration       | 24h         |
+| `EMAIL_USER`                 | Email service user     | -           |
+| `EMAIL_PASS`                 | Email service password | -           |
+| `NODE_ENV`                   | Environment mode       | development |
 
 ## 🐳 Docker Support
 
 Create a `Dockerfile` for containerization:
+
 ```dockerfile
 FROM node:16-alpine
 WORKDIR /app
@@ -363,25 +398,27 @@ CMD ["npm", "start"]
 ## 📋 API Response Format
 
 ### Success Response
+
 ```json
 {
-  "success": true,
-  "data": {
-    // Response data
-  },
-  "message": "Operation successful"
+	"success": true,
+	"data": {
+		// Response data
+	},
+	"message": "Operation successful"
 }
 ```
 
 ### Error Response
+
 ```json
 {
-  "success": false,
-  "error": {
-    "message": "Error description",
-    "code": "ERROR_CODE",
-    "details": {}
-  }
+	"success": false,
+	"error": {
+		"message": "Error description",
+		"code": "ERROR_CODE",
+		"details": {}
+	}
 }
 ```
 
@@ -395,6 +432,7 @@ CMD ["npm", "start"]
 ## 📊 Statistics System
 
 The stats system provides:
+
 - Placement overview metrics
 - Company-wise analytics
 - Student performance data
@@ -413,6 +451,7 @@ The stats system provides:
 ## 📞 Support
 
 For backend-related issues:
+
 1. Check server logs in `combined.log`
 2. Verify environment configuration
 3. Test database connectivity
