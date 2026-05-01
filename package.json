@@ -17,7 +17,7 @@
 	},
 	"author": "Sagar Gupta",
 	"license": "GPL-3.0",
-	"packageManager": "pnpm@10.30.3",
+	"packageManager": "pnpm@10.33.2",
 	"pnpm": {
 		"overrides": {
 			"rollup@>=4.0.0 <4.59.0": ">=4.59.0",
