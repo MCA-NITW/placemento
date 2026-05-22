@@ -12,6 +12,42 @@ jobs:
     uses: mca-nitw/.github/.github/workflows/node-ci.yml@main
     with:
       node-version: '22.x'
+      run-tests: false # Tests need MongoDB service; use dedicated job below
+
+  test:
+    name: Test (with MongoDB)
+    runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo:7.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.adminCommand(\"ping\")'" --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: pnpm/action-setup@ac6db6d3c1f721f886538a378a2d73e85697340a # v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22.x'
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Run server tests
+        run: pnpm --filter server test
+        env:
+          NODE_ENV: test
+          LOCAL_DB_CONNECTION_STRING: mongodb://localhost:27017/placemento_test
+          JWT_SECRET: test_secret_key
+          EMAIL_USER: test@example.com
+          EMAIL_PASS: test_password
+
+      - name: Run client tests
+        continue-on-error: true # jsdom@28 + undici@8 module resolution bug
+        run: pnpm --filter client test
 
   format:
     name: Format Check
