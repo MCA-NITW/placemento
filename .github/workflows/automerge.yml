@@ -19,14 +19,16 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Setup GitHub CLI
-        run: |
-          # Ensure gh is authenticated
-          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+        env:
+          # Use env var directly — gh auto-reads GH_TOKEN. Avoids expanding the
+          # secret into a shell command (Sonar/CodeQL recommendation).
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh auth status
 
       - name: Merge and Delete Renovate Branch
         if: ${{ github.event.inputs.mergeNow == 'true' || github.event_name == 'schedule' }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Get all open pull requests from Renovate
           PR_LIST=$(gh pr list --state open --json number,headRefName,statusCheckRollup --jq '.[] | select(.headRefName | startswith("renovate/")) | select(.statusCheckRollup | length == 0 or (.statusCheckRollup | all(.state == "SUCCESS"))) | .number')

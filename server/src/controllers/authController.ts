@@ -10,6 +10,11 @@ import validateUser from '../utils/validateUser';
 
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
 
+// Coerce request body fields to primitive strings before they flow into
+// Mongoose queries. Blocks NoSQL operator-injection payloads like
+// { email: { $gt: "" } } that would otherwise bypass User.findOne / etc.
+const toSafeString = (value: unknown): string => (value === undefined || value === null ? '' : String(value));
+
 const transporter = nodemailer.createTransport({
 	service: 'gmail',
 	auth: {
@@ -21,8 +26,23 @@ const transporter = nodemailer.createTransport({
 
 export const postSignup = async (req: Request, res: Response): Promise<void> => {
 	try {
-		const { name, email, password, rollNo, pg, ug, hsc, ssc, totalGapInAcademics, backlogs } = req.body;
-		const user: Record<string, unknown> = { name, email, password, rollNo, pg, ug, hsc, ssc, totalGapInAcademics, backlogs };
+		const name = toSafeString(req.body.name).trim();
+		const email = toSafeString(req.body.email).trim().toLowerCase();
+		const password = toSafeString(req.body.password);
+		const rollNo = toSafeString(req.body.rollNo).trim();
+		const { pg, ug, hsc, ssc, totalGapInAcademics, backlogs } = req.body;
+		const user: Record<string, unknown> = {
+			name,
+			email,
+			password,
+			rollNo,
+			pg,
+			ug,
+			hsc,
+			ssc,
+			totalGapInAcademics,
+			backlogs
+		};
 
 		const validationError = validateUser(user);
 		if (validationError.length > 0) {
@@ -30,7 +50,7 @@ export const postSignup = async (req: Request, res: Response): Promise<void> => 
 			return;
 		}
 
-		const admissionYear = 2000 + Number.parseInt((rollNo as string).slice(0, 2), 10);
+		const admissionYear = 2000 + Number.parseInt(rollNo.slice(0, 2), 10);
 		user.batch = admissionYear + 3;
 
 		const existingUser = await User.findOne({ $or: [{ email }, { rollNo }] });
@@ -54,7 +74,8 @@ export const postSignup = async (req: Request, res: Response): Promise<void> => 
 
 export const postLogin = async (req: Request, res: Response): Promise<void> => {
 	try {
-		const { email, password } = req.body;
+		const email = toSafeString(req.body.email).trim().toLowerCase();
+		const password = toSafeString(req.body.password);
 
 		if (!email || !password) {
 			res.status(400).json({ errors: ['Email and password are required'] });
@@ -94,7 +115,7 @@ export const postLogin = async (req: Request, res: Response): Promise<void> => {
 
 export const postVerifyEmail = async (req: Request, res: Response): Promise<void> => {
 	try {
-		const { email } = req.body;
+		const email = toSafeString(req.body.email).trim().toLowerCase();
 
 		if (!email) {
 			res.status(400).json({ errors: ['Email is required'] });
@@ -137,7 +158,8 @@ export const postVerifyEmail = async (req: Request, res: Response): Promise<void
 
 export const postVerifyOTP = async (req: Request, res: Response): Promise<void> => {
 	try {
-		const { email, otp } = req.body;
+		const email = toSafeString(req.body.email).trim().toLowerCase();
+		const otp = toSafeString(req.body.otp);
 
 		if (!email || !otp) {
 			res.status(400).json({ errors: ['Email and OTP are required'] });
@@ -169,7 +191,7 @@ export const postVerifyOTP = async (req: Request, res: Response): Promise<void> 
 		}
 
 		// Compare hashed OTP
-		const match = await bcrypt.compare(String(otp), existingOtp.otp);
+		const match = await bcrypt.compare(otp, existingOtp.otp);
 		if (!match) {
 			logger.warn(`Invalid OTP attempt for ${email}`);
 			res.status(401).json({ errors: ['Incorrect OTP'] });
@@ -187,7 +209,10 @@ export const postVerifyOTP = async (req: Request, res: Response): Promise<void> 
 
 export const postResetPassword = async (req: Request, res: Response): Promise<void> => {
 	try {
-		const { email, otp, newPassword } = req.body;
+		const email = toSafeString(req.body.email).trim().toLowerCase();
+		const otp = toSafeString(req.body.otp);
+		const newPassword = toSafeString(req.body.newPassword);
+
 		if (!email || !newPassword) {
 			res.status(400).json({ errors: ['Email and new password are required'] });
 			return;
@@ -224,7 +249,7 @@ export const postResetPassword = async (req: Request, res: Response): Promise<vo
 			return;
 		}
 
-		const match = await bcrypt.compare(String(otp), existing.otp);
+		const match = await bcrypt.compare(otp, existing.otp);
 		if (!match) {
 			logger.warn(`Invalid OTP in password reset for ${email}`);
 			res.status(401).json({ errors: ['Incorrect OTP'] });
