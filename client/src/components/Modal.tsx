@@ -46,8 +46,22 @@ const Modal = ({ open, onClose, onConfirm, title, message, confirmText = 'Confir
 	if (!root) return null;
 
 	return ReactDOM.createPortal(
-		<div style={overlay} onClick={onClose}>
-			<div style={card} onClick={(e) => e.stopPropagation()}>
+		<div
+			role="presentation"
+			style={overlay}
+			onClick={onClose}
+			onKeyDown={(e) => {
+				if (e.key === 'Escape') onClose();
+			}}
+		>
+			<div
+				role="dialog"
+				aria-modal="true"
+				aria-label={title || 'Confirmation'}
+				style={card}
+				onClick={(e) => e.stopPropagation()}
+				onKeyDown={(e) => e.stopPropagation()}
+			>
 				{title && <h3 style={{ color: 'var(--primary)', marginBottom: '.75rem', fontSize: '1.1rem' }}>{title}</h3>}
 				<p style={{ color: 'var(--text)', marginBottom: '1.25rem', lineHeight: 1.5, fontSize: '.95rem' }}>{message}</p>
 				{children && <div style={{ marginBottom: '1rem' }}>{children}</div>}

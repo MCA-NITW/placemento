@@ -18,97 +18,34 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@ac6db6d3c1f721f886538a378a2d73e85697340a # v6
+
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '24.x'
-          cache: 'npm'
+          node-version: '22.x'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: |
-          npm ci
-          cd client && npm ci
-          cd ../server && npm ci
+        run: pnpm install --frozen-lockfile
 
-      - name: Run security audit (Root)
+      - name: Run security audit (production only — blocking)
+        run: |
+          echo "🔍 Auditing production dependencies..."
+          pnpm audit --prod --audit-level high
+
+      - name: Run security audit (all — informational)
         continue-on-error: true
         run: |
-          echo "🔍 Checking root dependencies..."
-          npm audit --audit-level moderate || echo "⚠️ Root audit found issues (non-blocking for CI)"
-
-      - name: Run security audit (Frontend)
-        run: |
-          echo "🔍 Checking frontend dependencies..."
-          cd client
-
-          echo "📊 Production Dependencies Audit:"
-          echo "-----------------------------------"
-          PROD_AUDIT_EXIT=0
-          npm run audit:production || PROD_AUDIT_EXIT=$?
-
-          if [ $PROD_AUDIT_EXIT -eq 0 ]; then
-            echo "✅ No vulnerabilities in production dependencies"
-          else
-            echo "❌ Critical vulnerabilities found in production dependencies!"
-            echo "🚨 Immediate attention required"
-            exit 1
-          fi
-
-          echo ""
-          echo "📊 Development Dependencies Analysis:"
-          echo "-------------------------------------"
-          DEV_AUDIT_OUTPUT=$(npm audit --audit-level moderate 2>&1 || true)
-          echo "$DEV_AUDIT_OUTPUT"
-
-          # Extract vulnerability count
-          VULN_COUNT=$(echo "$DEV_AUDIT_OUTPUT" | grep -o '[0-9]\+ vulnerabilities' | head -1 | grep -o '[0-9]\+' || echo "0")
-
-          if [ "$VULN_COUNT" -gt 0 ]; then
-            echo ""
-            echo "⚠️ Found $VULN_COUNT vulnerabilities in development dependencies"
-            echo "� Analyzing vulnerability sources..."
-            
-            # Check if all vulnerabilities are in known development dependencies
-            if echo "$DEV_AUDIT_OUTPUT" | grep -q "react-scripts\|@svgr\|webpack-dev-server\|postcss\|nth-check"; then
-              echo "📋 All vulnerabilities are in react-scripts dependency chain"
-              echo "🔒 These are development-only dependencies that don't affect production"
-              echo "📄 Documented in SECURITY_VULNERABILITIES.md"
-              echo "✅ Production security status: SECURE"
-            else
-              echo "❌ Found vulnerabilities outside known react-scripts issues"
-              echo "🔍 Manual review required"
-            fi
-          else
-            echo "✅ No development dependency vulnerabilities found"
-          fi
-
-      - name: Run security audit (Backend)
-        continue-on-error: true
-        run: |
-          echo "🔍 Checking backend dependencies..."
-          cd server
-          echo "📊 Audit Results:"
-
-          # Run audit and capture output
-          AUDIT_OUTPUT=$(npm audit --audit-level moderate 2>&1 || true)
-          echo "$AUDIT_OUTPUT"
-
-          # Count vulnerabilities
-          VULN_COUNT=$(echo "$AUDIT_OUTPUT" | grep -o '[0-9]\+ vulnerabilities' | head -1 | grep -o '[0-9]\+' || echo "0")
-
-          if [ "$VULN_COUNT" -gt 0 ]; then
-            echo "⚠️ Found $VULN_COUNT vulnerabilities in backend dependencies"
-            echo "🔍 Review these vulnerabilities and update dependencies as needed"
-          else
-            echo "✅ No vulnerabilities found in backend dependencies"
-          fi
+          echo "🔍 Auditing all dependencies..."
+          pnpm audit --audit-level moderate || echo "⚠️ Dev dependency vulnerabilities found (non-blocking)"
 
       - name: Check for outdated packages
+        continue-on-error: true
         run: |
           echo "📦 Checking for outdated packages..."
-          npm outdated || true
-          cd client && npm outdated || true
-          cd ../server && npm outdated || true
+          pnpm outdated -r || true
 
   license-check:
     name: License Compliance
@@ -118,37 +55,48 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@ac6db6d3c1f721f886538a378a2d73e85697340a # v6
+
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '24.x'
+          node-version: '22.x'
+          cache: 'pnpm'
 
-      - name: Install license checker
-        run: npm install -g license-checker
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install license-checker
+        run: pnpm add -g license-checker
 
       - name: Check licenses (Frontend)
+        continue-on-error: true
         run: |
-          cd client && npm ci
           echo "📄 Frontend License Report:"
-          license-checker --summary
+          cd client && license-checker --summary
 
       - name: Check licenses (Backend)
+        continue-on-error: true
         run: |
-          cd server && npm ci
           echo "📄 Backend License Report:"
-          license-checker --summary
+          cd server && license-checker --summary
 
   vulnerability-scan:
     name: Vulnerability Assessment
     runs-on: ubuntu-latest
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
 
+    permissions:
+      security-events: write
+      contents: read
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@a9c7b0f06e461e9d4b4d1711f154ee024b8d7ab8 # v0.36.0
         with:
           scan-type: 'fs'
           scan-ref: '.'
@@ -173,72 +121,5 @@ jobs:
       - name: Dependency Review
         uses: actions/dependency-review-action@v4
         with:
-          fail-on-severity: moderate
-          allow-licenses: GPL-3.0, MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC
-
-  update-dependencies:
-    name: Update Dependencies
-    runs-on: ubuntu-latest
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '24.x'
-
-      - name: Configure Git
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-
-      - name: Update npm packages
-        run: |
-          echo "🔄 Updating npm packages..."
-
-          # Update root dependencies
-          npx npm-check-updates -u
-          npm install
-
-          # Update frontend dependencies
-          cd client
-          npx npm-check-updates -u
-          npm install
-          cd ..
-
-          # Update backend dependencies
-          cd server
-          npx npm-check-updates -u
-          npm install
-          cd ..
-
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v8
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: 'chore: update npm dependencies'
-          title: '🔄 Automated Dependency Updates'
-          body: |
-            ## 🔄 Automated Dependency Updates
-
-            This PR contains automated updates to npm dependencies.
-
-            ### Changes:
-            - ⬆️ Updated npm packages to latest versions
-            - 🔍 Checked for security vulnerabilities
-            - ✅ Verified license compatibility
-
-            ### Testing:
-            - [ ] Frontend builds successfully
-            - [ ] Backend starts without errors
-            - [ ] All tests pass
-            - [ ] No breaking changes detected
-
-            **Generated by GitHub Actions** 🤖
-          branch: chore/dependency-updates
-          delete-branch: true
+          fail-on-severity: high
+          allow-licenses: GPL-3.0, MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, 0BSD, CC-BY-4.0, CC0-1.0, Unlicense

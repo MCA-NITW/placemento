@@ -263,7 +263,15 @@ const Experience = () => {
 				{filtered.map((exp) => (
 					<div
 						key={exp._id}
+						role="button"
+						tabIndex={0}
 						onClick={() => setViewExp(exp)}
+						onKeyDown={(e) => {
+							if (e.key === 'Enter' || e.key === ' ') {
+								e.preventDefault();
+								setViewExp(exp);
+							}
+						}}
 						className="glass"
 						style={{ padding: '1.1rem', cursor: 'pointer', transition: 'all .15s' }}
 						onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'var(--primary)')}

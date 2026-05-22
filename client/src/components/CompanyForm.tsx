@@ -97,6 +97,7 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData: d, isAdd }: Com
 
 	return (
 		<div
+			role="presentation"
 			style={{
 				position: 'fixed',
 				inset: 0,
@@ -108,10 +109,14 @@ const CompanyForm = ({ actionFunc, handleFormClose, initialData: d, isAdd }: Com
 				zIndex: 100
 			}}
 			onClick={() => handleFormClose(false)}
+			onKeyDown={(e) => {
+				if (e.key === 'Escape') handleFormClose(false);
+			}}
 		>
 			<form
 				onSubmit={submit}
 				onClick={(e) => e.stopPropagation()}
+				onKeyDown={(e) => e.stopPropagation()}
 				style={{
 					background: 'var(--bg2)',
 					border: '1px solid var(--border)',
