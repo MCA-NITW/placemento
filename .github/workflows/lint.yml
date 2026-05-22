@@ -28,7 +28,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Check Prettier formatting
-        run: pnpm run format -- --check
+        run: pnpm exec prettier --check .
 
   build-frontend:
     name: Frontend Build Check
