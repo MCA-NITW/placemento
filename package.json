@@ -32,7 +32,9 @@
 			"esbuild": ">=0.28.1",
 			"ip-address@<=10.1.0": ">=10.1.1"
 		},
-		"ignoredOptionalDependencies": ["lightningcss"]
+		"ignoredOptionalDependencies": [
+			"lightningcss"
+		]
 	},
 	"devDependencies": {
 		"concurrently": "^9.2.0",
