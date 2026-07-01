@@ -8,7 +8,13 @@ const router: Router = express.Router();
 router.post('/add', authenticateUser, checkUserRole(['admin', 'placementCoordinator', 'student']), limiter, experienceController.postAddExperience);
 router.get('/view', authenticateUser, checkUserRole(['admin', 'placementCoordinator', 'student']), experienceController.getAllExperience);
 router.get('/view/:tag', authenticateUser, checkUserRole(['admin', 'placementCoordinator', 'student']), experienceController.getExperienceByTag);
-router.get('/user/:id', authenticateUser, checkUserRole(['admin', 'placementCoordinator', 'student']), experienceController.getExperienceByUser);
+router.get(
+	'/user/:id',
+	authenticateUser,
+	checkUserRole(['admin', 'placementCoordinator', 'student']),
+	limiter,
+	experienceController.getExperienceByUser
+);
 router.post(
 	'/comment/add/:id',
 	authenticateUser,

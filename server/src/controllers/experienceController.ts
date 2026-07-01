@@ -71,11 +71,11 @@ export const getExperienceByTag = async (req: Request, res: Response): Promise<v
 
 export const getExperienceByUser = async (req: Request, res: Response): Promise<void> => {
 	try {
-		if (!ROLL_NO_REGEX.test(String(req.params.userId))) {
+		if (!ROLL_NO_REGEX.test(String(req.params.id))) {
 			res.status(400).json({ errors: ['Invalid roll number format'] });
 			return;
 		}
-		const experiences = await Experience.find({ 'studentDetails.rollNo': req.params.userId }).sort({ createdAt: -1 }).lean();
+		const experiences = await Experience.find({ 'studentDetails.rollNo': req.params.id }).sort({ createdAt: -1 }).lean();
 		res.status(200).json({ experiences });
 	} catch (error: any) {
 		logger.error(`getExperienceByUser: ${error.message}`);

@@ -208,7 +208,7 @@ const Experience = () => {
 	const onAddComment = async (id: string) => {
 		if (!comment.trim()) return;
 		try {
-			await addComment(id, comment);
+			await addComment(id, { comment });
 			setComment('');
 			toast.success(<ToastContent res="Added" messages={['Comment posted']} />);
 			setViewExp(null);
