@@ -1,6 +1,7 @@
 # CLAUDE.md
 
 > This file stacks on top of the workspace root at `C:\Code\GitHub\`:
+>
 > - Root [`CLAUDE.md`](../../CLAUDE.md) -- voice, rules, routing map, references, skills, slash commands, conventions.
 > - Root [`MEMORY.md`](../../MEMORY.md) -- live facts across repos.
 > - Root [`STATUS.md`](../../STATUS.md) -- live PR/CI/security dashboard.
@@ -10,7 +11,8 @@
 
 ## Project
 
-Placement management portal for MCA students at NIT Warangal (MCA-NITW org repo): student profiles, company tracking, placement stats, interview experience sharing.
+Placement management portal for MCA students at NIT Warangal (MCA-NITW org repo): student profiles, company tracking, placement stats, interview
+experience sharing.
 
 No hosted deployment; distributed as versioned GitHub Releases on `v*.*.*` tags.
 
@@ -59,7 +61,9 @@ pnpm --filter client test     # jsdom + testing-library
 - Client tests are `continue-on-error` in CI (jsdom@28 + undici@8 module resolution bug). Green CI does not prove client tests pass.
 - Vite builds to `client/build`, but `release.yml` verifies `client/dist` -- release validation fails until one side is aligned.
 - Root `package.json` carries a large `pnpm.overrides` block of security pins. Do not strip it when editing scripts.
-- Server env vars (names only): `DB_CONNECTION_STRING`, `JWT_SECRET`, `JWT_SALT_ROUNDS` (required at startup); `LOCAL_DB_CONNECTION_STRING` (local fallback), `EMAIL_ID`, `EMAIL_PASSWORD` (Nodemailer). CI sets test values inline in `ci.yml` (`.env.ci` at root is not read by any workflow); never commit real values.
+- Server env vars (names only): `DB_CONNECTION_STRING`, `JWT_SECRET`, `JWT_SALT_ROUNDS` (required at startup); `LOCAL_DB_CONNECTION_STRING` (local
+  fallback), `EMAIL_ID`, `EMAIL_PASSWORD` (Nodemailer). CI sets test values inline in `ci.yml` (`.env.ci` at root is not read by any workflow); never
+  commit real values.
 
 ## Routes / Pages
 
