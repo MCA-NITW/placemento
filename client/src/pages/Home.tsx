@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FiArrowRight } from 'react-icons/fi';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { getCompanyStats, getCtcStats, getStudentStats } from '../api/statsApi';
 
 const g = 'glass';

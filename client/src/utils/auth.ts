@@ -2,7 +2,7 @@
 // localStorage is vulnerable to XSS attacks — any script on the page can read it.
 // For production use, consider httpOnly cookies set by the server, which are
 // not accessible to JavaScript and provide better protection against token theft.
-import { redirect } from 'react-router-dom';
+import { redirect } from 'react-router';
 import { checkToken } from '../api/tokenCheckApi';
 
 const verifyToken = async (token: string) => {

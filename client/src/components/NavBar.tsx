@@ -6,7 +6,7 @@ import { GiStarSwirl } from 'react-icons/gi';
 import { GoOrganization } from 'react-icons/go';
 import { PiSignOutBold } from 'react-icons/pi';
 import { RiTeamFill } from 'react-icons/ri';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router';
 import { checkToken } from '../api/tokenCheckApi';
 import Modal from './Modal';
 

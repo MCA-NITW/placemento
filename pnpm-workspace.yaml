@@ -1,3 +1,27 @@
 packages:
   - client
   - server
+
+# bcrypt builds a native binding, mongodb-memory-server downloads the mongod
+# binary the server tests need, and esbuild fetches its platform binary.
+allowBuilds:
+  bcrypt: true
+  esbuild: true
+  mongodb-memory-server: true
+
+# pnpm 11 no longer reads the "pnpm" field in package.json, so the security pins
+# and the lightningcss exclusion live here instead.
+ignoredOptionalDependencies:
+  - lightningcss
+
+overrides:
+  'rollup@>=4.0.0 <4.59.0': '>=4.59.0'
+  'picomatch@>=4.0.0 <4.0.4': '>=4.0.4'
+  'path-to-regexp@>=8.0.0 <8.4.0': '>=8.4.0'
+  'undici@>=7.0.0 <7.24.0': '>=7.24.0'
+  'lodash@>=4.0.0 <=4.17.23': '>=4.18.0'
+  'shell-quote@<=1.8.4': '>=1.8.5'
+  'qs@>=6.11.1 <=6.15.1': '>=6.15.2'
+  'postcss@<8.5.10': '>=8.5.10'
+  esbuild: '>=0.28.1'
+  'ip-address@<=10.1.0': '>=10.1.1'
