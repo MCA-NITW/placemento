@@ -1,6 +1,6 @@
 import { type FormEvent, useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router';
 import { toast } from 'react-toastify';
 import { signin, signup } from '../api/authApi';
 import type { ApiError } from '../types';
