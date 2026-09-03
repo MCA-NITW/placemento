@@ -1,6 +1,6 @@
 {
 	"name": "placemento",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "MCA Placement Portal",
 	"scripts": {
 		"dev": "concurrently \"pnpm run server\" \"pnpm run client\"",
