@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.0.2] - 2026-09-03
+
+### Security
+
+- Bump transitive qs to 6.16.0 (alerts #172, #173: array-limit bypass, isBuffer DoS).
+
 ## [3.0.1] - 2026-09-03
 
 - Security: bump transitive dependencies via pnpm overrides to resolve all 10 open Dependabot alerts
