@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.0.1] - 2026-09-03
+
+- Security: bump transitive dependencies via pnpm overrides to resolve all 10 open Dependabot alerts
+  - nanoid 3.3.16 -> 3.3.18 (GHSA alert #171, high)
+  - postcss 8.5.22 -> 8.5.26 (alert #170, medium)
+  - ip-address 10.2.0 -> 10.7.0 (alerts #161, #162, #168)
+  - undici 7.28.0 -> 7.29.0 (alerts #163-#167), kept on 7.x for jsdom compatibility
+
 ## [3.0.0] - 2026-02-28
 
 - Full-stack rewrite: pnpm monorepo with React 19 + TypeScript frontend, Express backend
