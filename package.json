@@ -17,7 +17,7 @@
 	},
 	"author": "Sagar Gupta",
 	"license": "GPL-3.0",
-	"packageManager": "pnpm@11.25.0",
+	"packageManager": "pnpm@12.3.4",
 	"devDependencies": {
 		"concurrently": "^10.0.0",
 		"prettier": "^3.1.1",
