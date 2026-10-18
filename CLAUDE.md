@@ -32,6 +32,9 @@ pnpm install
 pnpm dev                      # server (tsx watch, :5000) + client (vite, :3000) concurrently
 pnpm build                    # client production build -> client/build
 pnpm --filter server build    # tsc -> server/dist
+pnpm demo                     # API on in-memory Mongo + seeded demo data, plus client; logins in server/src/seed/demoData.ts
+docker compose up -d          # local Mongo single-node replica set (rs0) on :27017 (MONGO_PORT to change)
+pnpm seed [--reset]           # load demo data into DB_CONNECTION_STRING; refuses if users exist unless --reset
 ```
 
 ## Test
@@ -58,6 +61,10 @@ pnpm --filter client test     # jsdom + testing-library
 
 ## Gotchas
 
+- README screenshots in `docs/screenshots/` come from `pnpm demo` (fake data). Recapture them when the demo dataset or the UI changes.
+- Auth endpoints must not reveal whether an email is registered: login answers `401 Invalid email or password` for both unknown email and wrong
+  password; keep new auth responses uniform too. Wrap user-supplied values in `sanitizeForLog()` when logging.
+- `globalLimiter` (app.ts) runs before every route; set `TRUST_PROXY` behind a proxy or all clients share one bucket.
 - Do not re-add a Vite dev proxy for API paths: `/stats` and `/companies` are also client routes, and proxying them breaks refresh.
 - Client is not typechecked by `vite build`; run `pnpm --filter client exec tsc --noEmit -p .` after type changes.
 - `pnpm-workspace.yaml` carries the `overrides` block of security pins and the `allowBuilds` list. Do not strip it.

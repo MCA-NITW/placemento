@@ -1,5 +1,28 @@
 # Changelog
 
+## [3.1.0] - 2026-10-18
+
+### Added
+
+- `pnpm demo`: runs the API on an in-memory MongoDB replica set seeded with a fake batch (60 students, 20 companies, 6 interview experiences) plus the
+  Vite client. Demo logins for each role, password `Demo@1234`. No Atlas, Docker, Gmail or `.env` needed.
+- `pnpm seed`: loads the same deterministic demo dataset into `DB_CONNECTION_STRING`. Refuses to touch a database that already has users unless
+  `--reset` is passed.
+- `docker-compose.yml`: local MongoDB as a single-node replica set (needed for the placement transaction), initiated by its healthcheck.
+- README screenshots (desktop and 390 px phone) captured from `pnpm demo`, a data-model diagram, and setup docs for the demo, Docker and seed paths.
+- `TRUST_PROXY` env var so rate limits key on the client IP behind a reverse proxy.
+- Server tests for the demo data (logins work, placements match company selections and cutoffs) and for account-enumeration resistance: 35 to 44.
+
+### Security
+
+- App-wide rate limiter (300 requests per 5 minutes per IP) mounted before routing and `authenticateUser`, so the per-request user lookup and the read
+  and stats routes are throttled too.
+- Login returns one `401 Invalid email or password` for an unknown email and a wrong password, with the same bcrypt cost on both paths. "Account not
+  verified" is only shown after the password matches.
+- `/auth/verify-email` answers the same for registered and unknown emails; `/auth/verify-otp` and `/auth/reset-password` no longer return
+  `404 User not found` before the OTP is checked.
+- CR and LF are stripped from user-supplied values (emails, names, company names) before they are logged, which blocks forged log lines.
+
 ## [3.0.3] - 2026-10-18
 
 ### Fixed
