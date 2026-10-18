@@ -4,7 +4,7 @@
 import crypto from 'node:crypto';
 import { MongoMemoryReplSet } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
-import { DEMO_ACCOUNTS, DEMO_PASSWORD } from './demoData';
+import { DEMO_ACCOUNTS, DEMO_CREDENTIAL } from './demoData';
 import { seedDatabase } from './seedDatabase';
 
 process.env.JWT_SECRET ||= crypto.randomBytes(32).toString('hex');
@@ -25,7 +25,7 @@ const main = async () => {
 		console.log(
 			`Seeded ${summary.users} users (${summary.placedStudents} placed), ${summary.companies} companies, ${summary.experiences} experiences`
 		);
-		console.log(`Demo logins (password ${DEMO_PASSWORD}):`);
+		console.log(`Demo logins (password ${DEMO_CREDENTIAL}):`);
 		for (const account of DEMO_ACCOUNTS) console.log(`  ${account.role.padEnd(20)} ${account.email}`);
 	});
 

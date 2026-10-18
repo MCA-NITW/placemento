@@ -3,7 +3,7 @@
 // placement data. A fixed PRNG seed makes every run produce the same records,
 // so screenshots and demo logins stay stable.
 
-export const DEMO_PASSWORD = 'Demo@1234';
+export const DEMO_CREDENTIAL = 'Demo@1234';
 export const DEMO_BATCH_PREFIX = '23'; // roll numbers 23MCF1R01..; batch = 2000 + 23 + 3 = 2026
 
 export const DEMO_ACCOUNTS = [

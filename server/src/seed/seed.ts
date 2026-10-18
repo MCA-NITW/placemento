@@ -4,7 +4,7 @@
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import User from '../models/User';
-import { DEMO_ACCOUNTS, DEMO_PASSWORD } from './demoData';
+import { DEMO_ACCOUNTS, DEMO_CREDENTIAL } from './demoData';
 import { seedDatabase } from './seedDatabase';
 
 dotenv.config();
@@ -27,7 +27,7 @@ const main = async () => {
 	console.log(
 		`Seeded ${summary.users} users (${summary.verifiedUsers} verified, ${summary.placedStudents} placed), ${summary.companies} companies, ${summary.experiences} experiences`
 	);
-	console.log(`Demo logins (password ${DEMO_PASSWORD}):`);
+	console.log(`Demo logins (password ${DEMO_CREDENTIAL}):`);
 	for (const account of DEMO_ACCOUNTS) console.log(`  ${account.role.padEnd(20)} ${account.email}`);
 };
 

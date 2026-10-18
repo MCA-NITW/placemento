@@ -3,7 +3,7 @@ import Company from '../models/Company';
 import Experience from '../models/Experience';
 import Otp from '../models/Otp';
 import User from '../models/User';
-import { buildDemoData, DEMO_PASSWORD } from './demoData';
+import { buildDemoData, DEMO_CREDENTIAL } from './demoData';
 
 export interface SeedSummary {
 	users: number;
@@ -18,7 +18,7 @@ export interface SeedSummary {
 export const seedDatabase = async (): Promise<SeedSummary> => {
 	const { users, companies, experiences } = buildDemoData();
 	const rounds = Number(process.env.JWT_SALT_ROUNDS) || 10;
-	const password = await bcrypt.hash(DEMO_PASSWORD, rounds);
+	const password = await bcrypt.hash(DEMO_CREDENTIAL, rounds);
 
 	await Promise.all([User.deleteMany({}), Company.deleteMany({}), Experience.deleteMany({}), Otp.deleteMany({})]);
 

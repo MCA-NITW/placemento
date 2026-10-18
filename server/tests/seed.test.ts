@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import app from '../src/app';
 import Company from '../src/models/Company';
 import User from '../src/models/User';
-import { buildDemoData, DEMO_ACCOUNTS, DEMO_PASSWORD } from '../src/seed/demoData';
+import { buildDemoData, DEMO_ACCOUNTS, DEMO_CREDENTIAL } from '../src/seed/demoData';
 import { seedDatabase } from '../src/seed/seedDatabase';
 import validateUser from '../src/utils/validateUser';
 
@@ -14,7 +14,7 @@ describe('demo dataset', () => {
 
 	it('passes the signup validator for every user', () => {
 		for (const user of buildDemoData().users) {
-			expect(validateUser({ ...user, password: DEMO_PASSWORD })).toEqual([]);
+			expect(validateUser({ ...user, password: DEMO_CREDENTIAL })).toEqual([]);
 		}
 	});
 
@@ -29,7 +29,7 @@ describe('seedDatabase', () => {
 	it('lets every demo account sign in', async () => {
 		await seedDatabase();
 		for (const account of DEMO_ACCOUNTS) {
-			const res = await request(app).post('/auth/login').send({ email: account.email, password: DEMO_PASSWORD });
+			const res = await request(app).post('/auth/login').send({ email: account.email, password: DEMO_CREDENTIAL });
 			expect(res.status).toBe(200);
 			expect(res.body.data.token).toBeDefined();
 		}
@@ -40,7 +40,7 @@ describe('seedDatabase', () => {
 		const companies = await Company.find().lean();
 		const placed = await User.find({ placed: true }).lean();
 
-		expect(placed.length).toBe(summary.placedStudents);
+		expect(placed).toHaveLength(summary.placedStudents);
 		expect(placed.length).toBeGreaterThan(0);
 		for (const student of placed) {
 			const company = companies.find((c) => String(c._id) === student.placedAt.companyId);
