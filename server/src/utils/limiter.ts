@@ -14,6 +14,16 @@ const limiter = rateLimit({
 	legacyHeaders: false
 });
 
+// App-wide limiter, mounted before routing and authentication so every request
+// (including the DB lookup in authenticateUser) is throttled: 300 per 5 minutes per IP
+export const globalLimiter = rateLimit({
+	windowMs: 5 * 60 * 1000,
+	max: isTest ? testMax : 300,
+	standardHeaders: true,
+	legacyHeaders: false,
+	message: { errors: ['Too many requests. Please slow down.'] }
+});
+
 // Strict limiter for login/signup: 10 requests per 15 minutes
 export const authLimiter = rateLimit({
 	windowMs: 15 * 60 * 1000,

@@ -1,9 +1,11 @@
 {
 	"name": "placemento",
-	"version": "3.0.3",
+	"version": "3.1.0",
 	"description": "MCA Placement Portal",
 	"scripts": {
 		"dev": "concurrently \"pnpm run server\" \"pnpm run client\"",
+		"demo": "concurrently -n api,web \"pnpm --filter server demo\" \"pnpm --filter client dev\"",
+		"seed": "pnpm --filter server seed",
 		"server": "pnpm --filter server dev",
 		"client": "pnpm --filter client dev",
 		"build": "pnpm --filter client build",

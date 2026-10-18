@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import User from '../models/User';
 import { type AuthRequest, type UserRole } from '../types';
-import logger from '../utils/logger';
+import logger, { sanitizeForLog } from '../utils/logger';
 
 interface JwtPayload {
 	id: string;
@@ -51,7 +51,7 @@ export const checkUserRole = (allowedRoles: UserRole[]) => {
 		if (allowedRoles.includes(user.role)) {
 			next();
 		} else {
-			logger.warn(`Forbidden: ${user.email} (${user.role}) tried to access ${allowedRoles.join('/')}-only route`);
+			logger.warn(`Forbidden: ${sanitizeForLog(user.email)} (${user.role}) tried to access ${allowedRoles.join('/')}-only route`);
 			res.status(403).json({ errors: ['Forbidden: insufficient permissions'] });
 		}
 	};

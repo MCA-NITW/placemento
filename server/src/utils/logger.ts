@@ -27,4 +27,8 @@ const logger = winston.createLogger({
 	]
 });
 
+// Strip CR/LF from user-supplied values before logging them, so a crafted
+// email or name cannot forge extra log lines (log injection)
+export const sanitizeForLog = (value: unknown): string => String(value).replace(/[\r\n]+/g, ' ');
+
 export default logger;
