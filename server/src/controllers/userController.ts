@@ -4,7 +4,7 @@ import mongoose, { isValidObjectId } from 'mongoose';
 import Company from '../models/Company';
 import User from '../models/User';
 import { type AuthRequest } from '../types';
-import logger from '../utils/logger';
+import logger, { sanitizeForLog } from '../utils/logger';
 
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
 
@@ -133,7 +133,7 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
 			return;
 		}
 
-		logger.info(`User updated: ${updatedUser.name}`);
+		logger.info(`User updated: ${sanitizeForLog(updatedUser.name)}`);
 		res.status(200).json(sanitizeUser(updatedUser));
 	} catch (error: any) {
 		logger.error(`updateUser: ${error.message}`);
@@ -160,7 +160,7 @@ export const verify = async (req: Request, res: Response): Promise<void> => {
 		}
 
 		const updatedUser = await User.findByIdAndUpdate(req.params.id, { isVerified: !user.isVerified }, { returnDocument: 'after' });
-		logger.info(`User ${updatedUser!.isVerified ? 'verified' : 'unverified'}: ${updatedUser!.name}`);
+		logger.info(`User ${updatedUser!.isVerified ? 'verified' : 'unverified'}: ${sanitizeForLog(updatedUser!.name)}`);
 		res.status(200).json({ message: `${updatedUser!.name} ${updatedUser!.isVerified ? 'verified' : 'unverified'} successfully` });
 	} catch (error: any) {
 		logger.error(`verify: ${error.message}`);
@@ -188,7 +188,7 @@ export const updateRole = async (req: Request, res: Response): Promise<void> => 
 			res.status(404).json({ errors: ['User not found'] });
 			return;
 		}
-		logger.info(`Role updated for ${updatedUser.name} to ${updatedUser.role}`);
+		logger.info(`Role updated for ${sanitizeForLog(updatedUser.name)} to ${updatedUser.role}`);
 		res.status(200).json({ message: `Role of ${updatedUser.name} updated successfully` });
 	} catch (error: any) {
 		logger.error(`updateRole: ${error.message}`);
@@ -212,7 +212,7 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
 			res.status(404).json({ errors: ['User not found'] });
 			return;
 		}
-		logger.info(`User deleted: ${deletedUser.name}`);
+		logger.info(`User deleted: ${sanitizeForLog(deletedUser.name)}`);
 		res.status(200).json({ message: `${deletedUser.name} deleted successfully` });
 	} catch (error: any) {
 		logger.error(`deleteUser: ${error.message}`);
@@ -288,7 +288,7 @@ export const updateCompany = async (req: Request, res: Response): Promise<void> 
 		);
 
 		await session.commitTransaction();
-		logger.info(`Company updated for ${updatedUser?.name}`);
+		logger.info(`Company updated for ${sanitizeForLog(updatedUser?.name)}`);
 		res.status(200).json({ message: `Company of ${updatedUser?.name} updated successfully` });
 	} catch (error: any) {
 		await session.abortTransaction();
@@ -319,7 +319,7 @@ export const updateCompanyLocation = async (req: Request, res: Response): Promis
 			res.status(404).json({ errors: ['User not found'] });
 			return;
 		}
-		logger.info(`Location updated for ${updatedUser.name}`);
+		logger.info(`Location updated for ${sanitizeForLog(updatedUser.name)}`);
 		res.status(200).json({ message: `Location of ${updatedUser.name} updated successfully` });
 	} catch (error: any) {
 		logger.error(`updateCompanyLocation: ${error.message}`);
@@ -349,14 +349,14 @@ export const changePassword = async (req: Request, res: Response): Promise<void>
 
 		const match = await bcrypt.compare(currentPassword, user.password);
 		if (!match) {
-			logger.warn(`Failed password change attempt: ${user.email}`);
+			logger.warn(`Failed password change attempt: ${sanitizeForLog(user.email)}`);
 			res.status(401).json({ errors: ['Current password is incorrect'] });
 			return;
 		}
 
 		user.password = await bcrypt.hash(newPassword, Number(process.env.JWT_SALT_ROUNDS));
 		await user.save();
-		logger.info(`Password changed for ${user.email}`);
+		logger.info(`Password changed for ${sanitizeForLog(user.email)}`);
 		res.status(200).json({ message: 'Password changed successfully' });
 	} catch (error: any) {
 		logger.error(`changePassword: ${error.message}`);

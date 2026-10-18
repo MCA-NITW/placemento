@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { isValidObjectId } from 'mongoose';
 import Experience from '../models/Experience';
 import { type AuthRequest } from '../types';
-import logger from '../utils/logger';
+import logger, { sanitizeForLog } from '../utils/logger';
 
 const ROLL_NO_REGEX = /^\d{2}MCF1R\d{2,}$/;
 
@@ -41,7 +41,7 @@ export const postAddExperience = async (req: Request, res: Response): Promise<vo
 		};
 		const experience = new Experience(newExperience);
 		const savedExperience = await experience.save();
-		logger.info(`Experience added: ${experience.companyName} by ${user.rollNo}`);
+		logger.info(`Experience added: ${sanitizeForLog(experience.companyName)} by ${sanitizeForLog(user.rollNo)}`);
 		res.status(201).json({ savedExperience, message: 'Experience added successfully' });
 	} catch (error: any) {
 		logger.error(`postAddExperience: ${error.message}`);
@@ -100,7 +100,7 @@ export const postAddComment = async (req: Request, res: Response): Promise<void>
 		}
 		experience.Comments.push(req.body.comment.trim());
 		const savedExperience = await experience.save();
-		logger.info(`Comment added to: ${experience.companyName}`);
+		logger.info(`Comment added to: ${sanitizeForLog(experience.companyName)}`);
 		res.status(200).json({ savedExperience, message: 'Comment added successfully' });
 	} catch (error: any) {
 		logger.error(`postAddComment: ${error.message}`);
@@ -137,7 +137,7 @@ export const updateExperience = async (req: Request, res: Response): Promise<voi
 		if (req.body.tips !== undefined) experience.tips = req.body.tips;
 		if (req.body.difficulty !== undefined) experience.difficulty = req.body.difficulty;
 		const savedExperience = await experience.save();
-		logger.info(`Experience updated: ${savedExperience.companyName}`);
+		logger.info(`Experience updated: ${sanitizeForLog(savedExperience.companyName)}`);
 		res.status(200).json({ savedExperience, message: 'Experience updated successfully' });
 	} catch (error: any) {
 		logger.error(`updateExperience: ${error.message}`);
@@ -162,7 +162,7 @@ export const deleteExperience = async (req: Request, res: Response): Promise<voi
 			return;
 		}
 		await Experience.findByIdAndDelete(req.params.id);
-		logger.info(`Experience deleted: ${experience.companyName}`);
+		logger.info(`Experience deleted: ${sanitizeForLog(experience.companyName)}`);
 		res.status(200).json({ message: 'Experience deleted successfully' });
 	} catch (error: any) {
 		logger.error(`deleteExperience: ${error.message}`);
@@ -194,7 +194,7 @@ export const deleteComment = async (req: Request, res: Response): Promise<void> 
 		}
 		experience.Comments.splice(commentIndex, 1);
 		const savedExperience = await experience.save();
-		logger.info(`Comment deleted from: ${experience.companyName}`);
+		logger.info(`Comment deleted from: ${sanitizeForLog(experience.companyName)}`);
 		res.status(200).json({ savedExperience, message: 'Comment deleted successfully' });
 	} catch (error: any) {
 		logger.error(`deleteComment: ${error.message}`);

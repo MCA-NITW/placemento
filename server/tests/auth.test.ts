@@ -3,7 +3,9 @@ import jwt from 'jsonwebtoken';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 import app from '../src/app';
+import Otp from '../src/models/Otp';
 import User from '../src/models/User';
+import { sanitizeForLog } from '../src/utils/logger';
 
 const validUser = {
 	name: 'Test User',
@@ -122,10 +124,50 @@ describe('POST /auth/login', () => {
 		expect(res.status).toBe(400);
 	});
 
-	it('should return 404 for non-existent user', async () => {
-		const res = await request(app).post('/auth/login').send({ email: 'nobody@student.nitw.ac.in', password: 'Password1' });
+	it('should answer an unknown email exactly like a wrong password', async () => {
+		await request(app).post('/auth/signup').send(validUser);
+		await User.updateOne({ email: validUser.email }, { isVerified: true });
 
-		expect(res.status).toBe(404);
+		const unknown = await request(app).post('/auth/login').send({ email: 'nobody@student.nitw.ac.in', password: 'Password1' });
+		const wrong = await request(app).post('/auth/login').send({ email: validUser.email, password: 'WrongPass1' });
+
+		expect(unknown.status).toBe(401);
+		expect(unknown.body).toEqual(wrong.body);
+	});
+
+	it('should not reveal verification status without the right password', async () => {
+		await request(app).post('/auth/signup').send(validUser);
+
+		const res = await request(app).post('/auth/login').send({ email: validUser.email, password: 'WrongPass1' });
+
+		expect(res.status).toBe(401);
+		expect(res.body.errors).toEqual(['Invalid email or password']);
+	});
+});
+
+describe('OTP endpoints do not enumerate accounts', () => {
+	it('verify-email answers 200 for an unknown email without creating an OTP', async () => {
+		const res = await request(app).post('/auth/verify-email').send({ email: 'nobody@student.nitw.ac.in' });
+
+		expect(res.status).toBe(200);
+		expect(await Otp.countDocuments()).toBe(0);
+	});
+
+	it('verify-otp and reset-password treat an unknown email as "no OTP"', async () => {
+		const verify = await request(app).post('/auth/verify-otp').send({ email: 'nobody@student.nitw.ac.in', otp: '123456' });
+		const reset = await request(app)
+			.post('/auth/reset-password')
+			.send({ email: 'nobody@student.nitw.ac.in', otp: '123456', newPassword: 'NewPass1' });
+
+		expect(verify.status).toBe(400);
+		expect(reset.status).toBe(400);
+		expect(verify.body.errors).toEqual(reset.body.errors);
+	});
+});
+
+describe('sanitizeForLog', () => {
+	it('strips CR and LF so a value cannot forge a log line', () => {
+		expect(sanitizeForLog('evil@student.nitw.ac.in\r\n2026-01-01 [INFO] User logged in: admin')).not.toMatch(/[\r\n]/);
 	});
 });
 

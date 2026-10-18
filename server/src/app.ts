@@ -8,9 +8,14 @@ import companyRoutes from './routes/companyRoutes';
 import experienceRoutes from './routes/experienceRoutes';
 import statsRoutes from './routes/statsRoutes';
 import userRoutes from './routes/userRoutes';
+import { globalLimiter } from './utils/limiter';
 import logger from './utils/logger';
 
 const app: Express = express();
+
+// Behind a reverse proxy (Render, Railway, nginx) set TRUST_PROXY to the hop count,
+// otherwise every client shares the proxy's IP and its rate-limit bucket
+if (process.env.TRUST_PROXY) app.set('trust proxy', Number(process.env.TRUST_PROXY));
 
 // Security
 app.use(helmet());
@@ -32,6 +37,9 @@ app.get('/health', (_req: Request, res: Response) => {
 		timestamp: new Date().toISOString()
 	});
 });
+
+// Throttle everything below this line before any route or auth middleware runs
+app.use(globalLimiter);
 
 // API v1 routes
 const v1: Router = express.Router();

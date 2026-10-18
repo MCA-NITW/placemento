@@ -5,10 +5,15 @@ import crypto from 'node:crypto';
 import nodemailer from 'nodemailer';
 import Otp from '../models/Otp';
 import User from '../models/User';
-import logger from '../utils/logger';
+import logger, { sanitizeForLog } from '../utils/logger';
 import validateUser from '../utils/validateUser';
 
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
+
+const INVALID_CREDENTIALS = 'Invalid email or password';
+const OTP_SENT = 'If an account exists for this email, an OTP has been sent to it';
+// Compared against when the email is unknown, so both paths cost one bcrypt check
+const DUMMY_HASH = bcrypt.hashSync('placemento-no-such-user', 10);
 
 // Coerce request body fields to primitive strings before they flow into
 // Mongoose queries. Blocks NoSQL operator-injection payloads like
@@ -55,7 +60,7 @@ export const postSignup = async (req: Request, res: Response): Promise<void> => 
 
 		const existingUser = await User.findOne({ $or: [{ email }, { rollNo }] });
 		if (existingUser) {
-			logger.warn(`Duplicate signup attempt: ${email}`);
+			logger.warn(`Duplicate signup attempt: ${sanitizeForLog(email)}`);
 			res.status(400).json({ errors: ['User with the same email or roll number already exists'] });
 			return;
 		}
@@ -64,7 +69,7 @@ export const postSignup = async (req: Request, res: Response): Promise<void> => 
 		user.password = hashedPassword;
 
 		await new User(user).save();
-		logger.info(`New user created: ${email}`);
+		logger.info(`New user created: ${sanitizeForLog(email)}`);
 		res.status(201).json({ messages: ['Account created. Contact admin to verify your account before signing in.'] });
 	} catch (error: any) {
 		logger.error(`Signup error: ${error.message}`);
@@ -86,10 +91,14 @@ export const postLogin = async (req: Request, res: Response): Promise<void> => {
 			return;
 		}
 
+		// Unknown email and wrong password get the same status, message and bcrypt
+		// cost, so the endpoint does not reveal which NITW emails are registered.
+		// Verification status is only disclosed to someone who knows the password.
 		const user = await User.findOne({ email });
-		if (!user) {
-			logger.warn(`Login attempt for non-existent user: ${email}`);
-			res.status(404).json({ errors: ['User not found'] });
+		const passwordMatch = await bcrypt.compare(password, user?.password ?? DUMMY_HASH);
+		if (!user || !passwordMatch) {
+			logger.warn(`Failed login attempt: ${sanitizeForLog(email)}`);
+			res.status(401).json({ errors: [INVALID_CREDENTIALS] });
 			return;
 		}
 		if (!user.isVerified) {
@@ -97,15 +106,8 @@ export const postLogin = async (req: Request, res: Response): Promise<void> => {
 			return;
 		}
 
-		const passwordMatch = await bcrypt.compare(password, user.password);
-		if (!passwordMatch) {
-			logger.warn(`Failed login attempt: ${email}`);
-			res.status(401).json({ errors: ['Incorrect password'] });
-			return;
-		}
-
 		const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET!, { expiresIn: '7d' });
-		logger.info(`User logged in: ${email}`);
+		logger.info(`User logged in: ${sanitizeForLog(email)}`);
 		res.json({ data: { token }, messages: ['Login successful'] });
 	} catch (error: any) {
 		logger.error(`Login error: ${error.message}`);
@@ -126,9 +128,10 @@ export const postVerifyEmail = async (req: Request, res: Response): Promise<void
 			return;
 		}
 
+		// Same response whether or not the account exists (no user enumeration)
 		const user = await User.findOne({ email });
 		if (!user) {
-			res.status(404).json({ errors: ['User not found'] });
+			res.status(200).json({ messages: [OTP_SENT] });
 			return;
 		}
 
@@ -140,7 +143,7 @@ export const postVerifyEmail = async (req: Request, res: Response): Promise<void
 		const hashedOtp = await bcrypt.hash(String(otp), 8);
 		await new Otp({ email, otp: hashedOtp }).save();
 
-		logger.info(`OTP generated for ${email}`);
+		logger.info(`OTP generated for ${sanitizeForLog(email)}`);
 
 		await transporter.sendMail({
 			from: 'NITW Placement Portal',
@@ -148,8 +151,8 @@ export const postVerifyEmail = async (req: Request, res: Response): Promise<void
 			subject: 'OTP for Verification',
 			text: `Your OTP is: ${otp}\n\nUse it to verify your account within 10 minutes.`
 		});
-		logger.info(`Verification email sent to ${email}`);
-		res.status(200).json({ messages: [`OTP sent to ${email}`] });
+		logger.info(`Verification email sent to ${sanitizeForLog(email)}`);
+		res.status(200).json({ messages: [OTP_SENT] });
 	} catch (error: any) {
 		logger.error(`Verify email error: ${error.message}`);
 		res.status(500).json({ errors: ['Internal server error'] });
@@ -170,12 +173,8 @@ export const postVerifyOTP = async (req: Request, res: Response): Promise<void> 
 			return;
 		}
 
-		const user = await User.findOne({ email });
-		if (!user) {
-			res.status(404).json({ errors: ['User not found'] });
-			return;
-		}
-
+		// No user lookup: OTPs are only issued to registered emails, so an unknown
+		// email gets the same "No OTP" answer as a registered one without a request
 		const existingOtp = await Otp.findOne({ email });
 		if (!existingOtp) {
 			res.status(400).json({ errors: ['No OTP generated. Request a new one.'] });
@@ -193,14 +192,14 @@ export const postVerifyOTP = async (req: Request, res: Response): Promise<void> 
 		// Compare hashed OTP
 		const match = await bcrypt.compare(otp, existingOtp.otp);
 		if (!match) {
-			logger.warn(`Invalid OTP attempt for ${email}`);
+			logger.warn(`Invalid OTP attempt for ${sanitizeForLog(email)}`);
 			res.status(401).json({ errors: ['Incorrect OTP'] });
 			return;
 		}
 
 		// Keep the OTP: the forgot-password flow verifies it here, then sends it
 		// again to /reset-password, which consumes it. It still expires after 10 minutes.
-		logger.info(`Email verified: ${email}`);
+		logger.info(`Email verified: ${sanitizeForLog(email)}`);
 		res.status(200).json({ messages: ['Email verified successfully'] });
 	} catch (error: any) {
 		logger.error(`Verify OTP error: ${error.message}`);
@@ -230,12 +229,6 @@ export const postResetPassword = async (req: Request, res: Response): Promise<vo
 			return;
 		}
 
-		const user = await User.findOne({ email });
-		if (!user) {
-			res.status(404).json({ errors: ['User not found'] });
-			return;
-		}
-
 		const existing = await Otp.findOne({ email });
 		if (!existing) {
 			res.status(400).json({ errors: ['No OTP generated. Request a new one.'] });
@@ -252,8 +245,15 @@ export const postResetPassword = async (req: Request, res: Response): Promise<vo
 
 		const match = await bcrypt.compare(otp, existing.otp);
 		if (!match) {
-			logger.warn(`Invalid OTP in password reset for ${email}`);
+			logger.warn(`Invalid OTP in password reset for ${sanitizeForLog(email)}`);
 			res.status(401).json({ errors: ['Incorrect OTP'] });
+			return;
+		}
+
+		// Looked up only after the OTP checks out, so this 404 cannot be used to probe emails
+		const user = await User.findOne({ email });
+		if (!user) {
+			res.status(404).json({ errors: ['User not found'] });
 			return;
 		}
 
@@ -261,7 +261,7 @@ export const postResetPassword = async (req: Request, res: Response): Promise<vo
 		await user.save();
 		await Otp.deleteMany({ email });
 
-		logger.info(`Password reset for ${email}`);
+		logger.info(`Password reset for ${sanitizeForLog(email)}`);
 		res.status(200).json({ messages: ['Password reset successfully'] });
 	} catch (error: any) {
 		logger.error(`Reset password error: ${error.message}`);

@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import mongoose, { isValidObjectId } from 'mongoose';
 import Company from '../models/Company';
 import User from '../models/User';
-import logger from '../utils/logger';
+import logger, { sanitizeForLog } from '../utils/logger';
 
 const validateFields = (company: any): string[] => {
 	const errors: string[] = [];
@@ -56,7 +56,7 @@ export const postAddCompany = async (req: Request, res: Response): Promise<void>
 			return;
 		}
 		const savedCompany = await newCompany.save();
-		logger.info(`Company added: ${savedCompany.name}`);
+		logger.info(`Company added: ${sanitizeForLog(savedCompany.name)}`);
 		res.status(201).json(savedCompany);
 	} catch (error: any) {
 		logger.error(`postAddCompany: ${error.message}`);
@@ -90,7 +90,7 @@ export const putUpdateCompany = async (req: Request, res: Response): Promise<voi
 			res.status(404).json({ errors: ['Company not found'] });
 			return;
 		}
-		logger.info(`Company updated: ${updatedCompany.name}`);
+		logger.info(`Company updated: ${sanitizeForLog(updatedCompany.name)}`);
 		res.status(200).json(updatedCompany);
 	} catch (error: any) {
 		logger.error(`putUpdateCompany: ${error.message}`);
@@ -130,7 +130,7 @@ export const deleteCompany = async (req: Request, res: Response): Promise<void> 
 		await User.updateMany({ 'placedAt.companyId': String(deletedCompany._id) }, { placed: false, placedAt: notPlaced }, { session });
 
 		await session.commitTransaction();
-		logger.info(`Company deleted (cascaded): ${deletedCompany.name}`);
+		logger.info(`Company deleted (cascaded): ${sanitizeForLog(deletedCompany.name)}`);
 		res.status(200).json({ message: `${deletedCompany.name} deleted successfully` });
 	} catch (error: any) {
 		await session.abortTransaction();
