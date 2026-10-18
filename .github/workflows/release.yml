@@ -50,8 +50,8 @@ jobs:
 
       - name: Verify build artifacts
         run: |
-          test -d client/dist || (echo "❌ Frontend build failed" && exit 1)
-          test -f client/dist/index.html || (echo "❌ Frontend index.html missing" && exit 1)
+          test -d client/build || (echo "❌ Frontend build failed" && exit 1)
+          test -f client/build/index.html || (echo "❌ Frontend index.html missing" && exit 1)
           test -d server/dist || (echo "❌ Backend build failed" && exit 1)
 
   create-release:
@@ -92,9 +92,15 @@ jobs:
 
       - name: Generate changelog
         id: changelog
+        env:
+          RELEASE_NOTES: ${{ github.event.inputs.release_notes }}
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ github.event.inputs.release_notes }}" ]; then
-            echo "changelog=${{ github.event.inputs.release_notes }}" >> $GITHUB_OUTPUT
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "$RELEASE_NOTES" ]; then
+            {
+              echo "changelog<<EOF"
+              echo "$RELEASE_NOTES"
+              echo "EOF"
+            } >> $GITHUB_OUTPUT
           else
             CHANGELOG=$(git log --pretty=format:"- %s (%h)" $(git describe --tags --abbrev=0 HEAD^)..HEAD 2>/dev/null || git log --pretty=format:"- %s (%h)" --max-count=10)
             echo "changelog<<EOF" >> $GITHUB_OUTPUT
@@ -105,9 +111,9 @@ jobs:
       - name: Create release archive
         run: |
           mkdir -p release/placemento-${{ steps.version.outputs.version }}
-          rsync -av --exclude='node_modules' --exclude='.git' --exclude='client/dist' --exclude='server/dist' --exclude='*.log' . release/placemento-${{ steps.version.outputs.version }}/
-          mkdir -p release/placemento-${{ steps.version.outputs.version }}/client/dist
-          cp -r client/dist/* release/placemento-${{ steps.version.outputs.version }}/client/dist/
+          rsync -av --exclude='node_modules' --exclude='.git' --exclude='client/build' --exclude='server/dist' --exclude='*.log' . release/placemento-${{ steps.version.outputs.version }}/
+          mkdir -p release/placemento-${{ steps.version.outputs.version }}/client/build
+          cp -r client/build/* release/placemento-${{ steps.version.outputs.version }}/client/build/
           cd release
           tar -czf placemento-${{ steps.version.outputs.version }}.tar.gz placemento-${{ steps.version.outputs.version }}
           zip -r placemento-${{ steps.version.outputs.version }}.zip placemento-${{ steps.version.outputs.version }}

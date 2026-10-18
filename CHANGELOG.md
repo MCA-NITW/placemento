@@ -1,5 +1,35 @@
 # Changelog
 
+## [3.0.3] - 2026-10-18
+
+### Fixed
+
+- Forgot-password flow: `/auth/verify-otp` no longer deletes the OTP, so the follow-up `/auth/reset-password` call succeeds instead of always
+  returning "No OTP generated".
+- `PUT /users/company/:id` returns 404 for a well-formed but unknown company id instead of marking the student placed with "Not Placed" data.
+- Client dev server: removed the unused API proxy, which hijacked the `/stats` and `/companies` routes on refresh or direct visit.
+- Navbar no longer overflows on phones when signed in (8 icons); the icon row scrolls sideways inside the bar.
+- Client now typechecks (`tsc --noEmit`): added `vite-env.d.ts` and loosened the `CompanyForm` action type.
+- Replaced the deprecated Mongoose `new: true` option with `returnDocument: 'after'`.
+- `release.yml` verifies and packages `client/build` (Vite's configured `outDir`) instead of the non-existent `client/dist`.
+
+### Security
+
+- Students can only update their own placement location (`PUT /users/companyLocation/:id`).
+- Only the experience owner or staff can delete comments on an experience.
+- `release.yml` passes `release_notes` through an environment variable instead of interpolating it into the shell script.
+- Dependency refresh to latest stable; `pnpm audit` goes from 11 advisories (2 critical, 3 high) to 0, including nodemailer 10.1.2, express 5.3.0,
+  mongoose 9.11.2 and patched transitive proxy-addr, shell-quote, ip-address, moment and source-map-js.
+
+### CI
+
+- Client tests are a required step again (the jsdom/undici `continue-on-error` workaround is no longer needed).
+
+### Docs
+
+- README rewritten to match the code: pnpm, React 19, Vite, Recharts, real env var names and scripts, architecture diagram, tech decisions and test
+  coverage.
+
 ## [3.0.2] - 2026-09-03
 
 ### Security

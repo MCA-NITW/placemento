@@ -1,262 +1,183 @@
-# Placemento 🎓
+# Placemento
 
+[![CI](https://github.com/MCA-NITW/placemento/actions/workflows/ci.yml/badge.svg)](https://github.com/MCA-NITW/placemento/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/MCA-NITW/placemento/actions/workflows/codeql.yml/badge.svg)](https://github.com/MCA-NITW/placemento/actions/workflows/codeql.yml)
 [![License: GPL-3.0](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![React](https://img.shields.io/badge/React-18.2.0-61DAFB?logo=react)](https://reactjs.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-20+-339933?logo=node.js)](https://nodejs.org/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?logo=mongodb)](https://www.mongodb.com/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-22%20%7C%2024-339933?logo=node.js)](https://nodejs.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose%209-47A248?logo=mongodb)](https://mongoosejs.com/)
 
-**Placemento** is a comprehensive web-based placement management system designed specifically for MCA students at NIT Warangal. Built with the MERN
-stack, it streamlines placement activities, student data management, and company interactions for the entire batch.
+**Placemento** is the placement portal for the MCA batch at NIT Warangal. It replaces the shared spreadsheet a placement cell usually runs on:
+students keep their academic profile in one place, placement coordinators record each visiting company with its CTC, cutoffs and selected roll
+numbers, and everyone sees live placement statistics and interview experiences from seniors.
 
-## ✨ Features
+It is a TypeScript pnpm monorepo: a React 19 + Vite single-page app talking to an Express 5 REST API backed by MongoDB.
 
-- 📊 **Student Dashboard** - Comprehensive profile management and placement status tracking
-- 🏢 **Company Management** - Detailed company profiles and job posting system
-- 📈 **Analytics & Statistics** - Visual insights into placement trends and data
-- 👥 **User Authentication** - Secure JWT-based login with email OTP verification
-- 📧 **Email Notifications** - Automated updates for placement activities
-- 📱 **Responsive Design** - Optimized for desktop and mobile devices
-- 🔍 **Advanced Filtering** - Powerful search and filter capabilities using AG Grid
-- 💼 **Experience Sharing** - Students can share interview experiences with ratings and tips
-- 👨‍💻 **Team Information** - Comprehensive developer team profiles and project details
-- 🔒 **Role-based Access** - Admin and student roles with appropriate permissions
+## Features
 
-## 🏗️ Architecture
+- **Student profiles** - PG, UG, HSC and SSC scores, backlogs and academic gaps, with server-side range validation
+- **Company tracking** - status, offer type, profile category, CTC and base breakup, bond, cutoffs, locations and the selected roll numbers
+- **Placement assignment** - marking a student placed updates the student and both the old and new company in one MongoDB transaction
+- **Live statistics** - placed vs total, highest and average CTC, company and location breakdowns, charted with Recharts
+- **Interview experiences** - students post experiences with tags, rating, difficulty, process and tips; others comment
+- **Auth** - signup restricted to `@student.nitw.ac.in` emails, admin verification before first sign-in, JWT sessions, emailed OTP for password reset
+- **Role-based access** - `student`, `placementCoordinator` and `admin`, enforced per route on the server; students can only edit their own record and
+  never see other students' academic scores
+- **Searchable, sortable tables** - a small in-house `DataTable` component with nested-key search
+- **Responsive UI** - fluid grids and horizontally scrolling tables and navbar on phones
+- **Team page** - credits the people who built and maintain the portal
 
-```
-Placemento/
-├── 📁 client/                 # React frontend application
-│   ├── 📁 public/            # Static assets
-│   └── 📁 src/
-│       ├── 📁 api/           # API service layer
-│       ├── 📁 components/    # Reusable React components
-│       ├── 📁 pages/         # Main application pages
-│       ├── 📁 utils/         # Utility functions
-│       └── 📄 App.jsx        # Main App component
-├── 📁 server/                 # Node.js backend application
-│   ├── 📁 controllers/       # Route controllers
-│   ├── 📁 middleware/        # Custom middleware
-│   ├── 📁 models/           # MongoDB data models
-│   ├── 📁 routes/           # API route definitions
-│   ├── 📁 utils/            # Backend utilities
-│   ├── 📄 seedDatabase.js   # Sample data seeder
-│   ├── 📄 testStats.js      # API testing script
-│   └── 📄 index.js          # Server entry point
-├── 📄 package.json           # Root package configuration
-├── 📄 DEVELOPMENT.md         # Development guide
-├── 📄 setup.bat             # Windows setup script
-├── 📄 setup.sh              # Unix setup script
-└── 📄 README.md             # Project documentation
+## Architecture
+
+```mermaid
+flowchart LR
+  subgraph Browser
+    SPA["React 19 SPA<br/>(Vite, React Router, Recharts)"]
+  end
+  subgraph API["Express 5 API (server/)"]
+    MW["helmet, CORS, JSON 10kb limit"]
+    RL["express-rate-limit<br/>auth 10/15m, OTP 5/15m, writes 100/5m"]
+    AUTH["authenticateUser (JWT)<br/>checkUserRole"]
+    CTRL["controllers<br/>auth, users, companies, experiences, stats"]
+  end
+  DB[("MongoDB<br/>User, Company, Experience, Otp (TTL)")]
+  MAIL["Gmail SMTP<br/>(Nodemailer)"]
+
+  SPA -- "Axios + Bearer token" --> MW --> RL --> AUTH --> CTRL
+  CTRL -- Mongoose --> DB
+  CTRL -- "OTP email" --> MAIL
 ```
 
-## 🚀 Quick Start
+Request path for a protected write such as `PUT /users/company/:id`: JWT verified and the user reloaded from the database (so a deleted or unverified
+account is rejected immediately), role checked, rate limit applied, then the controller runs a transaction that pulls the roll number from the
+previous company, adds it to the new one and rewrites the student's `placedAt` snapshot.
+
+The API is mounted at both `/api/v1/*` and the legacy root paths (`/auth`, `/users`, `/companies`, `/experiences`, `/stats`); `/health` reports uptime
+and database state.
+
+### Repository layout
+
+```
+placemento/
+├── client/                 # React 19 + Vite SPA
+│   ├── src/api/            # Axios instance and one module per resource
+│   ├── src/components/     # NavBar, DataTable, AuthForm, CompanyForm, Modal, ...
+│   ├── src/pages/          # Home, Stats, Students, Companies, Experience, Profile, Teams, Auth
+│   └── tests/              # Vitest + Testing Library (jsdom)
+├── server/                 # Express 5 API
+│   ├── src/controllers/    # Route handlers
+│   ├── src/middleware/     # JWT auth and role checks
+│   ├── src/models/         # Mongoose schemas (source of truth for data shapes)
+│   ├── src/routes/         # Route tables
+│   ├── src/utils/          # Rate limiters, Winston logger, signup validation
+│   └── tests/              # Vitest + Supertest against mongodb-memory-server
+├── .github/workflows/      # CI, CodeQL, tag-driven releases
+└── pnpm-workspace.yaml     # Workspace, build allowlist and security overrides
+```
+
+## Tech decisions
+
+| Choice                             | Why                                                                                                        |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| pnpm workspace                     | One lockfile and one install for client and server; `overrides` pin patched transitive dependencies        |
+| MongoDB + Mongoose                 | Company and student records are nested documents (CTC breakup, cutoffs, academic blocks) that change often |
+| Transactions for placement updates | A student and two company documents must change together or not at all                                     |
+| JWT re-validated against the DB    | Revoking verification or deleting a user takes effect on the next request, not when the token expires      |
+| Hashed, TTL-indexed OTPs           | OTPs are bcrypt-hashed at rest and MongoDB deletes them after 10 minutes                                   |
+| String coercion on auth inputs     | Blocks NoSQL operator injection such as `{ "email": { "$gt": "" } }`                                       |
+| mongodb-memory-server in tests     | Server tests run against a real replica set (needed for transactions) with no external database            |
+
+## Quick start
 
 ### Prerequisites
 
-Ensure you have the following installed:
+- Node.js 22 or 24
+- pnpm 12 (`corepack enable` picks up the version pinned in `package.json`)
+- MongoDB (local, or a MongoDB Atlas connection string)
 
-- **Node.js** v20.0.0 or higher
-- **npm** v10.0.0 or higher
-- **MongoDB** (local installation or MongoDB Atlas account)
-- **Git** for version control
+### Install and run
 
-### Installation
+```bash
+git clone https://github.com/MCA-NITW/placemento.git
+cd placemento
+pnpm install
+```
 
-1. **Clone the repository**
+Create `server/.env` (see `server/.env.example`). Variable names:
 
-   ```bash
-   git clone https://github.com/MCA-NITW/placemento.git
-   cd placemento
-   ```
+| Variable                     | Required | Purpose                                                 |
+| ---------------------------- | -------- | ------------------------------------------------------- |
+| `DB_CONNECTION_STRING`       | yes      | Primary MongoDB URI (e.g. Atlas)                        |
+| `JWT_SECRET`                 | yes      | Signs session tokens                                    |
+| `JWT_SALT_ROUNDS`            | yes      | bcrypt cost for password hashes                         |
+| `LOCAL_DB_CONNECTION_STRING` | no       | Fallback URI if the primary is unreachable              |
+| `EMAIL_ID`, `EMAIL_PASSWORD` | no       | Gmail account used to send OTP emails                   |
+| `PORT`                       | no       | API port, default `5000`                                |
+| `CORS_ORIGIN`                | no       | Allowed browser origin, default `http://localhost:3000` |
+| `LOG_LEVEL`                  | no       | Winston log level                                       |
 
-2. **Install dependencies**
+The client reads `VITE_API_BASE_URL` (default `http://localhost:5000`).
 
-   ```bash
-   npm run install-deps
-   ```
+```bash
+pnpm dev
+```
 
-   This command will install dependencies for both frontend and backend.
+This starts the API with `tsx watch` on port 5000 and the Vite dev server on http://localhost:3000.
 
-3. **Environment Setup**
+## Scripts
 
-   Create `.env` files in the server directory with the following variables:
+| Command                      | Description                                      |
+| ---------------------------- | ------------------------------------------------ |
+| `pnpm dev`                   | API (tsx watch) and client (Vite) together       |
+| `pnpm start`                 | Built API (`node dist/index.js`) and Vite client |
+| `pnpm build`                 | Client production build to `client/build`        |
+| `pnpm --filter server build` | Compile the API to `server/dist`                 |
+| `pnpm test`                  | Server tests, then client tests (Vitest)         |
+| `pnpm format`                | Prettier over the whole repo                     |
 
-   ```bash
-   # server/.env
-   PORT=5000
-   MONGODB_URI=your_mongodb_connection_string
-   JWT_SECRET=your_jwt_secret_key
-   EMAIL_HOST=your_email_host
-   EMAIL_PORT=587
-   EMAIL_USER=your_email_username
-   EMAIL_PASS=your_email_password
-   ```
+## Testing and CI
 
-4. **Start the development servers**
+- **Server**: 35 Vitest + Supertest tests covering signup, login, privilege-escalation attempts, token expiry, company CRUD permissions and experience
+  ownership, run against an in-memory MongoDB replica set
+- **Client**: 27 Vitest + Testing Library tests for components and form validation
+- **CI** (`.github/workflows/ci.yml`): build, both test suites, Prettier check and a security scan on every push and PR
+- **CodeQL** on push, on PRs and weekly; **Renovate** keeps dependencies current
+- **Releases**: pushing a `v*.*.*` tag runs `release.yml`, which tests, builds and attaches a tarball and zip to a GitHub Release
 
-   ```bash
-   npm run start
-   ```
+## Contributing
 
-   This will start both the backend server (port 5000) and frontend development server (port 3000).
+See [CONTRIBUTING.md](CONTRIBUTING.md). In short: branch from `main`, run `pnpm test` and `pnpm format`, and open a pull request with a clear
+description. Security issues go through [SECURITY.md](SECURITY.md).
 
-5. **Access the application**
-
-   Open your browser and navigate to `http://localhost:3000`
-
-## 🛠️ Available Scripts
-
-| Command                    | Description                                         |
-| -------------------------- | --------------------------------------------------- |
-| `npm run start`            | Starts both frontend and backend concurrently       |
-| `npm run frontend-start`   | Starts only the React development server            |
-| `npm run backend-start`    | Starts only the Node.js server                      |
-| `npm run install-deps`     | Installs dependencies for both frontend and backend |
-| `npm run frontend-install` | Installs dependencies for frontend only             |
-| `npm run backend-install`  | Installs dependencies for backend only              |
-| `npm run frontend-build`   | Creates production build of React app               |
-| `npm run format`           | Formats code using Prettier                         |
-| `npm run dev`              | Development mode with hot reload                    |
-
-## 📸 Screenshots & Demo
-
-### 🏠 Homepage
-
-Modern landing page with live statistics and beautiful animations.
-
-### 📊 Stats Dashboard
-
-Interactive charts and visualizations using AG Charts for comprehensive placement analytics.
-
-### 👥 Student Management
-
-Advanced AG Grid tables with filtering, sorting, and search capabilities for managing student data.
-
-### 🏢 Company Portal
-
-Comprehensive company management system with detailed profiles and job postings.
-
-### 💼 Experience Sharing
-
-Platform for students to share interview experiences with ratings and helpful tips.
-
-## 🎯 Recent Updates & Features
-
-### ✨ Latest Enhancements
-
-- **Enhanced Statistics Page**: Beautiful charts and visual representations using AG Charts
-- **Full Page Optimization**: Improved vertical layout and space utilization
-- **Modern UI Components**: Glassmorphism design with smooth animations
-- **Responsive Design**: Perfect display across all device sizes
-- **Performance Optimization**: Faster loading and better user experience
-
-### 🔄 Current Version: v1.0.0
-
-- Complete placement management system
-- Interactive data visualization
-- Advanced filtering and search
-- Email notification system
-- Role-based access control
-
-## 🤝 Contributing
-
-We welcome contributions from the community! Here's how you can get involved:
-
-### For Organization Members
-
-1. **Create a feature branch** from `main`:
-
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
-
-2. **Make your changes** following our coding standards
-
-3. **Test thoroughly** to ensure everything works as expected
-
-4. **Submit a pull request** with a clear description of your changes
-
-### For External Contributors
-
-1. **Fork the repository** to your GitHub account
-
-2. **Clone your fork** and create a feature branch:
-
-   ```bash
-   git clone https://github.com/your-username/placemento.git
-   cd placemento
-   git checkout -b feature/your-feature-name
-   ```
-
-3. **Make your changes** and test them
-
-4. **Submit a pull request** from your fork to our main repository
-
-### Coding Standards
-
-- Use **Prettier** for code formatting: `npm run format`
-- Follow **React best practices** for frontend development
-- Write **clear commit messages**
-- Add **comments** for complex logic
-- Ensure **responsive design** for all UI components
-
-## 🔧 Tech Stack
-
-### Frontend
-
-- **React 18.2** - Modern UI library with hooks
-- **React Router** - Client-side routing
-- **AG Grid** - Advanced data grid with filtering and sorting
-- **React Toastify** - User-friendly notifications
-- **Axios** - HTTP client for API calls
-- **React Icons** - Comprehensive icon library
-
-### Backend
-
-- **Node.js** - JavaScript runtime environment
-- **Express.js** - Web application framework
-- **MongoDB** with **Mongoose** - Database and ODM
-- **JWT** - Authentication and authorization
-- **Bcrypt** - Password hashing
-- **Nodemailer** - Email service integration
-- **Winston** - Logging framework
-- **Express Rate Limit** - API rate limiting
-
-### Development Tools
-
-- **Nodemon** - Development server auto-restart
-- **Concurrently** - Run multiple commands simultaneously
-- **Prettier** - Code formatting
-- **React Scripts** - Build toolchain for React
-
-## 📄 License
+## License
 
 This project is licensed under the **GPL-3.0 License**. See the [LICENSE](LICENSE) file for details.
 
-## 📞 Contact & Support
+## Contact & Support
 
 - **Project Repository**: [MCA-NITW/placemento](https://github.com/MCA-NITW/placemento)
 - **Issues & Bug Reports**: [GitHub Issues](https://github.com/MCA-NITW/placemento/issues)
 - **Institution**: [NIT Warangal - MCA Department](https://www.nitw.ac.in/department/mca)
 
-## 👥 Development Team
+## Development Team
 
 - **[Sagar Gupta](https://github.com/Sagargupta16)** - Lead Developer
 - **[Sachin Gupta](https://github.com/sachin-gupta99)** - Full Stack Developer
 
-## 🏫 Acknowledgments
+## Acknowledgments
 
 - **NIT Warangal College** - For providing the academic environment and support
 - **MCA Department** - For guidance and project requirements
 - **Open Source Community** - For the amazing tools and libraries that made this project possible
 
-## 🔗 Useful Resources
+## Useful Resources
 
-- [MERN Stack Guide](https://www.mongodb.com/mern-stack)
-- [React Documentation](https://reactjs.org/docs)
-- [Node.js Documentation](https://nodejs.org/docs)
+- [React Documentation](https://react.dev/)
+- [Vite Documentation](https://vite.dev/)
+- [Express Documentation](https://expressjs.com/)
+- [Mongoose Documentation](https://mongoosejs.com/docs/)
 - [MongoDB Atlas](https://www.mongodb.com/atlas)
-- [AG Grid Documentation](https://www.ag-grid.com/documentation)
 
 ---
 

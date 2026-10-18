@@ -14,13 +14,14 @@
 Placement management portal for MCA students at NIT Warangal (MCA-NITW org repo): student profiles, company tracking, placement stats, interview
 experience sharing.
 
-No hosted deployment; distributed as versioned GitHub Releases on `v*.*.*` tags.
+Distributed as versioned GitHub Releases on `v*.*.*` tags. The repo homepage (placemento.onrender.com) serves an older server-rendered build, not this
+codebase (no `/health`, EJS-style OTP page) as of 2026-10-18.
 
 ## Stack
 
-- **Language**: TypeScript 5.9 (both packages)
-- **Framework**: React 19 + Vite 7 (client), Express 5 (server)
-- **Database**: MongoDB via Mongoose 8
+- **Language**: TypeScript 7 (both packages)
+- **Framework**: React 19 + Vite 8 (client), Express 5 (server)
+- **Database**: MongoDB via Mongoose 9
 - **Package manager**: pnpm workspace (`client` + `server`)
 - **Deploy target**: GitHub Releases (tag-triggered tarball/zip); CI via reusable workflows from `mca-nitw/.github`
 
@@ -37,7 +38,7 @@ pnpm --filter server build    # tsc -> server/dist
 
 ```
 pnpm test                     # server then client (both Vitest)
-pnpm --filter server test     # needs MongoDB: mongodb-memory-server locally, mongo:7.0 service in CI
+pnpm --filter server test     # mongodb-memory-server replica set (7.0.0 binary) locally and in CI
 pnpm --filter client test     # jsdom + testing-library
 ```
 
@@ -52,15 +53,16 @@ pnpm --filter client test     # jsdom + testing-library
 
 - `server/src/routes/` -- authRoutes, userRoutes, companyRoutes, experienceRoutes, statsRoutes
 - `server/src/models/` -- Mongoose schemas (source of truth for data shapes)
-- `client/vite.config.ts` -- dev proxy of all API paths to `localhost:5000`; `outDir: 'build'`
+- `client/vite.config.ts` -- dev port 3000, `outDir: 'build'`; no proxy (client calls `VITE_API_BASE_URL` directly)
 - `.github/workflows/ci.yml` -- build/test/format/security jobs
 
 ## Gotchas
 
-- README.md is stale (npm, React 18, AG Grid, react-scripts era). Real stack is pnpm + Vite + React 19 + recharts. Trust package.json.
-- Client tests are `continue-on-error` in CI (jsdom@28 + undici@8 module resolution bug). Green CI does not prove client tests pass.
-- Vite builds to `client/build`, but `release.yml` verifies `client/dist` -- release validation fails until one side is aligned.
-- Root `package.json` carries a large `pnpm.overrides` block of security pins. Do not strip it when editing scripts.
+- Do not re-add a Vite dev proxy for API paths: `/stats` and `/companies` are also client routes, and proxying them breaks refresh.
+- Client is not typechecked by `vite build`; run `pnpm --filter client exec tsc --noEmit -p .` after type changes.
+- `pnpm-workspace.yaml` carries the `overrides` block of security pins and the `allowBuilds` list. Do not strip it.
+- pnpm enforces a minimum release age: a Renovate PR merged the same day a dependency was published fails `pnpm install --frozen-lockfile` with
+  `ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION`; re-run CI a day later.
 - Server env vars (names only): `DB_CONNECTION_STRING`, `JWT_SECRET`, `JWT_SALT_ROUNDS` (required at startup); `LOCAL_DB_CONNECTION_STRING` (local
   fallback), `EMAIL_ID`, `EMAIL_PASSWORD` (Nodemailer). CI sets test values inline in `ci.yml` (`.env.ci` at root is not read by any workflow); never
   commit real values.

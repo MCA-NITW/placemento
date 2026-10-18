@@ -126,7 +126,7 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
 				backlogs: req.body.backlogs ?? user.backlogs,
 				totalGapInAcademics: req.body.totalGapInAcademics ?? user.totalGapInAcademics
 			},
-			{ new: true }
+			{ returnDocument: 'after' }
 		);
 		if (!updatedUser) {
 			res.status(404).json({ errors: ['User not found'] });
@@ -159,7 +159,7 @@ export const verify = async (req: Request, res: Response): Promise<void> => {
 			return;
 		}
 
-		const updatedUser = await User.findByIdAndUpdate(req.params.id, { isVerified: !user.isVerified }, { new: true });
+		const updatedUser = await User.findByIdAndUpdate(req.params.id, { isVerified: !user.isVerified }, { returnDocument: 'after' });
 		logger.info(`User ${updatedUser!.isVerified ? 'verified' : 'unverified'}: ${updatedUser!.name}`);
 		res.status(200).json({ message: `${updatedUser!.name} ${updatedUser!.isVerified ? 'verified' : 'unverified'} successfully` });
 	} catch (error: any) {
@@ -183,7 +183,7 @@ export const updateRole = async (req: Request, res: Response): Promise<void> => 
 			res.status(400).json({ errors: ['You cannot change your own role'] });
 			return;
 		}
-		const updatedUser = await User.findByIdAndUpdate(req.params.id, { role: req.body.role }, { new: true });
+		const updatedUser = await User.findByIdAndUpdate(req.params.id, { role: req.body.role }, { returnDocument: 'after' });
 		if (!updatedUser) {
 			res.status(404).json({ errors: ['User not found'] });
 			return;
@@ -262,23 +262,30 @@ export const updateCompany = async (req: Request, res: Response): Promise<void> 
 		// Add to new company
 		if (req.body.companyId !== 'np') {
 			const company = await Company.findById(req.body.companyId).session(session);
-			if (company) {
-				placedAt = {
-					companyId: String(company._id),
-					companyName: company.name,
-					ctc: company.ctc,
-					ctcBase: company.ctcBreakup.base,
-					profile: company.profile,
-					profileType: company.profileCategory,
-					offer: company.typeOfOffer,
-					location: 'N/A',
-					bond: company.bond
-				};
-				await Company.findByIdAndUpdate(company._id, { $addToSet: { selectedStudentsRollNo: user.rollNo } }, { session });
+			if (!company) {
+				await session.abortTransaction();
+				res.status(404).json({ errors: ['Company not found'] });
+				return;
 			}
+			placedAt = {
+				companyId: String(company._id),
+				companyName: company.name,
+				ctc: company.ctc,
+				ctcBase: company.ctcBreakup.base,
+				profile: company.profile,
+				profileType: company.profileCategory,
+				offer: company.typeOfOffer,
+				location: 'N/A',
+				bond: company.bond
+			};
+			await Company.findByIdAndUpdate(company._id, { $addToSet: { selectedStudentsRollNo: user.rollNo } }, { session });
 		}
 
-		const updatedUser = await User.findByIdAndUpdate(req.params.id, { placedAt, placed: req.body.companyId !== 'np' }, { new: true, session });
+		const updatedUser = await User.findByIdAndUpdate(
+			req.params.id,
+			{ placedAt, placed: req.body.companyId !== 'np' },
+			{ returnDocument: 'after', session }
+		);
 
 		await session.commitTransaction();
 		logger.info(`Company updated for ${updatedUser?.name}`);
@@ -298,11 +305,16 @@ export const updateCompanyLocation = async (req: Request, res: Response): Promis
 			res.status(400).json({ errors: ['Invalid user ID'] });
 			return;
 		}
+		const authUser = (req as unknown as AuthRequest).user;
+		if (authUser.role === 'student' && req.params.id !== String(authUser._id)) {
+			res.status(403).json({ errors: ['Forbidden'] });
+			return;
+		}
 		if (typeof req.body.location !== 'string' || !req.body.location) {
 			res.status(400).json({ errors: ['Invalid location value'] });
 			return;
 		}
-		const updatedUser = await User.findByIdAndUpdate(req.params.id, { 'placedAt.location': req.body.location }, { new: true });
+		const updatedUser = await User.findByIdAndUpdate(req.params.id, { 'placedAt.location': req.body.location }, { returnDocument: 'after' });
 		if (!updatedUser) {
 			res.status(404).json({ errors: ['User not found'] });
 			return;

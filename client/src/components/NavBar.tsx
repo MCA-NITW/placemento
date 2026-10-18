@@ -41,12 +41,16 @@ const s = {
 		background: 'linear-gradient(135deg,var(--primary),var(--accent))',
 		WebkitBackgroundClip: 'text',
 		WebkitTextFillColor: 'transparent',
-		backgroundClip: 'text'
+		backgroundClip: 'text',
+		flexShrink: 0,
+		marginRight: '0.75rem'
 	} as React.CSSProperties,
-	list: { display: 'flex', alignItems: 'center', gap: '0.35rem' },
+	// Signed in there are 8 icons; on a 375px phone they scroll sideways instead of overflowing the bar
+	list: { display: 'flex', alignItems: 'center', gap: '0.35rem', minWidth: 0, overflowX: 'auto', scrollbarWidth: 'none' } as React.CSSProperties,
 	link: {
 		width: 36,
 		height: 36,
+		flexShrink: 0,
 		display: 'flex',
 		alignItems: 'center',
 		justifyContent: 'center',

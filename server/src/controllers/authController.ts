@@ -198,7 +198,8 @@ export const postVerifyOTP = async (req: Request, res: Response): Promise<void> 
 			return;
 		}
 
-		await Otp.deleteMany({ email });
+		// Keep the OTP: the forgot-password flow verifies it here, then sends it
+		// again to /reset-password, which consumes it. It still expires after 10 minutes.
 		logger.info(`Email verified: ${email}`);
 		res.status(200).json({ messages: ['Email verified successfully'] });
 	} catch (error: any) {

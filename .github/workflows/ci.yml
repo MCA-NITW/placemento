@@ -46,7 +46,6 @@ jobs:
           EMAIL_PASS: test_password
 
       - name: Run client tests
-        continue-on-error: true # jsdom@28 + undici@8 module resolution bug
         run: pnpm --filter client test
 
   format:
