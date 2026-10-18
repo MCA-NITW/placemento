@@ -85,7 +85,7 @@ export const putUpdateCompany = async (req: Request, res: Response): Promise<voi
 			return;
 		}
 
-		const updatedCompany = await Company.findByIdAndUpdate(req.params.id, allowedFields, { new: true });
+		const updatedCompany = await Company.findByIdAndUpdate(req.params.id, allowedFields, { returnDocument: 'after' });
 		if (!updatedCompany) {
 			res.status(404).json({ errors: ['Company not found'] });
 			return;

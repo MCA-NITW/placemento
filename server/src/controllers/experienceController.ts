@@ -181,6 +181,12 @@ export const deleteComment = async (req: Request, res: Response): Promise<void> 
 			res.status(404).json({ errors: ['Experience not found'] });
 			return;
 		}
+		// Comments carry no author, so only the experience owner or staff may remove them
+		const user = (req as unknown as AuthRequest).user;
+		if (user.role === 'student' && experience.studentDetails.rollNo !== user.rollNo) {
+			res.status(403).json({ errors: ['Forbidden: you can only delete comments on your own experiences'] });
+			return;
+		}
 		const commentIndex = Number.parseInt(String(req.params.commentId), 10);
 		if (Number.isNaN(commentIndex) || commentIndex < 0 || commentIndex >= experience.Comments.length) {
 			res.status(400).json({ errors: ['Invalid comment index'] });

@@ -202,7 +202,8 @@ export interface FilterProps {
 }
 
 export interface CompanyFormProps {
-	actionFunc: (...args: unknown[]) => Promise<unknown>;
+	// addCompany(data) when isAdd, updateCompany(id, data) otherwise
+	actionFunc: (...args: any[]) => Promise<unknown>;
 	handleFormClose: (fetch: boolean) => void;
 	initialData: Company | null;
 	isAdd: boolean;
