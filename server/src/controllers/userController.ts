@@ -175,7 +175,7 @@ export const updateRole = async (req: Request, res: Response): Promise<void> => 
 			return;
 		}
 		const authUser = (req as unknown as AuthRequest).user;
-		if (!['admin', 'student', 'placementCoordinator'].includes(req.body.role)) {
+		if (typeof req.body.role !== 'string' || !['admin', 'student', 'placementCoordinator'].includes(req.body.role)) {
 			res.status(400).json({ errors: ['Invalid role'] });
 			return;
 		}
