@@ -64,24 +64,17 @@ On a phone (390 px wide):
 
 ## Architecture
 
-```mermaid
-flowchart LR
-  subgraph Browser
-    SPA["React 19 SPA<br/>(Vite, React Router, Recharts)"]
-  end
-  subgraph API["Express 5 API (server/)"]
-    MW["helmet, CORS, JSON 10kb limit"]
-    RL["express-rate-limit<br/>app-wide 300/5m before auth<br/>auth 10/15m, OTP 5/15m, writes 100/5m"]
-    AUTH["authenticateUser (JWT)<br/>checkUserRole"]
-    CTRL["controllers<br/>auth, users, companies, experiences, stats"]
-  end
-  DB[("MongoDB<br/>User, Company, Experience, Otp (TTL)")]
-  MAIL["Gmail SMTP<br/>(Nodemailer)"]
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/diagrams/architecture-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="docs/diagrams/architecture-light.svg">
+  <img width="880" src="docs/diagrams/architecture-light.svg" alt="Placemento architecture. Students, placement coordinators and admins, all with @student.nitw.ac.in accounts, use a React 19 single-page app built with Vite, React Router and Recharts. The app sends REST calls with a Bearer JWT to the Express 5 API in server/. Inside the API, Helmet, CORS and an app-wide rate limit of 300 requests per 5 minutes per IP run first. From there the auth routes for signup, login and OTP password reset are public, while the users, companies, experiences and stats routes pass the JWT and role checks (authenticateUser, checkUserRole). The API reads and writes MongoDB, with the User, Company, Experience and Otp collections, through Mongoose, and the auth routes send OTP emails through Gmail SMTP with Nodemailer.">
+</picture>
 
-  SPA -- "Axios + Bearer token" --> MW --> RL --> AUTH --> CTRL
-  CTRL -- Mongoose --> DB
-  CTRL -- "OTP email" --> MAIL
-```
+The spec behind the picture is [`docs/diagrams/architecture.yaml`](docs/diagrams/architecture.yaml), rendered with
+[orrery](https://github.com/Sagargupta16/orrery).
+
+JSON bodies are capped at 10 kb. On top of the app-wide limit, signup and login allow 10 requests per 15 minutes, the OTP endpoints 5 per 15 minutes
+and most write routes 100 per 5 minutes.
 
 Request path for a protected write such as `PUT /users/company/:id`: JWT verified and the user reloaded from the database (so a deleted or unverified
 account is rejected immediately), role checked, rate limit applied, then the controller runs a transaction that pulls the roll number from the
