@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Sagargupta16/orrery/main/skills/orrery/references/diagram.schema.json
+# Rendered with orrery (github.com/Sagargupta16/orrery):
+#   orrery render docs/diagrams/architecture.yaml -o docs/diagrams/architecture -f svg --theme both
+# Reviewed at README width: orrery review docs/diagrams/architecture.yaml --width 880
+title: Placemento architecture
+subtitle: A React SPA calls an Express 5 REST API backed by MongoDB; Gmail sends the password reset OTPs
+direction: right
+layout: { spacing: compact }
+
+groups:
+  api: { type: box, label: Express 5 API (server/), icon: si:express, evidence: server/src/app.ts }
+
+nodes:
+  people:
+    icon: tabler:users
+    label: Students, coordinators, admins
+    note: '@student.nitw.ac.in accounts'
+    evidence: server/src/types/index.ts:104#UserRole
+  spa:
+    icon: logos:react
+    label: React 19 SPA
+    note: Vite, React Router, Recharts
+    align: people
+    evidence: client/src/App.tsx
+  guard:
+    icon: tabler:shield-lock
+    label: Helmet, CORS, rate limit
+    note: 300 requests per 5 min per IP
+    in: api
+    evidence: [server/src/app.ts:21#helmet, server/src/app.ts:42#globalLimiter]
+  auth:
+    icon: tabler:key
+    label: Auth routes
+    note: signup, login, OTP reset
+    in: api
+    evidence: server/src/routes/authRoutes.ts
+  jwt:
+    icon: logos:jwt-icon
+    label: JWT and role checks
+    note: authenticateUser, checkUserRole
+    in: api
+    evidence: server/src/middleware/authMiddleware.ts:12#authenticateUser
+  routes:
+    icon: tabler:api
+    label: Resource routes
+    note: users, companies, experiences, stats
+    in: api
+    evidence: server/src/app.ts:58
+  mongo:
+    icon: si:mongodb
+    label: MongoDB
+    note: User, Company, Experience, Otp
+    evidence: [server/src/index.ts:31#mongoose.connect, server/src/models]
+  gmail:
+    icon: logos:google-gmail
+    label: Gmail SMTP
+    note: Nodemailer
+    align: mongo
+    evidence: server/src/controllers/authController.ts:23#createTransport
+
+edges:
+  - people -> spa
+  - spa -> guard: { label: Bearer JWT, evidence: client/src/api/axiosInstance.ts:10 }
+  - guard -> auth
+  - guard -> jwt -> routes
+  - api -> mongo: Mongoose
+  - auth -> gmail: { label: OTP email, evidence: server/src/controllers/authController.ts:148#sendMail }

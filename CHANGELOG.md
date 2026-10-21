@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.1.1] - 2026-10-21
+
+### Docs
+
+- README architecture diagram is now a picture drawn with orrery from `docs/diagrams/architecture.yaml`, in dark and light versions, replacing the
+  Mermaid flowchart. It also corrects the old flowchart, which sent the `/auth` routes through the JWT check; signup, login and the OTP endpoints are
+  public. The per-route rate limits and the 10 kb JSON cap moved into the text under the picture.
+
 ## [3.1.0] - 2026-10-18
 
 ### Added
