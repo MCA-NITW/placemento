@@ -1,71 +1,71 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1124" height="563" viewBox="0 0 1124 563" role="img" aria-labelledby="architecture-dark-sdw-title architecture-dark-sdw-desc" font-family="&#39;Geist Mono&#39;, ui-monospace, SFMono-Regular, Menlo, Consolas, &#39;Liberation Mono&#39;, monospace">
-<metadata><orrery:spec xmlns:orrery="https://sagargupta.online/orrery/spec" version="1"># yaml-language-server: $schema=https://raw.githubusercontent.com/Sagargupta16/orrery/main/skills/orrery/references/diagram.schema.json&#13;
-# Rendered with orrery (github.com/Sagargupta16/orrery):&#13;
-#   orrery render docs/diagrams/architecture.yaml -o docs/diagrams/architecture -f svg --theme both&#13;
-# Reviewed at README width: orrery review docs/diagrams/architecture.yaml --width 880&#13;
-title: Placemento architecture&#13;
-subtitle: A React SPA calls an Express 5 REST API backed by MongoDB; Gmail sends the password reset OTPs&#13;
-direction: right&#13;
-layout: { spacing: compact }&#13;
-&#13;
-groups:&#13;
-  api: { type: box, label: Express 5 API (server/), icon: si:express, evidence: server/src/app.ts }&#13;
-&#13;
-nodes:&#13;
-  people:&#13;
-    icon: tabler:users&#13;
-    label: Students, coordinators, admins&#13;
-    note: '@student.nitw.ac.in accounts'&#13;
-    evidence: server/src/types/index.ts:104#UserRole&#13;
-  spa:&#13;
-    icon: logos:react&#13;
-    label: React 19 SPA&#13;
-    note: Vite, React Router, Recharts&#13;
-    align: people&#13;
-    evidence: client/src/App.tsx&#13;
-  guard:&#13;
-    icon: tabler:shield-lock&#13;
-    label: Helmet, CORS, rate limit&#13;
-    note: 300 requests per 5 min per IP&#13;
-    in: api&#13;
-    evidence: [server/src/app.ts:21#helmet, server/src/app.ts:42#globalLimiter]&#13;
-  auth:&#13;
-    icon: tabler:key&#13;
-    label: Auth routes&#13;
-    note: signup, login, OTP reset&#13;
-    in: api&#13;
-    evidence: server/src/routes/authRoutes.ts&#13;
-  jwt:&#13;
-    icon: logos:jwt-icon&#13;
-    label: JWT and role checks&#13;
-    note: authenticateUser, checkUserRole&#13;
-    in: api&#13;
-    evidence: server/src/middleware/authMiddleware.ts:12#authenticateUser&#13;
-  routes:&#13;
-    icon: tabler:api&#13;
-    label: Resource routes&#13;
-    note: users, companies, experiences, stats&#13;
-    in: api&#13;
-    evidence: server/src/app.ts:58&#13;
-  mongo:&#13;
-    icon: si:mongodb&#13;
-    label: MongoDB&#13;
-    note: User, Company, Experience, Otp&#13;
-    evidence: [server/src/index.ts:31#mongoose.connect, server/src/models]&#13;
-  gmail:&#13;
-    icon: logos:google-gmail&#13;
-    label: Gmail SMTP&#13;
-    note: Nodemailer&#13;
-    align: mongo&#13;
-    evidence: server/src/controllers/authController.ts:23#createTransport&#13;
-&#13;
-edges:&#13;
-  - people -> spa&#13;
-  - spa -> guard: { label: Bearer JWT, evidence: client/src/api/axiosInstance.ts:10 }&#13;
-  - guard -> auth&#13;
-  - guard -> jwt -> routes&#13;
-  - api -> mongo: Mongoose&#13;
-  - auth -> gmail: { label: OTP email, evidence: server/src/controllers/authController.ts:148#sendMail }&#13;
+<metadata><orrery:spec xmlns:orrery="https://sagargupta.online/orrery/spec" version="1"># yaml-language-server: $schema=https://raw.githubusercontent.com/Sagargupta16/orrery/main/skills/orrery/references/diagram.schema.json
+# Rendered with orrery (github.com/Sagargupta16/orrery):
+#   orrery render docs/diagrams/architecture.yaml -o docs/diagrams/architecture -f svg --theme both
+# Reviewed at README width: orrery review docs/diagrams/architecture.yaml --width 880
+title: Placemento architecture
+subtitle: A React SPA calls an Express 5 REST API backed by MongoDB; Gmail sends the password reset OTPs
+direction: right
+layout: { spacing: compact }
+
+groups:
+  api: { type: box, label: Express 5 API (server/), icon: si:express, evidence: server/src/app.ts }
+
+nodes:
+  people:
+    icon: tabler:users
+    label: Students, coordinators, admins
+    note: '@student.nitw.ac.in accounts'
+    evidence: server/src/types/index.ts:104#UserRole
+  spa:
+    icon: logos:react
+    label: React 19 SPA
+    note: Vite, React Router, Recharts
+    align: people
+    evidence: client/src/App.tsx
+  guard:
+    icon: tabler:shield-lock
+    label: Helmet, CORS, rate limit
+    note: 300 requests per 5 min per IP
+    in: api
+    evidence: [server/src/app.ts:21#helmet, server/src/app.ts:42#globalLimiter]
+  auth:
+    icon: tabler:key
+    label: Auth routes
+    note: signup, login, OTP reset
+    in: api
+    evidence: server/src/routes/authRoutes.ts
+  jwt:
+    icon: logos:jwt-icon
+    label: JWT and role checks
+    note: authenticateUser, checkUserRole
+    in: api
+    evidence: server/src/middleware/authMiddleware.ts:12#authenticateUser
+  routes:
+    icon: tabler:api
+    label: Resource routes
+    note: users, companies, experiences, stats
+    in: api
+    evidence: server/src/app.ts:58
+  mongo:
+    icon: si:mongodb
+    label: MongoDB
+    note: User, Company, Experience, Otp
+    evidence: [server/src/index.ts:31#mongoose.connect, server/src/models]
+  gmail:
+    icon: logos:google-gmail
+    label: Gmail SMTP
+    note: Nodemailer
+    align: mongo
+    evidence: server/src/controllers/authController.ts:23#createTransport
+
+edges:
+  - people -> spa
+  - spa -> guard: { label: Bearer JWT, evidence: client/src/api/axiosInstance.ts:10 }
+  - guard -> auth
+  - guard -> jwt -> routes
+  - api -> mongo: Mongoose
+  - auth -> gmail: { label: OTP email, evidence: server/src/controllers/authController.ts:148#sendMail }
 </orrery:spec></metadata>
 <title id="architecture-dark-sdw-title">Placemento architecture</title>
 <desc id="architecture-dark-sdw-desc">Placemento architecture. 8 components in 1 groups. Connections: Students, coordinators, admins to React 19 SPA; React 19 SPA to Helmet, CORS, rate limit (Bearer JWT); Helmet, CORS, rate limit to Auth routes; Helmet, CORS, rate limit to JWT and role checks; JWT and role checks to Resource routes; Express 5 API (server/) to MongoDB (Mongoose); Auth routes to Gmail SMTP (OTP email).</desc>
