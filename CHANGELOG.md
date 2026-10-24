@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.1.3] - 2026-10-24
+
+### Security
+
+- `PUT /users/update/:id` only copies numbers and strings from the request body into the update, so a crafted object can no longer reach the query.
+  Any other value keeps the stored field.
+- `PUT /users/company/:id` rejects a `companyId` that is not a string with `400 Invalid company ID` before it reaches `Company.findById`.
+
 ## [3.1.2] - 2026-10-23
 
 ### Docs
