@@ -19,6 +19,13 @@ const validateAcademicField = (field: { cgpa?: number; percentage?: number }, la
 	return errors;
 };
 
+// Only a number or string from the request body reaches an update document, so a crafted object cannot carry query operators
+const primitiveOr = <T>(value: unknown, fallback: T) => {
+	if (typeof value === 'number') return value;
+	if (typeof value === 'string') return value;
+	return fallback;
+};
+
 // Strip password from user object before sending
 const sanitizeUser = (user: any) => {
 	const obj = user.toObject ? user.toObject() : { ...user };
@@ -105,26 +112,26 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
 			{
 				placedAt: {
 					...user.placedAt.toObject(),
-					location: req.body.placedAt?.location ?? user.placedAt.location
+					location: primitiveOr(req.body.placedAt?.location, user.placedAt.location)
 				},
 				pg: {
-					cgpa: req.body.pg?.cgpa ?? user.pg.cgpa,
-					percentage: req.body.pg?.percentage ?? user.pg.percentage
+					cgpa: primitiveOr(req.body.pg?.cgpa, user.pg.cgpa),
+					percentage: primitiveOr(req.body.pg?.percentage, user.pg.percentage)
 				},
 				ug: {
-					cgpa: req.body.ug?.cgpa ?? user.ug.cgpa,
-					percentage: req.body.ug?.percentage ?? user.ug.percentage
+					cgpa: primitiveOr(req.body.ug?.cgpa, user.ug.cgpa),
+					percentage: primitiveOr(req.body.ug?.percentage, user.ug.percentage)
 				},
 				hsc: {
-					cgpa: req.body.hsc?.cgpa ?? user.hsc.cgpa,
-					percentage: req.body.hsc?.percentage ?? user.hsc.percentage
+					cgpa: primitiveOr(req.body.hsc?.cgpa, user.hsc.cgpa),
+					percentage: primitiveOr(req.body.hsc?.percentage, user.hsc.percentage)
 				},
 				ssc: {
-					cgpa: req.body.ssc?.cgpa ?? user.ssc.cgpa,
-					percentage: req.body.ssc?.percentage ?? user.ssc.percentage
+					cgpa: primitiveOr(req.body.ssc?.cgpa, user.ssc.cgpa),
+					percentage: primitiveOr(req.body.ssc?.percentage, user.ssc.percentage)
 				},
-				backlogs: req.body.backlogs ?? user.backlogs,
-				totalGapInAcademics: req.body.totalGapInAcademics ?? user.totalGapInAcademics
+				backlogs: primitiveOr(req.body.backlogs, user.backlogs),
+				totalGapInAcademics: primitiveOr(req.body.totalGapInAcademics, user.totalGapInAcademics)
 			},
 			{ returnDocument: 'after' }
 		);
@@ -228,7 +235,8 @@ export const updateCompany = async (req: Request, res: Response): Promise<void> 
 			res.status(400).json({ errors: ['Invalid user ID'] });
 			return;
 		}
-		if (req.body.companyId !== 'np' && !isValidObjectId(req.body.companyId)) {
+		const { companyId } = req.body;
+		if (typeof companyId !== 'string' || (companyId !== 'np' && !isValidObjectId(companyId))) {
 			res.status(400).json({ errors: ['Invalid company ID'] });
 			return;
 		}
@@ -260,8 +268,8 @@ export const updateCompany = async (req: Request, res: Response): Promise<void> 
 		}
 
 		// Add to new company
-		if (req.body.companyId !== 'np') {
-			const company = await Company.findById(req.body.companyId).session(session);
+		if (companyId !== 'np') {
+			const company = await Company.findById(companyId).session(session);
 			if (!company) {
 				await session.abortTransaction();
 				res.status(404).json({ errors: ['Company not found'] });
@@ -281,11 +289,7 @@ export const updateCompany = async (req: Request, res: Response): Promise<void> 
 			await Company.findByIdAndUpdate(company._id, { $addToSet: { selectedStudentsRollNo: user.rollNo } }, { session });
 		}
 
-		const updatedUser = await User.findByIdAndUpdate(
-			req.params.id,
-			{ placedAt, placed: req.body.companyId !== 'np' },
-			{ returnDocument: 'after', session }
-		);
+		const updatedUser = await User.findByIdAndUpdate(req.params.id, { placedAt, placed: companyId !== 'np' }, { returnDocument: 'after', session });
 
 		await session.commitTransaction();
 		logger.info(`Company updated for ${sanitizeForLog(updatedUser?.name)}`);
