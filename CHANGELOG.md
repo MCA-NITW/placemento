@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.1.4] - 2026-10-24
+
+### Fixed
+
+- Profile: saving after editing Backlogs or Gap no longer fails with `400 Backlogs must be a non-negative integer`. The page now sends both as numbers
+  instead of the input's text.
+- Profile: a failed save shows the server's error messages instead of a bare "Failed".
+
 ## [3.1.3] - 2026-10-24
 
 ### Security

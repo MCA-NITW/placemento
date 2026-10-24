@@ -21,6 +21,9 @@ const inp: React.CSSProperties = {
 	transition: 'border .2s'
 };
 
+// Edited inputs hold strings, but the API only accepts whole numbers for backlogs and gap
+const toNumber = (value: unknown) => (typeof value === 'string' ? Number(value) : value);
+
 const Profile = () => {
 	const [user, setUser] = useState<Partial<User>>({});
 	const [prev, setPrev] = useState<Partial<User>>({});
@@ -64,13 +67,17 @@ const Profile = () => {
 	const save = async (e: FormEvent) => {
 		e.preventDefault();
 		try {
-			await updateStudent(user.id!, user as Record<string, unknown>);
+			await updateStudent(user.id!, {
+				...user,
+				backlogs: toNumber(user.backlogs),
+				totalGapInAcademics: toNumber(user.totalGapInAcademics)
+			});
 			toast.success(<ToastContent res="Saved" messages={['Profile updated']} />);
 			setEdited(false);
 			setPrev(user);
 			setEditing('');
 		} catch (err) {
-			toast.error(<ToastContent res="Error" messages={[(err as ApiError).response?.data?.message || 'Failed']} />);
+			toast.error(<ToastContent res="Error" messages={(err as ApiError).response?.data?.errors || ['Failed']} />);
 		}
 	};
 
