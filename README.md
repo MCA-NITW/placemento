@@ -85,40 +85,14 @@ and database state.
 
 ### Data model
 
-```mermaid
-erDiagram
-  USER {
-    string rollNo UK "23MCF1R01"
-    string email UK "@student.nitw.ac.in"
-    string role "student | placementCoordinator | admin"
-    bool isVerified
-    object pg_ug_hsc_ssc "cgpa, percentage"
-    bool placed
-    object placedAt "snapshot of the company offer"
-  }
-  COMPANY {
-    string name
-    string status "upcoming | ongoing | completed | cancelled"
-    string typeOfOffer "PPO | FTE | 6M+FTE | Intern"
-    number ctc "LPA"
-    object cutoffs "pg, ug, twelth, tenth"
-    string[] selectedStudentsRollNo
-  }
-  EXPERIENCE {
-    string companyName
-    object studentDetails "rollNo, name, batch"
-    string[] tags
-    string[] Comments
-  }
-  OTP {
-    string email
-    string otp "bcrypt hash"
-    date createdAt "TTL 600 s"
-  }
-  COMPANY ||--o{ USER : "selectedStudentsRollNo / placedAt.companyId"
-  USER ||--o{ EXPERIENCE : "studentDetails.rollNo"
-  USER ||--o| OTP : "email"
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/diagrams/data-model-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="docs/diagrams/data-model-light.svg">
+  <img width="880" src="docs/diagrams/data-model-light.svg" alt="Placemento data model: the four Mongoose models in server/src/models, Company, User, Experience and Otp, linked by value instead of Mongoose refs. Company keeps its _id, name, status (upcoming, ongoing, completed or cancelled), typeOfOffer (PPO, FTE, 6M+FTE or Intern), profileCategory, ctc in LPA, the pg, ug, twelth and tenth cutoffs, locations and selectedStudentsRollNo. User keeps its _id, placed, placedAt.companyId, a unique rollNo, a unique email, name, batch, role (student, placementCoordinator or admin), isVerified and the pg, ug, hsc and ssc scores. A Company places zero or more Users, each pointing back at the Company _id through placedAt.companyId, which holds np when the student is not placed, and selects zero or more Users by listing their rollNo in selectedStudentsRollNo; a User is placed at no more than one Company, and a placement update changes both links in one transaction. A User writes zero or more Experiences, each carrying the author's rollNo in studentDetails.rollNo along with companyName as free text, content, tags, a rating from 1 to 5, difficulty and Comments. A User requests at most one Otp at a time, matched by email; the Otp stores a bcrypt hash of the code and MongoDB deletes it 600 seconds after createdAt.">
+</picture>
+
+The spec behind the picture is [`docs/diagrams/data-model.yaml`](docs/diagrams/data-model.yaml), rendered with
+[orrery](https://github.com/Sagargupta16/orrery).
 
 Relations are by value (roll number, company id string, email), not Mongoose refs. That is why a placement change has to update both sides inside one
 transaction.

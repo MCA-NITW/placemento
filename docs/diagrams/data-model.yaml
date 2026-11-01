@@ -1,0 +1,100 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Sagargupta16/orrery/main/skills/orrery/references/diagram.schema.json
+# Rendered with orrery (github.com/Sagargupta16/orrery):
+#   orrery render docs/diagrams/data-model.yaml -o docs/diagrams/data-model -f svg --theme both
+# Reviewed at README width: orrery review docs/diagrams/data-model.yaml --width 880
+title: Placemento data model
+subtitle:
+  The four Mongoose models in server/src/models. Links are by value, not refs; a placement update changes both Company to User links in one
+  transaction.
+kind: er
+layout: { spacing: compact }
+# Columns are trimmed to the keys, the values that link documents and the ones that say what a
+# document is. Left out: User password, backlogs, totalGapInAcademics and the rest of the placedAt
+# copy; Company interviewShortlist, selected, dateOfOffer, profile, ctcBreakup and bond; Experience
+# interviewProcess, tips, likes, likedBy, isVerified and helpfulCount; the createdAt / updatedAt
+# timestamps. Experience.companyName is typed by the student, so it is not a link to Company.
+
+nodes:
+  company:
+    label: Company
+    note: companies collection
+    evidence: server/src/models/Company.ts:56#Company
+    fields:
+      - _id ObjectId pk
+      - name String
+      - { name: status, type: String, note: 'upcoming, ongoing, completed, cancelled' }
+      - { name: typeOfOffer, type: String, note: 'PPO, FTE, 6M+FTE, Intern' }
+      - { name: profileCategory, type: String, note: 'Software, Analyst, Others' }
+      - { name: ctc, type: Number, note: LPA }
+      - { name: cutoffs, type: Object, note: 'pg, ug, twelth, tenth' }
+      - locations String[]
+      - selectedStudentsRollNo String[] fk
+  user:
+    label: User
+    note: users collection
+    evidence: server/src/models/User.ts:61#User
+    # The placement rows first: both Company lines then reach User in the order they leave
+    # Company, so they do not cross.
+    fields:
+      - _id ObjectId pk
+      - placed Boolean
+      - { name: placedAt.companyId, type: String, fk: true, note: 'np when not placed' }
+      - rollNo String unique
+      - email String unique
+      - name String
+      - batch Number
+      - { name: role, type: String, note: 'student, placementCoordinator, admin' }
+      - isVerified Boolean
+      - { name: 'pg, ug, hsc, ssc', type: Object, note: 'cgpa, percentage' }
+  experience:
+    label: Experience
+    note: experiences collection
+    evidence: server/src/models/Experience.ts:37#Experience
+    fields:
+      - _id ObjectId pk
+      - { name: studentDetails.rollNo, type: String, fk: true, note: 'with name, batch' }
+      - { name: companyName, type: String, note: free text }
+      - content String
+      - tags String[]
+      - { name: rating, type: Number, note: 1 to 5 }
+      - { name: difficulty, type: String, note: 'Easy, Medium, Hard' }
+      - Comments String[]
+  otp:
+    label: Otp
+    note: otps collection
+    evidence: server/src/models/Otp.ts:15#Otp
+    fields:
+      - _id ObjectId pk
+      - email String fk
+      - { name: otp, type: String, note: bcrypt hash }
+      - { name: createdAt, type: Date, note: TTL 600 s }
+
+edges:
+  # updateCompany writes placedAt.companyId = String(company._id) and $addToSet the roll number,
+  # inside one session; deleteCompany resets placedAt for every user that pointed at it.
+  - company -- user:
+      label: places
+      card: '0..1:0..n'
+      from_field: _id
+      to_field: placedAt.companyId
+      evidence: server/src/controllers/userController.ts:279#companyId
+  - company -- user:
+      label: selects
+      card: '0..1:0..n'
+      from_field: selectedStudentsRollNo
+      to_field: rollNo
+      evidence: server/src/controllers/userController.ts:289#selectedStudentsRollNo
+  # postAddExperience copies rollNo, name and batch from the signed-in user.
+  - user -- experience:
+      label: writes
+      card: '1:0..n'
+      from_field: rollNo
+      to_field: studentDetails.rollNo
+      evidence: server/src/controllers/experienceController.ts:33#studentDetails
+  # postVerifyEmail issues an OTP only for a registered email, after deleting any older one.
+  - user -- otp:
+      label: requests
+      card: '1:0..1'
+      from_field: email
+      to_field: email
+      evidence: server/src/controllers/authController.ts:144#Otp
