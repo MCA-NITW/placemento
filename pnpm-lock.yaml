@@ -276,7 +276,7 @@ importers:
         version: 9.11.2
       nodemailer:
         specifier: ^10.1.2
-        version: 10.1.2
+        version: 10.1.4
       winston:
         specifier: ^3.19.0
         version: 3.19.0
@@ -1879,8 +1879,8 @@ packages:
     resolution: {integrity: sha512-LA4ZjwlnUblHVgq0oBF3Jl/6h/Nvs5fzBLwdEF4nuxnFdsfajde4WfxtJr3CaiH+F6ewcIB/q4jQ4UzPyid+CQ==}
     hasBin: true
 
-  nodemailer@10.1.2:
-    resolution: {integrity: sha512-rnQn9Rzh8RAwcp42MVsIvxbsv6YZ2a2/av+uyJ/LPU1+2QSlrRgFsWWZTKenyRUqkIl8urOI0c4+CEcmFdsvQw==}
+  nodemailer@10.1.4:
+    resolution: {integrity: sha512-EsMnOR2oRv4LGnWvHgcVYkkQ4O2j8KO4WTw6l+PHR4sOXo8SAgIraxtEnGDmotjbhv0hDsu3IuDIFZm8iXwO4A==}
     engines: {node: '>=20.0.0'}
 
   object-assign@4.1.1:
@@ -3810,7 +3810,7 @@ snapshots:
 
   node-gyp-build@4.8.4: {}
 
-  nodemailer@10.1.2: {}
+  nodemailer@10.1.4: {}
 
   object-assign@4.1.1: {}
 
