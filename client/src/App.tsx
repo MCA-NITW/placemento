@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -8,16 +9,24 @@ import Experience from './pages/Experience';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import Profile from './pages/Profile';
-import Stats from './pages/Stats';
 import Students from './pages/Students';
 import Teams from './pages/Teams';
+
+const Stats = lazy(() => import('./pages/Stats'));
 
 const App = () => (
 	<BrowserRouter>
 		<Routes>
 			<Route element={<NavBar />}>
 				<Route path="/" element={<Home />} />
-				<Route path="/stats" element={<Stats />} />
+				<Route
+					path="/stats"
+					element={
+						<Suspense fallback={<div style={{ textAlign: 'center', padding: '3rem', color: 'var(--dim)' }}>Loading...</div>}>
+							<Stats />
+						</Suspense>
+					}
+				/>
 				<Route path="/teams" element={<Teams />} />
 				<Route path="/students" element={<Students />} />
 				<Route path="/companies" element={<Companies />} />

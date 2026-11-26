@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.5] - 2026-11-26
+
+### Changed
+
+- The Stats page (and recharts) now loads as its own chunk on the first visit to `/stats`. The entry bundle drops from 793.70 KB to 414.49 KB (236.92
+  KB to 128.23 KB gzip), so every other page loads about half the JavaScript. `/stats` looks the same while it loads.
+
 ## [3.1.4] - 2026-10-24
 
 ### Fixed
